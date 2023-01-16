@@ -43,9 +43,40 @@ client.query('SELECT * FROM information_schema.tables WHERE table_name = $1', ['
             CREATE TABLE movie (
                 id SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
+                release_date DATE NOT NULL,
+                duration INTEGER NOT NULL,
                 genre VARCHAR(255) NOT NULL,
-                rating DECIMAL(3,1) NOT NULL
+                description TEXT NOT NULL,
+                age_restriction INTEGER NOT NULL
             );
         `)
     }
 });
+//return a json object containing a list of movies
+app.get('/movies', (req, res) => {
+    client.query('SELECT * FROM movie', (err, result) => {
+        if (err) {
+            res.status(500).send(err);
+        }
+        res.json(result.rows);
+    });
+});
+
+//handle a GET request to the given path, return json object
+//join movie table with rating table
+//should return the rating and review for movie  
+app.get('/movies/:id/ratings', (req, res) => {
+    client.query(`
+    SELECT rating.rating, rating.review
+    FROM movie
+    JOIN rating ON movie.id = rating.movie_id
+    WHERE movie.id = $1
+    `, [req.params.id], (err, result) => {
+        if (err) {
+            res.status(500).send(err);
+        }
+        res.json(result.rows);
+    });
+});
+
+
