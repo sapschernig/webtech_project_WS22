@@ -23,6 +23,7 @@ console.log("Server running at: http://localhost:" + port);
 const { Client } = require('pg');
 
 // Connect to PostgreSQL
+//TODO check back with actual values
 const client = new Client({
     user: 'your_username',
     host: 'your_host',
