@@ -32,7 +32,14 @@ const client = new Client({
     port: 5432,
 });
 
+//middleware function to handle error that may occur in routes
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).send('Oops..something went wrong');
+});
 
+
+//try and catch for error handling when connecting to the database
 try {
 client.connect();
 
@@ -61,6 +68,7 @@ catch(err){
     console.error(err);
     res.status(500).send("An error occurred while connecting to the database.")
 }
+
 //return a json object containing a list of movies
 app.get('/movies', (req, res) => {
     client.query('SELECT * FROM movie', (err, result) => {
