@@ -96,4 +96,15 @@ app.get('/movies/:id/ratings', (req, res) => {
     });
 });
 
+//trying to handle specific errors
 
+client.query('SELECT * FROM movie', (err, result) => {
+    if(err.code === 'ECONNREFUSED'){
+        console.error('Connection to the database refused');
+    res.status(500).send("An error occurred while connecting to the database");
+} else if (err.code === '42P01'){
+    console.error('Table not found');
+    res.status(500).send("")
+};
+
+})
