@@ -9,6 +9,7 @@ import { FooterComponent } from './footer/footer.component';
 import { MoviecardComponent } from './moviecard/moviecard.component';
 import { RoutingModule } from './routing.module';
 import { LoginComponent } from './login/login.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { LoginComponent } from './login/login.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RoutingModule
+    RoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
