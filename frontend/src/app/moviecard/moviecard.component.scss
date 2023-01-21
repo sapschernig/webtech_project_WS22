@@ -1,0 +1,30 @@
+.moviecard {
+    width: 80%;
+    display: flex;
+    background-color: rgb(81, 81, 81);
+    height: 327px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+p {
+    text-align: center;
+}
+
+.img {
+    margin-left: 0px;
+    margin-right: 2%;
+    width: 20%;
+}
+
+.description {
+    background-color: white;
+    width: 60%;
+    margin-right: 2%;
+}
+
+.time {
+    margin-left: 3px;
+    background-color: rgb(118, 30, 30);
+    width: 20%;
+}
