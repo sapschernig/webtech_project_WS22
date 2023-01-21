@@ -1,0 +1,19 @@
+header {
+    box-shadow: 2px 2px 2px rgba(255, 255, 255, 0.1);
+    background-color: black;
+    color: white;
+    display: flex;
+}
+
+.logo {
+    height: 48px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    margin-left: 16px;
+}
+
+.login {
+    margin-left: 40px;
+    margin-top: 16px;
+    cursor: pointer;
+}
