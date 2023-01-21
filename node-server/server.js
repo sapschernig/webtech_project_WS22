@@ -7,12 +7,12 @@ app.get("/", function (req, res) {
   res.sendStatus(200);
 });
 
-app.get("/:customText", (req, res) => {
+/*app.get("/:customText", (req, res) => {
   res
 
     .status(200)
     .send(`This is a simple application receiving${req.params.customText}`);
-});
+});*/
 
 // TODO: provide the code to handle a route parameter
 
@@ -25,10 +25,10 @@ const { Client } = require('pg');
 // Connect to PostgreSQL
 //TODO check back with actual values
 const client = new Client({
-    user: 'your_username',
-    host: 'your_host',
+    user: 'postgres',
+    host: 'localhost',
     database: 'movie_db',
-    password: 'your_password',
+    password: 'Kavo.zada2',
     port: 5432,
 });
 client.connect();

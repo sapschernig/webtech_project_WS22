@@ -1,9 +1,11 @@
-<p>login works!</p>
+<h1>{{ title }}</h1>
 
 
-<form #loginForm="ngForm">
-<input type="text" name="email" placeholder="Enter email address">
-<input type="password" name="password" placeholder="Enter password">
+<form #loginForm="ngForm" (ngSubmit)="loginUser(loginForm.value)">
+<input type="text" name="email" placeholder="Enter email address" ngModel>
+<br>
+<input type="password" name="password" placeholder="Enter password" ngModel>
+<br>
 <button>Login</button>
 
 </form>
