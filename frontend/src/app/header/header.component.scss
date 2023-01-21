@@ -12,8 +12,18 @@ header {
     margin-left: 16px;
 }
 
-.login {
+.navbar {
     margin-left: 40px;
     margin-top: 16px;
-    cursor: pointer;
+    display: flex;
+}
+
+.navitem {
+    margin-left: 40px;
+    display: flex;
+}
+
+a {
+    color: white;
+    text-decoration: none;
 }
