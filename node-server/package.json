@@ -1,0 +1,29 @@
+{
+  "name": "vms_movie-theater_webtech-project",
+  "version": "1.0.0",
+  "description": "cinema application for AAU webtech course in WS22",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sapschernig/webtech_project_WS22.git"
+  },
+  "keywords": [
+    "movie-theater",
+    "project-webtech"
+  ],
+  "author": "Matthias Heber, Verena Heber, Sarah Pschernig",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sapschernig/webtech_project_WS22/issues"
+  },
+  "homepage": "https://github.com/sapschernig/webtech_project_WS22#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "pg": "^8.8.0"
+  }
+}
