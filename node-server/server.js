@@ -31,12 +31,15 @@ const client = new Client({
     password: 'your_password',
     port: 5432,
 });
+
+
+try {
 client.connect();
 
 // Check if the movie table already exists
 client.query('SELECT * FROM information_schema.tables WHERE table_name = $1', ['movie'], (err, result) => {
     if (err) {
-        console.log(err);
+        throw(err);
     }
     if (!result.rows[0]) {
         // If the table does not exist, create it
@@ -53,6 +56,11 @@ client.query('SELECT * FROM information_schema.tables WHERE table_name = $1', ['
         `)
     }
 });
+}
+catch(err){
+    console.error(err);
+    res.status(500).send("An error occurred while connecting to the database.")
+}
 //return a json object containing a list of movies
 app.get('/movies', (req, res) => {
     client.query('SELECT * FROM movie', (err, result) => {
