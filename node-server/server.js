@@ -4,15 +4,22 @@ let path = require("path");
 app.use(express.static("public"));
 
 app.get("/", function (req, res) {
-  res.sendStatus(200);
+  res.sendStatus(200).send("Test successful!");
 });
+create_login
 
 /*app.get("/:customText", (req, res) => {
+
+/*
+app.get("/:customText", (req, res) => {
+
   res
 
     .status(200)
     .send(`This is a simple application receiving${req.params.customText}`);
+
 });*/
+
 
 // TODO: provide the code to handle a route parameter
 
@@ -27,8 +34,10 @@ const { Client } = require('pg');
 const client = new Client({
     user: 'postgres',
     host: 'localhost',
+    // create_login
     database: 'movie_db',
     password: 'Kavo.zada2',
+
     port: 5432,
 });
 client.connect();
