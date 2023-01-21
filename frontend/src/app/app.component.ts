@@ -20,10 +20,10 @@ export class AppComponent implements OnInit {
   }
 
   getDataFromAPI(){
-    this.service.getTest().subscribe((response) => {
-      console.log('Response from API is: ' + response);
-    }, (error) => {
-      console.log('Error: ' + error);
+    this.service.getTest().subscribe((res) => {
+      console.log('Response from API is: ', res);
+    }, (err) => {
+      console.log('Error: ', err);
       
     })
 
