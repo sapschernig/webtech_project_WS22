@@ -9,6 +9,6 @@ export class AppServiceService {
   constructor(private http : HttpClient) { }
 
   getTest(){
-    return this.http.get('/api/')
+    return this.http.get('/api/movies')
   }
 }
