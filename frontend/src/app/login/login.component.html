@@ -2,10 +2,12 @@
 
 
 <form #loginForm="ngForm" (ngSubmit)="loginUser(loginForm.value)">
-<input type="text" name="email" placeholder="Enter email address" ngModel>
+<input type="text" required #email='ngModel' email name="email" placeholder="Enter email address" ngModel>
+<span *ngIf="email.invalid && email.touched" style="color: red">Please enter a valid email address</span>
 <br>
-<input type="password" name="password" placeholder="Enter password" ngModel>
+<input type="password" name="password" required #password="ngModel" minlength="8" placeholder="Enter password" ngModel>
+<span *ngIf="password.invalid && password.touched" style="color: red">Please enter a valid password. Minimum length: 8 characters</span>
 <br>
-<button>Login</button>
+<button [disabled]="loginForm.invalid">Login</button>
 
 </form>
