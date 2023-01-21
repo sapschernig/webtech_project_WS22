@@ -10,6 +10,7 @@ import { FooterComponent } from './footer/footer.component';
 import { MoviecardComponent } from './moviecard/moviecard.component';
 import { RoutingModule } from './routing.module';
 import { LoginComponent } from './login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,9 @@ import { LoginComponent } from './login/login.component';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    RoutingModule
+    RoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
