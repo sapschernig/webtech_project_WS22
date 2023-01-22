@@ -112,14 +112,14 @@ client.query('SELECT * FROM movie', (err, result) => {
         if(err.code === 'ECONNREFUSED'){
         console.error('Connection to the database refused');
         res.status(500).send("An error occurred while connecting to the database");
-        } else if (err.code === '42P01'){
+        } else if (err.code === '42P01'){ //42P01 = undefined table in postgres error
         console.error('Table not found');
         res.status(500).send("Table not found in the database");
-        } else {
+        } else { //general error
         console.error(err);
         res.status(500).send("An error occurred while processing your request");
         }
-    } else {
+    } else { //if query was successful 
         res.json(result.rows);
     }
 });
