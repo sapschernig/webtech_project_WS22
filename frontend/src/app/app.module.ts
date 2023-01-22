@@ -10,7 +10,11 @@ import { FooterComponent } from './footer/footer.component';
 import { MoviecardComponent } from './moviecard/moviecard.component';
 import { RoutingModule } from './routing.module';
 import { LoginComponent } from './login/login.component';
+
+import { RegisterComponent } from './register/register.component';
+import { MyticketsComponent } from './mytickets/mytickets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +23,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SlideshowComponent,
     FooterComponent,
     MoviecardComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent,
+    MyticketsComponent
   ],
   imports: [
     BrowserModule,
