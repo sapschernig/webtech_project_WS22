@@ -1,1 +1,25 @@
-<p>register works!</p>
+<h1>{{ title }}</h1>
+
+
+<form [formGroup]="registerForm" (ngSubmit)="registerUser()">
+<p>Personal information</p>
+<input type="text" placeholder="First Name" formControlName="fName">
+<br>
+<input type="text" placeholder="Last Name" formControlName="lName">
+<br>
+<br>
+<p>Contact information</p>
+<input type="text" placeholder="Enter email address" formControlName="email">
+<span *ngIf="email && email.invalid && email.touched" style="color: red">Please enter a valid email address</span>
+<br>
+<input type="password" placeholder="Enter password" formControlName="password">
+<span *ngIf="password && password.invalid && password.touched" style="color: red">Password not valid.</span>
+<br>
+<br>
+
+<button [disabled]="registerForm.invalid">Sign Up</button>
+</form>
+
+<br>
+<br>
+<button>Already have an account? Sign in</button>
