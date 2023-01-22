@@ -88,6 +88,28 @@ app.get('/movies', (req, res) => {
     });
 });
 
+app.get("/movies/:id", (req, res, next) => {
+    if (!req.params.id){
+        const error = new Error("Missing id parameter");
+        error.status = 400;
+        return next(error);
+    }
+    //get movie by id
+    client.query("SELECT * FROM  movies WHERE id= $1", [req.params.id], (err, result) => {
+        if (err) {
+            return next(err);
+        }
+        //if it doesn't find a movie, new error oject
+        if (result.rows.length === 0){
+            const error = new Error("Movie not found");
+            error.status = 404;
+            return next(error);
+        }
+        res.json(result.rows[0]);
+    })
+
+})
+
 //handle a GET request to the given path, return json object
 //join movie table with rating table
 //should return the rating and review for movie  
