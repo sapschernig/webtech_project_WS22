@@ -123,3 +123,15 @@ client.query('SELECT * FROM movie', (err, result) => {
         res.json(result.rows);
     }
 });
+
+//define a error-handling middleware function
+//function logs error message and stack trace to the console, sends responce with status code 500
+const errorHandler = (err, req, res, next) => {
+    console.error(err.message);
+    if (err.stack){
+        console.error(err.stack);
+    }
+    res.status(500).send("An error occured");
+};
+
+app.use(errorHandler);
