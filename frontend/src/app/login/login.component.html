@@ -1,0 +1,16 @@
+<h1>{{ title }}</h1>
+
+
+<form [formGroup]="loginForm" (ngSubmit)="loginUser()">
+<input type="text" placeholder="Enter email address" formControlName="email">
+<span *ngIf="email && email.invalid && email.touched" style="color: red">Please enter a valid email address</span>
+<br>
+<input type="password" placeholder="Enter password" formControlName="password">
+<span *ngIf="password && password.invalid && password.touched" style="color: red">Password not valid.</span>
+<br>
+<button [disabled]="loginForm.invalid">Login</button>
+</form>
+
+<br>
+<br>
+<button>No user account? Register now</button>
