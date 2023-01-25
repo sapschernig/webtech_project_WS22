@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
+import { ManagementViewComponent } from './management-view/management-view.component';
 import { MoviecardComponent } from './moviecard/moviecard.component';
 import { MyticketsComponent } from './mytickets/mytickets.component';
 import { RegisterComponent } from './register/register.component';
@@ -17,6 +18,10 @@ const routes: Routes = [
   },
   {
     path:'mytickets', component: MyticketsComponent
+  }
+  ,
+  {
+    path:'management', component: ManagementViewComponent
   }
 ];
 
