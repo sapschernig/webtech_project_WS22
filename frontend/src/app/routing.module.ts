@@ -18,8 +18,7 @@ const routes: Routes = [
   },
   {
     path:'mytickets', component: MyticketsComponent
-  }
-  ,
+  },
   {
     path:'management', component: ManagementViewComponent
   }

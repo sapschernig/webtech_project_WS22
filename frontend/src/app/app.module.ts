@@ -15,6 +15,7 @@ import { RegisterComponent } from './register/register.component';
 import { MyticketsComponent } from './mytickets/mytickets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManagementViewComponent } from './management-view/management-view.component';
+import { AddAMovieComponent } from './add-amovie/add-amovie.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { ManagementViewComponent } from './management-view/management-view.compo
     LoginComponent,
     RegisterComponent,
     MyticketsComponent,
-    ManagementViewComponent
+    ManagementViewComponent,
+    AddAMovieComponent
   ],
   imports: [
     BrowserModule,
