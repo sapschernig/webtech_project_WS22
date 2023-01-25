@@ -14,6 +14,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { MyticketsComponent } from './mytickets/mytickets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ManagementViewComponent } from './management-view/management-view.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MoviecardComponent,
     LoginComponent,
     RegisterComponent,
-    MyticketsComponent
+    MyticketsComponent,
+    ManagementViewComponent
   ],
   imports: [
     BrowserModule,
