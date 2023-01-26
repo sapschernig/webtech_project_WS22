@@ -11,6 +11,13 @@ import { MoviecardComponent } from './moviecard/moviecard.component';
 import { RoutingModule } from './routing.module';
 import { LoginComponent } from './login/login.component';
 
+import { RegisterComponent } from './register/register.component';
+import { MyticketsComponent } from './mytickets/mytickets.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ManagementViewComponent } from './management-view/management-view.component';
+import { AddAMovieComponent } from './add-amovie/add-amovie.component';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,13 +25,19 @@ import { LoginComponent } from './login/login.component';
     SlideshowComponent,
     FooterComponent,
     MoviecardComponent,
-    LoginComponent
+    LoginComponent,
+    RegisterComponent,
+    MyticketsComponent,
+    ManagementViewComponent,
+    AddAMovieComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    RoutingModule
+    RoutingModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
