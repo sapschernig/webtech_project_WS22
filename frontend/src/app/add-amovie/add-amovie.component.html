@@ -1,0 +1,62 @@
+<h1>Add a movie</h1>
+
+<div class="card">
+    <div class="card-header"></div>
+    <div class="card-body">
+        <form>
+            <div class="row mb-2">
+                <div class="col">
+                    <!--Title-->
+                    <label class="form-label">Title</label><br>
+                    <input class="form-control"/>
+                </div>
+            </div>
+        
+            <div class="row mb-2">
+                <div class="col">
+                    <!--release date--> 
+                    <label class="form-label">Release Date</label><br>
+                    <input type="date" class="form-control"/>
+                </div>
+                <div class="col">
+                    <!--duration--> 
+                    <label class="form-label">Duration</label><br>
+                    <input type= number class="form-control"/>
+                </div>
+                <div class="col-4">
+                    <!--age restriction-->
+                    <label class="form-label">Age restriction</label><br>
+                    <input type= number class="form-control"/>
+                </div>
+            </div>
+        
+            <div class="row mb-2">
+                <div class="col">
+                    <!--Genre-->
+                    <label class="form-label">Genre</label><br>
+                    <select id="genre" name="genre">
+                        <option value="Action">Action</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Horror">Horror</option>
+                        <option value="Comedy">Comedy</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Thriller">Thriller</option>
+                    </select>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col"> 
+                   <!--Description-->
+                   <label class="form-label">Description</label><br>
+                   <textarea rows="5" cols="50" name="comment">
+                    Enter description of the movie here...</textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button>Submit</button>
+    </div>
+</div>
