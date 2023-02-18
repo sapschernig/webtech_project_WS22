@@ -1,43 +1,30 @@
+//import required modules
 let express = require("express");
+const {Client} = requier('pg');
+//create instance of Express.js app
 const app = express();
 let path = require("path");
 app.use(express.static("public"));
+const http = require('http');
+
 
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
 });
-create_login
-
-/*app.get("/:customText", (req, res) => {
-
-/*
-app.get("/:customText", (req, res) => {
-
-  res
-
-    .status(200)
-    .send(`This is a simple application receiving${req.params.customText}`);
-
-});*/
-
-
-// TODO: provide the code to handle a route parameter
 
 let port = 3000;
 app.listen(port);
 console.log("Server running at: http://localhost:" + port);
 
-const { Client } = require('pg');
-
 // Connect to PostgreSQL
 //TODO check back with actual values
+//login data for my local database - may differ
 const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
     database: 'movie_db',
     password: 'Kavo.zada2',
-
     port: 5432,
 });
 
@@ -87,6 +74,36 @@ app.get('/movies', (req, res) => {
         res.json(result.rows);
     });
 });
+
+client.connect()
+    .then(()=> console.log('Connected to database'))
+    .catch(err => console.log('Error connecting to database', err.stack));
+
+
+//route to retrieve movie data from the database
+app.get('api/movies', (req,res)=> {
+    client.query('SELECT * FROM movie')
+    .then(result => {
+      // Convert the result to JSON format
+      const movies = result.rows;
+      const movieData = JSON.stringify(movies);
+
+      // Send the JSON data back to the client as an HTTP response
+      res.send(movieData);
+    })
+    .catch(err => console.error('Error querying the database', err.stack));
+});
+
+
+
+//start server and listen on a port
+port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log('Server listening on port ${port}');
+});
+
+
+
 
 app.get("/movies/:id", (req, res, next) => {
     if (!req.params.id){
