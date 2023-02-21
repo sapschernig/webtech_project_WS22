@@ -6,7 +6,7 @@ app.use(express.static("public"));
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
 });
-create_login
+//create_login
 
 /*app.get("/:customText", (req, res) => {
 
@@ -36,7 +36,7 @@ const client = new Client({
     host: 'localhost',
     // create_login
     database: 'movie_db',
-    password: 'Kavo.zada2',
+    password: 'hallo123',
 
     port: 5432,
 });
@@ -79,7 +79,8 @@ catch(err){
 }
 
 //return a json object containing a list of movies
-app.get('/movies', (req, res) => {
+app.get('/api/movies', (req, res) => {
+    res.status(200).send("ok");
     client.query('SELECT * FROM movie', (err, result) => {
         if (err) {
             res.status(500).send(err);
@@ -127,6 +128,7 @@ app.get('/movies/:id/ratings', (req, res) => {
     });
 });
 
+/*
 //trying to handle specific errors
 
 client.query('SELECT * FROM movie', (err, result) => {
@@ -156,4 +158,4 @@ const errorHandler = (err, req, res, next) => {
     res.status(500).send("An error occured");
 };
 
-app.use(errorHandler);
+app.use(errorHandler);*/
