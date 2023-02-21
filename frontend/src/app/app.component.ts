@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppServiceService } from './app-service.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,16 +20,16 @@ export class AppComponent implements OnInit {
 
   }
 
-  getDataFromAPI(){
-    this.service.getTest().subscribe((res) => {
+  async getDataFromAPI() {
+    try {
+      // Call the 'getTest()' method from a service that returns an Observable
+      const res = await lastValueFrom(this.service.getTest());
       console.log('Response from API is: ', res);
-    }, (err) => {
+    } catch (err) {
       console.log('Error: ', err);
-      
-    })
-
-
+    }
   }
+  
 
 
 }
