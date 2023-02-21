@@ -36,7 +36,7 @@ const client = new Client({
     host: 'localhost',
     // create_login
     database: 'movie_db',
-    password: 'hallo123',
+    password: 'Kavo.zada2',
 
     port: 5432,
 });
@@ -80,7 +80,6 @@ catch(err){
 
 //return a json object containing a list of movies
 app.get('/api/movies', (req, res) => {
-    res.status(200).send("ok");
     client.query('SELECT * FROM movie', (err, result) => {
         if (err) {
             res.status(500).send(err);
