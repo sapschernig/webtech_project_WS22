@@ -3,15 +3,14 @@
         <div *ngFor="let movie of movies">
             <div class="movie">
                 <div class="movie_img">
-                    <img src="assets\pictures\current_movies\shawshank.jpg" alt="{{ movie.title }}">
                 </div>
                 <div class="title">
                     <h2>{{ movie.title }}</h2>
                 </div>
-                <div class="movie_img">
-                    <img src="assets\pictures\current_movies\shawshank.jpg" alt="{{ movie.title }}">
+                <div class="movie_info">
+                    <h3>{{ movie.genre }}</h3>
+                    <p>{{ movie.description }}</p>
                 </div>
-
             </div>
         </div>
     </div>
