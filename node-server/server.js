@@ -1,11 +1,15 @@
 //import required modules
 let express = require("express");
-const {Client} = requier('pg');
+const {Client} = require('pg');
+const cors = require('cors');
 //create instance of Express.js app
 const app = express();
 let path = require("path");
 app.use(express.static("public"));
 const http = require('http');
+
+
+app.use(cors());
 
 
 app.get("/", function (req, res) {
@@ -94,23 +98,13 @@ app.get('api/movies', (req,res)=> {
     .catch(err => console.error('Error querying the database', err.stack));
 });
 
-async function getShowtimes() {
+app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await pool.query('SELECT * FROM show');
-      return rows;
+      res.send(rows);
     } catch (err) {
       console.error(err);
-      throw err;
-    }
-  }
-
-  app.get('/show', async (req, res) => {
-    try {
-      const showtimes = await getShowtimes();
-      res.send(showtimes);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
+      res.status(500).send(err);
     }
   });
 
