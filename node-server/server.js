@@ -111,10 +111,10 @@ app.get('/api/showtimes', async (req, res) => {
 
 
 //start server and listen on a port
-port = process.env.PORT || 3000;
+/*port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log('Server listening on port ${port}');
-});
+});*/
 
 
 
@@ -144,7 +144,7 @@ app.get("/movies/:id", (req, res, next) => {
 //handle a GET request to the given path, return json object
 //join movie table with rating table
 //should return the rating and review for movie  
-app.get('/movies/:id/ratings', (req, res) => {
+/*app.get('/movies/:id/ratings', (req, res) => {
     client.query(`
     SELECT rating.rating, rating.review
     FROM movie
@@ -156,12 +156,12 @@ app.get('/movies/:id/ratings', (req, res) => {
         }
         res.json(result.rows);
     });
-});
+});*/
 
 /*
 //trying to handle specific errors
 
-client.query('SELECT * FROM movie', (err, result) => {
+/*client.query('SELECT * FROM movie', (err, result) => {
     if(err){
         if(err.code === 'ECONNREFUSED'){
         console.error('Connection to the database refused');
@@ -176,11 +176,11 @@ client.query('SELECT * FROM movie', (err, result) => {
     } else { //if query was successful 
         res.json(result.rows);
     }
-});
+});*/
 
 //define a error-handling middleware function
 //function logs error message and stack trace to the console, sends responce with status code 500
-const errorHandler = (err, req, res, next) => {
+/*const errorHandler = (err, req, res, next) => {
     console.error(err.message);
     if (err.stack){
         console.error(err.stack);
