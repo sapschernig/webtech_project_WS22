@@ -27,5 +27,9 @@
 <button type="button" class="signUp" [disabled]="registerForm.invalid" (click)="registerUser()">Sign Up</button>
 
 <button class="LogIn" routerLink="/login">Already have an account? Log in</button>
+
+<p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+
 </form>
 </div>
