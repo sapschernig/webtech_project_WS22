@@ -128,10 +128,10 @@ app.get('/api/showtimes', async (req, res) => {
   });
 
 //route to handle user registration
-app.post('/api/register', (req, res) => {
+app.post('/api/createUser', (req, res) => {
     const { email, password, first_name, last_name, phone, address, zipcode, city, country } = req.body;
   
-    
+
     // perform validation on the incoming data
     if (!email || !password) {
       return res.status(400).json({ message: 'Please provide an email and password' });
