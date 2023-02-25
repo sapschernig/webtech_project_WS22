@@ -114,37 +114,43 @@ app.get('/api/showtimes', async (req, res) => {
     }
   });
 
+  app.get('/api/checkUserExists/:email', (req, res) => {
+    const email = req.params.email;
+    client.query('SELECT * FROM customer WHERE email = $1', [email], (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error querying the database' });
+        }
+        if (result.rows.length > 0) {
+          return res.status(200).json({ exists: true });
+        }
+        return res.status(200).json({ exists: false });
+      });
+  });
+
 //route to handle user registration
 app.post('/api/register', (req, res) => {
     const { email, password, first_name, last_name, phone, address, zipcode, city, country } = req.body;
-    const query ='INSERT INTO customer (email, password, first_name, last_name, phone, address, zipcode, city, country) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
-    const values = [email, password, first_name, last_name, phone, address, zipcode, city, country];
-
+  
+    
     // perform validation on the incoming data
     if (!email || !password) {
       return res.status(400).json({ message: 'Please provide an email and password' });
     }
   
-    // check if the user already exists in the database
-    client.query('SELECT * FROM customer WHERE email = $1', [email], (err, result) => {
+    // insert the new user into the database
+    const query ='INSERT INTO customer (email, password, first_name, last_name, phone, address, zipcode, city, country) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT DO NOTHING';
+    const values = [email, password, first_name, last_name, phone, address, zipcode, city, country];
+    client.query(query, values, (err, result) => {
       if (err) {
-        return res.status(500).json({ message: 'Error querying the database' });
+        return res.status(500).json({ message: 'Error inserting user into the database' });
       }
-  
-      if (result.rows.length > 0) {
+      if (result.rowCount === 0) {
         return res.status(400).json({ message: 'User already exists' });
       }
-  
-      // if the user doesn't exist, insert the new user into the database
-      client.query(query, values, (err, result) => {
-        if (err) {
-          return res.status(500).json({ message: 'Error inserting user into the database' });
-        }
-    
-        res.status(201).json({ message: 'User registered successfully' });
-      });
+      res.status(201).json({ message: 'User registered successfully' });
     });
   });
+
 
 
 //---
