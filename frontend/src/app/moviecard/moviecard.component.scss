@@ -6,13 +6,16 @@
     margin-top: 20px;
 }
 .movie {
-    width: 90%;
+    width: auto;
     display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: rgb(156, 156, 156);
     height: auto;
     margin: auto;
     margin-top: 20px;
 }
+
 
 h2 {
     text-align: left;
@@ -33,6 +36,15 @@ p {
     margin-left: 30px;
     margin-bottom: 50px;
     margin-top: 50px;
+    margin-right: 50px;
+    align-items: baseline;
+    width: 60%;
+}
+button{
+    height: 50px;
+    width: auto;
+    margin-right: auto;
+    background-color: rgb(156, 156, 156);
 }
 
 .img {
