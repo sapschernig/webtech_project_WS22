@@ -38,8 +38,22 @@ p {
     margin-top: 50px;
     margin-right: 50px;
     align-items: baseline;
-    width: 60%;
+    width: 80%;
 }
+
+.moviecard ul {
+    list-style: none;
+    margin-left: 30px;
+    padding: 0;
+  }
+  
+  .moviecard ul li {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+
+
 button{
     height: 50px;
     width: auto;

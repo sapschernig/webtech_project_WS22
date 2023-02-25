@@ -26,13 +26,17 @@ export class MoviecardComponent implements OnInit{
       }
     );
 
-    this.http.get<Showtime[]>('http://localhost:3000/show').subscribe(
+    this.http.get<Showtime[]>('/api/showtimes').subscribe(
       (showtimes) => {
-        this.showtimes = showtimes;
+        this.showtimes = showtimes.map((showtime) => {
+          const date = new Date(showtime.time);
+          return { ...showtime, time: date.toLocaleDateString() };
+        });
       },
       (error) => {
         console.error(error);
       }
     );
+    
   }
 }

@@ -100,7 +100,7 @@ app.get('api/movies', (req,res)=> {
 
 app.get('/api/showtimes', async (req, res) => {
     try {
-      const { rows } = await pool.query('SELECT * FROM show');
+      const { rows } = await client.query('SELECT * FROM showtimes');
       res.send(rows);
     } catch (err) {
       console.error(err);

@@ -10,6 +10,16 @@
                     <h4>Duration: {{ movie.duration }} minutes</h4>
                     <h4>Age restriction: {{ movie.age_restriction }}</h4>
                     <p>{{ movie.description }}</p>
+                    
+                    <!-- Showtimes information -->
+                    <ul>
+                        <ng-container *ngFor="let showtime of showtimes">
+                          <li *ngIf="showtime.movie_id === movie.id">
+                            {{ showtime.date | date:'shortDate' }} {{ '1970-01-01T' + showtime.start_time | date:'shortTime' }}
+                          </li>
+                        </ng-container>
+                      </ul>
+                      
                 </div>
                 <button>Get Tickets</button>
             </div>
