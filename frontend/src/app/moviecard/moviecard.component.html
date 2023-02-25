@@ -4,11 +4,11 @@
             <div class="movie">
                 <div class="movie_img">
                 </div>
-                <div class="title">
-                    <h2>{{ movie.title }}</h2>
-                </div>
                 <div class="movie_info">
+                    <h2>{{ movie.title }}</h2>
                     <h3>{{ movie.genre }}</h3>
+                    <h4>Duration: {{ movie.duration }} minutes</h4>
+                    <h4>Age restriction: {{ movie.age_restriction }}</h4>
                     <p>{{ movie.description }}</p>
                 </div>
             </div>
