@@ -94,6 +94,26 @@ app.get('api/movies', (req,res)=> {
     .catch(err => console.error('Error querying the database', err.stack));
 });
 
+async function getShowtimes() {
+    try {
+      const { rows } = await pool.query('SELECT * FROM show');
+      return rows;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  app.get('/show', async (req, res) => {
+    try {
+      const showtimes = await getShowtimes();
+      res.send(showtimes);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+    }
+  });
+
 
 
 //start server and listen on a port

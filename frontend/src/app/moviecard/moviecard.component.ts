@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Showtime } from '../showtime';
 
 
 
@@ -10,18 +11,28 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class MoviecardComponent implements OnInit{
-  movies: any[]=[];
+  movies: any[] = [];
+  showtimes: any[] = [];
 
-  constructor(private http: HttpClient) { 
-    this.movies = []; //initialize movie property
-  }
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get<any[]>('/api/movies')
-      .subscribe(movies => {
+    this.http.get<any[]>('/api/movies').subscribe(
+      (movies) => {
         this.movies = movies;
-      }, error => {
+      },
+      (error) => {
         console.error(error);
-      });
+      }
+    );
+
+    this.http.get<Showtime[]>('http://localhost:3000/show').subscribe(
+      (showtimes) => {
+        this.showtimes = showtimes;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 }
