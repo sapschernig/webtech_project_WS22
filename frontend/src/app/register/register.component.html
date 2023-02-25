@@ -4,8 +4,8 @@
 <form [formGroup]="registerForm" (ngSubmit)="registerUser()">
     <div class="personalInformation">
         <p>Personal information</p>
-        <input type="text" id="firstName" placeholder="First Name" formControlName="fName" required>
-        <input type="text" id="lastName" placeholder="Last Name" formControlName="lName" required>
+        <input type="text" id="firstName" placeholder="First Name" formControlName="firstName" required>
+        <input type="text" id="lastName" placeholder="Last Name" formControlName="lastName" required>
     </div>
     <div class="contactInformation">
         <p>Contact information</p>
@@ -19,14 +19,13 @@
         <input type="text" id="city" placeholder="City" formControlName="city" required>
     </div>
     <div class="password">
-        <p>Choose a strong password</p>
+        <p>Password</p>
         <input type="password" id="password" placeholder="Enter password" formControlName="password" required>
         <span *ngIf="password && password.invalid && password.touched" style="color: red">Password not valid.</span>
     </div>
 
-<button class="signUp" [disabled]="registerForm.invalid" >Sign Up</button>
+<button type="button" class="signUp" [disabled]="registerForm.invalid" (click)="registerUser()">Sign Up</button>
 
 <button class="LogIn" routerLink="/login">Already have an account? Log in</button>
 </form>
-<p *ngIf="registerForm.invalid && registerForm.touched">Please fill out all fields correctly.</p>
 </div>
