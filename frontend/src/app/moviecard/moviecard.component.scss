@@ -1,7 +1,14 @@
 .moviecard {
     width: 80%;
     display: flex;
-    background-color: rgb(81, 81, 81);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+}
+.movie {
+    width: 90%;
+    display: flex;
+    background-color: rgb(156, 156, 156);
     height: auto;
     margin: auto;
     margin-top: 20px;
