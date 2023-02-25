@@ -2,6 +2,11 @@
 let express = require("express");
 const {Client} = require('pg');
 const cors = require('cors');
+
+//body parsing mw to handle incoming JSON data
+const bodyParser = require('body-parser');
+
+
 //create instance of Express.js app
 const app = express();
 let path = require("path");
@@ -10,6 +15,7 @@ const http = require('http');
 
 
 app.use(cors());
+app.use(bodyParser.json());
 
 
 app.get("/", function (req, res) {
@@ -108,17 +114,40 @@ app.get('/api/showtimes', async (req, res) => {
     }
   });
 
+//route to handle user registration
+app.post('/api/register', (req, res) => {
+    const { email, password, first_name, last_name, phone, address, zipcode, city, country } = req.body;
+    const query ='INSERT INTO customer (email, password, first_name, last_name, phone, address, zipcode, city, country) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+    const values = [email, password, first_name, last_name, phone, address, zipcode, city, country];
+
+    // perform validation on the incoming data
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide an email and password' });
+    }
+  
+    // check if the user already exists in the database
+    client.query('SELECT * FROM customer WHERE email = $1', [email], (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: 'Error querying the database' });
+      }
+  
+      if (result.rows.length > 0) {
+        return res.status(400).json({ message: 'User already exists' });
+      }
+  
+      // if the user doesn't exist, insert the new user into the database
+      client.query(query, values, (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error inserting user into the database' });
+        }
+    
+        res.status(201).json({ message: 'User registered successfully' });
+      });
+    });
+  });
 
 
-//start server and listen on a port
-/*port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log('Server listening on port ${port}');
-});*/
-
-
-
-
+//---
 app.get("/movies/:id", (req, res, next) => {
     if (!req.params.id){
         const error = new Error("Missing id parameter");
