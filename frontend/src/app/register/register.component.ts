@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class RegisterComponent implements OnInit{
 
   title = 'Register';
-  errorMessage = '';
+  errorMessage: string = '';
   registerForm!: FormGroup;
 
   constructor(
