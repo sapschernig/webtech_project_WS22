@@ -18,17 +18,31 @@ export class UserService {
     const data = { email, password, first_name: firstName, last_name: lastName, phone, address, zipcode: zipCode, city, country};
     return this.http.post(url, data);
   }
-  checkEmailExists(email: string): Observable<{ exists: boolean }> {
+  checkEmailExists(email: string): Observable<{ exists: boolean; password: string; }> {
     const url = `${this.apiUrl}/checkUserExists/${email}`;
     return this.http.get(url).pipe(
       map((response: any) => {
-        return { exists: response.exists } as { exists: boolean };
+        console.log(response);
+        return { exists: response.exists, password: response.password } as { exists: boolean; password: string; };
       }),
       catchError((error: any) => {
         console.error('Error checking if email exists:', error);
-        return of({ exists: false });
+        return of({ exists: false, password: '' });
       })
     );
   }
+  checkUserExists(email: string, password: string): Observable<boolean> {
+    const url = `${this.apiUrl}/checkUserExists/${email}`;
+    const data = { password };
+    
+    return this.http.post(url, data).pipe(
+      map((response: any) => response.exists && response.passwordMatch),
+      catchError((error: any) => {
+        console.error('Error checking if user exists:', error);
+        return of(false);
+      })
+    );
+  }
+  
 
 }

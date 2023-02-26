@@ -15,47 +15,52 @@ export class LoginComponent implements OnInit{
   errorMessage = '';
   loginForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient, private router: Router, private userService: UserService) {}
+  constructor(
+    private formBuilder: FormBuilder, 
+    private http: HttpClient, 
+    private router: Router, 
+    private userService: UserService) {
 
+      this.loginForm= this.formBuilder.group({
+        email:new FormControl('',[Validators.required, Validators.email]),
+        password: new FormControl('',[Validators.required, Validators.minLength(8)])
+      });
+    }
 
-  ngOnInit(): void {
-    this.loginForm= this.formBuilder.group({
-      email:new FormControl('',[Validators.required, Validators.email]),
-      password: new FormControl('',[Validators.required, Validators.minLength(8)])
-    });
-  }
+  ngOnInit(): void {}
 
   checkUserExists(){
+
     console.log('Inside checkUserExists()');
+
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
 
     this.userService.checkEmailExists(email).subscribe(
-      (response) => {
-        if(response.exists){
-          console.log('Inside userExists');
-          this.errorMessage = '';
-          this.router.navigate(['/user']);
-          return;
+      (response: {exists: boolean, password: string;}) => {
+
+        console.log('response.password: ', response.password);
+        console.log('password: ', password);
+        console.log(response);
+        console.log('password length:', password.length);
+
+        if (!response.exists) {
+          this.errorMessage = 'User does not exist';
+        } else if (response.password.trim() !== password.trim()) {
+            this.errorMessage = 'Incorrect password';
         } else {
-          this.errorMessage = 'No user with this email exists';
+          this.router.navigate(['/user']);
         }
-        this.loginForm.reset();
       },
-      error => {
-        this.errorMessage = 'An error occurred while checking if the user exists';
-        console.error(error);
+      (error: any) => {
+        console.log('Error checking if user exists: ', error.message);
+        this.errorMessage= 'Error checking if user exists';
       });
   }
   
   loginUser(){
     this.checkUserExists();
   }
-
-
-  
-
-
   get email(){
     return this.loginForm.get('email');
   }
