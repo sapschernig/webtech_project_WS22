@@ -17,7 +17,7 @@ import { MyticketsComponent } from './mytickets/mytickets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManagementViewComponent } from './management-view/management-view.component';
 import { AddAMovieComponent } from './add-amovie/add-amovie.component';
-import { UserComponent } from './user/user.component';
+import { AccountComponent } from './account/account.component';
 
 
 @NgModule({
@@ -32,7 +32,7 @@ import { UserComponent } from './user/user.component';
     MyticketsComponent,
     ManagementViewComponent,
     AddAMovieComponent,
-    UserComponent
+    AccountComponent
   ],
   imports: [
     BrowserModule,

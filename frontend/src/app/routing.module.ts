@@ -6,7 +6,7 @@ import { ManagementViewComponent } from './management-view/management-view.compo
 import { MoviecardComponent } from './moviecard/moviecard.component';
 import { MyticketsComponent } from './mytickets/mytickets.component';
 import { RegisterComponent } from './register/register.component';
-import { UserComponent } from './user/user.component';
+import { AccountComponent, UserComponent } from './account/account.component';
 
 const routes: Routes = [
   {
@@ -28,7 +28,7 @@ const routes: Routes = [
     path:'addAMovie', component: AddAMovieComponent
   },
   {
-    path:'user', component: UserComponent
+    path:'account', component: AccountComponent
   }
 ];
 
