@@ -27,9 +27,9 @@ export class LoginComponent implements OnInit{
     this.http.get<boolean>('api/checkUserExists/${email}').subscribe(
       (userExists) => {
       if(userExists){
-        this.errorMessage = 'A user with this email already exists';
-      } else {
         this.errorMessage = '';
+      } else {
+        this.errorMessage = 'A user with this email already exists';
       }
     },
     error => {
@@ -50,4 +50,16 @@ export class LoginComponent implements OnInit{
   get password(){
     return this.loginForm.get('password');
   }
+  getFormValidationErrors() {
+    const errors: string[] = [];
+    Object.keys(this.loginForm.controls).forEach(key => {
+      const controlErrors = this.loginForm.get(key)?.errors;
+      if (controlErrors != null) {
+        Object.keys(controlErrors).forEach(keyError => {
+          errors.push(key + ' ' + keyError);
+        });
+      }
+    });
+    return errors;
+}
 }
