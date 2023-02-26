@@ -1,3 +1,4 @@
 interface UserExistsResponse {
     exists: boolean;
   }
+  

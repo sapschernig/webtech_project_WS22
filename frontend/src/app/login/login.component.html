@@ -9,8 +9,8 @@
 <input type="password" placeholder="Enter password" formControlName="password">
 <span *ngIf="password && password.invalid && password.touched" style="color: red">Password not valid.</span>
 <br>
-<button type="button" [disabled]="loginForm.invalid">Login</button>
-
+<button type="button" [disabled]="loginForm.invalid" (click)="loginUser()">Login</button>
+<div *ngIf="errorMessage" id="error-message" class="error-message">{{ errorMessage }}</div>
 <br>
 <p>No user account?</p>
 <button type="button" routerLink="/register">Register now</button>

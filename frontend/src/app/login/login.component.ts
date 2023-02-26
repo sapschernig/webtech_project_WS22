@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit{
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
 
-    this.userService.checkEmailExists(email, password).subscribe(
+    this.userService.checkEmailExists(email).subscribe(
       (response) => {
         if(response.exists){
           console.log('Inside userExists');
