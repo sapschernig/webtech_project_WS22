@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from '../interfaces/customer';
-
+import { UserService } from '../user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,11 @@ export class RegisterComponent implements OnInit{
   errorMessage = '';
   registerForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient) {}
+  constructor(
+    private formBuilder: FormBuilder, 
+    private http: HttpClient, 
+    private userService: UserService,
+    private router: Router) {}
   
   
   ngOnInit(): void {
@@ -47,30 +52,26 @@ checkUserExists(){
   });
 }
 
-registerUser() {
-  // Check if user already exists
-  this.http.get<boolean>(`/api/checkUserExists/${this.registerForm.value.email}`)
-    .subscribe((userExists) => {
-      if (userExists) {
-        // User already exists, show error message
-        this.errorMessage = 'User already exists';
-      } else {
-        // User does not exist, create new user
-        this.http.post('/api/createUser', this.registerForm.value)
-          .subscribe(() => {
-            // User created successfully, navigate to login page or show success message
-          }, (error) => {
-            // Handle error
-            console.error(error);
-            this.errorMessage = 'An error occurred while creating the user';
-          });
+registerUser(): void {
+  const { email, password, firstName, lastName, phone, address, zipCode, city, country } =
+    this.registerForm.value;
+  this.userService
+    .registerUser(email, password, firstName, lastName, phone, address, zipCode, city, country)
+    .subscribe(
+      () => {
+        console.log('User registered successfully');
+        this.router.navigate(['/login']);
+      },
+      (error) => {
+        console.log('Error registering user: ', error.message);
+        if (error.status === 400) {
+          this.errorMessage = 'User already exists';
+        } else {
+          this.errorMessage = 'Error registering user';
+        }
       }
-    }, (error) => {
-      // Handle error
-      console.error(error);
-      this.errorMessage = 'An error occurred while checking if the user exists';
-    });
-}  
+    );
+}
 
 
   get email(){
