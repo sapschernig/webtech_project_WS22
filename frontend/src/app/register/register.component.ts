@@ -53,25 +53,33 @@ checkUserExists(){
 }
 
 registerUser(): void {
-  const { email, password, firstName, lastName, phone, address, zipCode, city, country } =
-    this.registerForm.value;
-  this.userService
-    .registerUser(email, password, firstName, lastName, phone, address, zipCode, city, country)
-    .subscribe(
-      () => {
-        console.log('User registered successfully');
-        this.router.navigate(['/login']);
-      },
-      (error) => {
-        console.log('Error registering user: ', error.message);
-        if (error.status === 400) {
-          this.errorMessage = 'User already exists';
-        } else {
-          this.errorMessage = 'Error registering user';
-        }
+  const { email, password, firstName, lastName, phone, address, zipCode, city, country } = this.registerForm.value;
+
+  // Check if user already exists
+  this.userService.checkEmailExists(email).subscribe(
+    (response: { exists: boolean}) => {
+      if (response.exists) {
+        this.errorMessage = 'User already exists';
+      } else {
+        // Register user
+        this.userService.registerUser(email, password, firstName, lastName, phone, address, zipCode, city, country).subscribe(
+          () => {
+            console.log('User registered successfully');
+            this.router.navigate(['/login']);
+          },
+          (error) => {
+            console.log('Error registering user: ', error.message);
+            this.errorMessage = 'Error2 inserting user into the database';
+          }
+        );
       }
-    );
-}
+    },
+    (error: any) => {
+      console.log('Error checking if user exists: ', error.message);
+      this.errorMessage = 'Error checking if user exists';
+    }
+  );
+} 
 
 
   get email(){
