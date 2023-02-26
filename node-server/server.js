@@ -154,6 +154,23 @@ app.post('/api/register', (req, res) => {
     });
   });
 
+app.get('/api/getCustomerData/:email', (req, res) => {
+    const email = req.params.email;
+
+    client.query('SELECT * FROM customer WHERE email = $1', [email], (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error querying the database' });
+        }
+        if (result.rows.length > 0) {
+          const customerData = result.rows[0];
+          return res.status(200).json({ customerData });
+        }
+        return res.status(404).json({ message: 'Customer not found' });
+      });
+
+});
+
+
 
 
 //---
