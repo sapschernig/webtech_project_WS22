@@ -1,18 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  providers: [UserService]
 })
 export class LoginComponent implements OnInit{
   title = 'Login';
   errorMessage = '';
   loginForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient) {}
+  constructor(private formBuilder: FormBuilder, private http: HttpClient, private router: Router, private userService: UserService) {}
 
 
   ngOnInit(): void {
@@ -23,26 +26,35 @@ export class LoginComponent implements OnInit{
   }
 
   checkUserExists(){
+    console.log('Inside checkUserExists()');
     const email = this.loginForm.get('email')?.value;
-    this.http.get<boolean>('api/checkUserExists/${email}').subscribe(
-      (userExists) => {
-      if(userExists){
-        this.errorMessage = '';
-      } else {
-        this.errorMessage = 'A user with this email already exists';
-      }
-    },
-    error => {
-      this.errorMessage = 'An error occurced while checking if the user exists';
-      console.error(error);
-    });
-  }
+    const password = this.loginForm.get('password')?.value;
 
-  
+    this.userService.checkEmailExists(email, password).subscribe(
+      (response) => {
+        if(response.exists){
+          console.log('Inside userExists');
+          this.errorMessage = '';
+          this.router.navigate(['/user']);
+          return;
+        } else {
+          this.errorMessage = 'No user with this email exists';
+        }
+        this.loginForm.reset();
+      },
+      error => {
+        this.errorMessage = 'An error occurred while checking if the user exists';
+        console.error(error);
+      });
+  }
   
   loginUser(){
-    console.warn(this.loginForm.value)
+    this.checkUserExists();
   }
+
+
+  
+
 
   get email(){
     return this.loginForm.get('email');
