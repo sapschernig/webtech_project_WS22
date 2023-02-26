@@ -1,5 +1,5 @@
 //import required modules
-let express = require("express");
+const express = require("express");
 const {Client} = require('pg');
 const cors = require('cors');
 
@@ -17,6 +17,12 @@ const http = require('http');
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false}
+}));
 
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
@@ -74,6 +80,47 @@ catch(err){
     console.error(err);
     res.status(500).send("An error occurred while connecting to the database.")
 }
+
+//login endpoint
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+  
+    // verify user credentials
+    const user = authenticateUser(email, password);
+  
+    if (user) {
+      // create session
+      req.session.userId = user.id;
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false });
+    }
+  });
+
+//protected endpoint - requires authentication
+app.get('/user', (req, res) => {
+    const { userId } = req.session;
+  
+    if (userId) {
+      // retrieve user data from session store
+      const user = getUserById(userId);
+  
+      if (user) {
+        res.json(user);
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } else {
+      res.status(401).json({ error: 'Not authenticated' });
+    }
+  });
+
+//logout endpoint
+app.post('/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+  });
+
 
 //return a json object containing a list of movies
 app.get('/api/movies', (req, res) => {
