@@ -12,16 +12,22 @@ const app = express();
 let path = require("path");
 app.use(express.static("public"));
 const http = require('http');
+const { MemoryStore } = require("express-session");
 
 
 app.use(cors());
 app.use(bodyParser.json());
 
 app.use(session({
+    store: new MemoryStore({
+        checkPeriod: 86400000 //24h
+    }),
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false}
+    cookie: { 
+        maxAge: 3600000, //1h - in milliseconds
+        secure: false}
 }));
 
 app.get("/", function (req, res) {
