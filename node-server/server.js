@@ -18,7 +18,7 @@ const { MemoryStore } = require("express-session");
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(session({
+/*app.use(session({
     store: new MemoryStore({
         checkPeriod: 86400000 //24h
     }),
@@ -28,7 +28,7 @@ app.use(session({
     cookie: { 
         maxAge: 3600000, //1h - in milliseconds
         secure: false}
-}));
+}));*/
 
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
