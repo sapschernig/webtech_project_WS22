@@ -59,7 +59,19 @@ export class LoginComponent implements OnInit{
   }
   
   loginUser(){
-    this.checkUserExists();
+    const email = this.loginForm.get('email')?.value;
+    const password = this.loginForm.get('password')?.value;
+    const loginData = { email: email, password: password };
+
+    this.http.post('/api/login', loginData).subscribe(
+      (response: any) => {
+        // If login is successful, navigate to the user page
+        this.router.navigate(['/user']);
+      },
+      (error: any) => {
+        console.log('Error logging in: ', error.message);
+        this.errorMessage= 'Error logging in';
+      });
   }
   get email(){
     return this.loginForm.get('email');

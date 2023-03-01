@@ -12,16 +12,24 @@ const SESSION_EXPIRATION_TIME_MS = 3600000; // 1 hour in milliseconds
 //body parsing mw to handle incoming JSON data
 const bodyParser = require('body-parser');
 
-import { table } from 'console';
-import session from 'express-session';
-
-
 //create instance of Express.js app
 const app = express();
 let path = require("path");
 app.use(express.static("public"));
 const http = require('http');
 const { MemoryStore } = require("express-session");
+
+// Connect to PostgreSQL
+//TODO check back with actual values
+//login data for my local database - may differ
+const client = new Client({
+    user: 'postgres',
+    host: 'localhost',
+    // create_login
+    database: 'movie_db',
+    password: 'Kavo.zada2',
+    port: 5432,
+});
 
 
 app.use(cors());
@@ -44,23 +52,17 @@ app.use(session({
         secure: false } //true falls https
 }));
 
-res.cookie(SESSION_COOKIE_NAME, sessionId, {
-    expires: new Date(Date.now() + SESSION_EXPIRATION_TIME_MS),
-    httpOnly: true,
-    secure: true
-  });
-
-  const session = await client.query(
+  /*const session = await client.query(
     'SELECT * FROM sessions WHERE sid = $1 AND expire > $2',
     [sessionId, new Date()]
-  );
+  );*/
   
 
-router.get('/login', (req, res) => {
+app.get('/login', (req, res) => {
     req.session.isLoggedIn = true;
     res.send('You are now logged in');
 });
-router.get('/account', (req, res) => {
+app.get('/account', (req, res) => {
     if (req.session.isLoggedIn) {
         res.send('Welcome to your profile page');
     } else {
@@ -76,17 +78,6 @@ let port = 3000;
 app.listen(port);
 console.log("Server running at: http://localhost:" + port);
 
-// Connect to PostgreSQL
-//TODO check back with actual values
-//login data for my local database - may differ
-const client = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    // create_login
-    database: 'movie_db',
-    password: 'Kavo.zada2',
-    port: 5432,
-});
 
 //middleware function to handle error that may occur in routes
 app.use((err, req, res, next) => {
@@ -125,8 +116,25 @@ catch(err){
     res.status(500).send("An error occurred while connecting to the database.")
 }
 
+//authenticate Function
+async function authenticateUser(email, password) {
+    try {
+        const result = await client.query('SELECT * FROM customer WHERE email = $1 AND password = $2', [email, password]);
+        return result.rows[0] || null;
+      } catch (err) {
+        console.error('Error authenticating user:', err);
+        return null;
+      }
+  }
+  
+function generateSessionId() {
+    // Create a random session ID
+    const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return sessionId;
+}
+  
 //login endpoint
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
   
     // verify user credentials
@@ -306,6 +314,7 @@ app.get('/api/getCustomerData/:email', (req, res) => {
       });
 
 });
+
 
 
 
