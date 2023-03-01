@@ -45,8 +45,8 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'movie_db',
-    password: 'Kavo.zada2',
+    database: 'moviedb',
+    password: 'hallo',
     port: 5432,
 });
 
@@ -138,9 +138,9 @@ app.get('/api/movies', (req, res) => {
     });
 });
 
-client.connect()
+/*client.connect()
     .then(()=> console.log('Connected to database'))
-    .catch(err => console.log('Error connecting to database', err.stack));
+    .catch(err => console.log('Error connecting to database', err.stack));*/
 
 
 //route to retrieve movie data from the database
