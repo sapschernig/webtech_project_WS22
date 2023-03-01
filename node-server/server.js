@@ -34,6 +34,7 @@ const client = new Client({
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //session middleware
@@ -134,32 +135,18 @@ function generateSessionId() {
 }
   
 //login endpoint
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-  
-    // verify user credentials
-    const user = authenticateUser(email, password);
-  
-    if (user) {
-      // create session
-      const sessionId = generateSessionId();
-    const sessionData = { userId: user.id };
-    const expireTime = new Date(Date.now() + SESSION_EXPIRATION_TIME_MS).toISOString();
 
-    client.query(
-      'INSERT INTO sessions (sid, sess, expire) VALUES ($1, $2, $3)',
-      [sessionId, JSON.stringify(sessionData), expireTime],
-      (err) => {
-        if (err) {
-          console.error('Error creating session:', err);
-          res.status(500).json({ success: false });
-        } else {
-          // Set session cookie
-          res.cookie(SESSION_COOKIE_NAME, sessionId, { expires: new Date(expireTime), httpOnly: true });
-          res.json({ success: true });
-        }
-      }
-    );
+    // Verify user credentials
+  const user = authenticateUser(email, password);
+
+  if (user) {
+    // Save user ID to session
+    req.session.userId = user.id;
+
+    // Redirect to the account page
+    res.redirect('/account');
   } else {
     res.status(401).json({ success: false });
   }
@@ -167,37 +154,20 @@ app.post('/api/login', (req, res) => {
 
 //protected endpoint - requires authentication
 app.get('/account', (req, res) => {
-    const sessionId = req.cookies[SESSION_COOKIE_NAME];
-  
-    if (sessionId) {
-        // Retrieve session data from database
-        client.query(
-          'SELECT sess FROM sessions WHERE sid = $1 AND expire > NOW()',
-          [sessionId],
-          (err, result) => {
-            if (err) {
-              console.error('Error retrieving session:', err);
-              res.status(500).json({ error: 'Internal server error' });
-            } else if (result.rowCount === 0) {
-              res.status(401).json({ error: 'Not authenticated' });
-            } else {
-              // Retrieve user data from session data
-              const sessionData = JSON.parse(result.rows[0].sess);
-              const userId = sessionData.userId;
-              const user = getUserById(userId);
-    
-              if (user) {
-                res.json(user);
-              } else {
-                res.status(404).json({ error: 'User not found' });
-              }
-            }
-          }
-        );
-      } else {
-        res.status(401).json({ error: 'Not authenticated' });
-      }
-    });
+    const userId = req.session.userId;
+
+  if (userId) {
+    const user = getUserById(userId);
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } else {
+    res.status(401).json({ error: 'Not authenticated' });
+  }
+});
 
 //logout endpoint
 app.post('/logout', (req, res) => {
