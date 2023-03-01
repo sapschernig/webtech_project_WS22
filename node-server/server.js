@@ -1,16 +1,34 @@
 //import required modules
-let express = require("express");
+const express = require("express");
 const {Client} = require('pg');
 const cors = require('cors');
+
+//body parsing mw to handle incoming JSON data
+const bodyParser = require('body-parser');
+
+
 //create instance of Express.js app
 const app = express();
 let path = require("path");
 app.use(express.static("public"));
 const http = require('http');
+const { MemoryStore } = require("express-session");
 
 
 app.use(cors());
+app.use(bodyParser.json());
 
+/*app.use(session({
+    store: new MemoryStore({
+        checkPeriod: 86400000 //24h
+    }),
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        maxAge: 3600000, //1h - in milliseconds
+        secure: false}
+}));*/
 
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
@@ -69,6 +87,47 @@ catch(err){
     res.status(500).send("An error occurred while connecting to the database.")
 }
 
+//login endpoint
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+  
+    // verify user credentials
+    const user = authenticateUser(email, password);
+  
+    if (user) {
+      // create session
+      req.session.userId = user.id;
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false });
+    }
+  });
+
+//protected endpoint - requires authentication
+app.get('/user', (req, res) => {
+    const { userId } = req.session;
+  
+    if (userId) {
+      // retrieve user data from session store
+      const user = getUserById(userId);
+  
+      if (user) {
+        res.json(user);
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } else {
+      res.status(401).json({ error: 'Not authenticated' });
+    }
+  });
+
+//logout endpoint
+app.post('/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ success: true });
+  });
+
+
 //return a json object containing a list of movies
 app.get('/api/movies', (req, res) => {
     client.query('SELECT * FROM movie', (err, result) => {
@@ -108,17 +167,66 @@ app.get('/api/showtimes', async (req, res) => {
     }
   });
 
+app.get('/api/checkUserExists/:email', (req, res) => {
+    const email = req.params.email;
+    client.query('SELECT password FROM customer WHERE email = $1', [email], (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error querying the database' });
+        }
+        if (result.rows.length > 0) {
+          const password = result.rows[0].password;
+          return res.status(200).json({ exists: true, password: password });
+        }
+        return res.status(200).json({ exists: false });
+      });
+  });
+
+//route to handle user registration
+app.post('/api/register', (req, res) => {
+    const { email, password, first_name, last_name, phone, address, zipcode, city, country } = req.body;
+  
+
+    // perform validation on the incoming data
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide an email and password' });
+    }
+  
+    // insert the new user into the database
+    const query ='INSERT INTO customer (email, password, first_name, last_name, phone, address, zipcode, city, country) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT DO NOTHING';
+    const values = [email, password, first_name, last_name, phone, address, zipcode, city, country];
+    client.query(query, values, (err, result) => {
+        console.log(result);
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'Error3 inserting user into the database' });
+      }
+      if (result.rowCount === 0 && result.command === 'INSERT') {
+        return res.status(400).json({ message: 'User already exists' });
+      }
+      res.status(201).json({ message: 'User registered successfully' });
+    });
+  });
+
+app.get('/api/getCustomerData/:email', (req, res) => {
+    const email = req.params.email;
+
+    client.query('SELECT * FROM customer WHERE email = $1', [email], (err, result) => {
+        if (err) {
+          return res.status(500).json({ message: 'Error querying the database' });
+        }
+        if (result.rows.length > 0) {
+          const customerData = result.rows[0];
+          return res.status(200).json({ customerData });
+        }
+        return res.status(404).json({ message: 'Customer not found' });
+      });
+
+});
 
 
-//start server and listen on a port
-/*port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log('Server listening on port ${port}');
-});*/
 
 
-
-
+//---
 app.get("/movies/:id", (req, res, next) => {
     if (!req.params.id){
         const error = new Error("Missing id parameter");

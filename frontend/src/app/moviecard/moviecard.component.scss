@@ -1,5 +1,5 @@
 .moviecard {
-    width: 80%;
+    width: auto;
     display: flex;
     height: auto;
     margin: auto;
@@ -60,22 +60,4 @@ button{
     width: auto;
     margin-right: auto;
     background-color: rgb(156, 156, 156);
-}
-
-.img {
-    margin-left: 0px;
-    margin-right: 2%;
-    width: 20%;
-}
-
-.description {
-    background-color: white;
-    width: 60%;
-    margin-right: 2%;
-}
-
-.time {
-    margin-left: 3px;
-    background-color: rgb(118, 30, 30);
-    width: 20%;
 }

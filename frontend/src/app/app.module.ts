@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -16,6 +17,7 @@ import { MyticketsComponent } from './mytickets/mytickets.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManagementViewComponent } from './management-view/management-view.component';
 import { AddAMovieComponent } from './add-amovie/add-amovie.component';
+import { AccountComponent } from './account/account.component';
 
 
 @NgModule({
@@ -29,7 +31,8 @@ import { AddAMovieComponent } from './add-amovie/add-amovie.component';
     RegisterComponent,
     MyticketsComponent,
     ManagementViewComponent,
-    AddAMovieComponent
+    AddAMovieComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,
