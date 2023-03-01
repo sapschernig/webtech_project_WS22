@@ -5,10 +5,14 @@ const cors = require('cors');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const crypto = require('crypto');
+const SESSION_COOKIE_NAME = 'my-session-cookie';
+const SESSION_EXPIRATION_TIME_MS = 3600000; // 1 hour in milliseconds
+
 
 //body parsing mw to handle incoming JSON data
 const bodyParser = require('body-parser');
 
+import { table } from 'console';
 import session from 'express-session';
 
 
@@ -27,13 +31,30 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //session middleware
 app.use(session({
     store: new pgSession({
-        
-    })
+        pool: client,
+        tableName: 'sessions',
+    }),
     secret: 'Jf8gZw$6c%hVpTqA', //secret key
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { 
+        name: process.env.SESSION_COOKIE_NAME || 'sessionId',
+        maxAge: process.env.SESSION_EXPIRATION_TIME_MS || 86400000, // 1 day
+        httpOnly: true,
+        secure: false } //true falls https
 }));
+
+res.cookie(SESSION_COOKIE_NAME, sessionId, {
+    expires: new Date(Date.now() + SESSION_EXPIRATION_TIME_MS),
+    httpOnly: true,
+    secure: true
+  });
+
+  const session = await client.query(
+    'SELECT * FROM sessions WHERE sid = $1 AND expire > $2',
+    [sessionId, new Date()]
+  );
+  
 
 router.get('/login', (req, res) => {
     req.session.isLoggedIn = true;
@@ -137,29 +158,59 @@ app.post('/login', (req, res) => {
 });
 
 //protected endpoint - requires authentication
-app.get('/user', (req, res) => {
-    const { userId } = req.session;
+app.get('/account', (req, res) => {
+    const sessionId = req.cookies[SESSION_COOKIE_NAME];
   
-    if (userId) {
-      // retrieve user data from session store
-      const user = getUserById(userId);
-  
-      if (user) {
-        res.json(user);
+    if (sessionId) {
+        // Retrieve session data from database
+        client.query(
+          'SELECT sess FROM sessions WHERE sid = $1 AND expire > NOW()',
+          [sessionId],
+          (err, result) => {
+            if (err) {
+              console.error('Error retrieving session:', err);
+              res.status(500).json({ error: 'Internal server error' });
+            } else if (result.rowCount === 0) {
+              res.status(401).json({ error: 'Not authenticated' });
+            } else {
+              // Retrieve user data from session data
+              const sessionData = JSON.parse(result.rows[0].sess);
+              const userId = sessionData.userId;
+              const user = getUserById(userId);
+    
+              if (user) {
+                res.json(user);
+              } else {
+                res.status(404).json({ error: 'User not found' });
+              }
+            }
+          }
+        );
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(401).json({ error: 'Not authenticated' });
       }
-    } else {
-      res.status(401).json({ error: 'Not authenticated' });
-    }
-  });
+    });
 
 //logout endpoint
 app.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ success: true });
-  });
+    const sessionId = req.cookies[SESSION_COOKIE_NAME];
 
+  if (sessionId) {
+    client.query(
+      'DELETE FROM sessions WHERE sid = $1',
+      [sessionId],
+      (err) => {
+        if (err) {
+          console.error('Error deleting session:', err);
+        }
+        res.clearCookie(SESSION_COOKIE_NAME);
+        res.json({ success: true });
+      }
+    );
+  } else {
+    res.json({ success: true });
+  }
+});
 
 //return a json object containing a list of movies
 app.get('/api/movies', (req, res) => {
