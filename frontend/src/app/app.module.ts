@@ -20,6 +20,8 @@ import { AddAMovieComponent } from './add-amovie/add-amovie.component';
 import { AccountComponent } from './account/account.component';
 
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
