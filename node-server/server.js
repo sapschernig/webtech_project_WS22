@@ -2,9 +2,14 @@
 const express = require("express");
 const {Client} = require('pg');
 const cors = require('cors');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const crypto = require('crypto');
 
 //body parsing mw to handle incoming JSON data
 const bodyParser = require('body-parser');
+
+import session from 'express-session';
 
 
 //create instance of Express.js app
@@ -17,18 +22,30 @@ const { MemoryStore } = require("express-session");
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-/*app.use(session({
-    store: new MemoryStore({
-        checkPeriod: 86400000 //24h
-    }),
-    secret: 'your-secret-key',
+//session middleware
+app.use(session({
+    store: new pgSession({
+        
+    })
+    secret: 'Jf8gZw$6c%hVpTqA', //secret key
     resave: false,
-    saveUninitialized: false,
-    cookie: { 
-        maxAge: 3600000, //1h - in milliseconds
-        secure: false}
-}));*/
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
+
+router.get('/login', (req, res) => {
+    req.session.isLoggedIn = true;
+    res.send('You are now logged in');
+});
+router.get('/account', (req, res) => {
+    if (req.session.isLoggedIn) {
+        res.send('Welcome to your profile page');
+    } else {
+        res.redirect('/login');
+    }
+});
 
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
@@ -96,12 +113,28 @@ app.post('/login', (req, res) => {
   
     if (user) {
       // create session
-      req.session.userId = user.id;
-      res.json({ success: true });
-    } else {
-      res.status(401).json({ success: false });
-    }
-  });
+      const sessionId = generateSessionId();
+    const sessionData = { userId: user.id };
+    const expireTime = new Date(Date.now() + SESSION_EXPIRATION_TIME_MS).toISOString();
+
+    client.query(
+      'INSERT INTO sessions (sid, sess, expire) VALUES ($1, $2, $3)',
+      [sessionId, JSON.stringify(sessionData), expireTime],
+      (err) => {
+        if (err) {
+          console.error('Error creating session:', err);
+          res.status(500).json({ success: false });
+        } else {
+          // Set session cookie
+          res.cookie(SESSION_COOKIE_NAME, sessionId, { expires: new Date(expireTime), httpOnly: true });
+          res.json({ success: true });
+        }
+      }
+    );
+  } else {
+    res.status(401).json({ success: false });
+  }
+});
 
 //protected endpoint - requires authentication
 app.get('/user', (req, res) => {
