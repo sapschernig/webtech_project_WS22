@@ -1,30 +1,63 @@
 .moviecard {
-    width: 80%;
+    width: auto;
     display: flex;
-    background-color: rgb(81, 81, 81);
-    height: 327px;
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+    padding-bottom: 100px;
+}
+.movie {
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: last baseline;
+    background-color: rgb(156, 156, 156);
+    height: auto;
     margin: auto;
     margin-top: 20px;
 }
 
+
+h2 {
+    text-align: left;
+    margin-left: 10px;
+}
+h3 {
+    text-align: left;
+    margin-left: 10px;
+}
+h4 {
+    text-align: left;
+    margin-left: 30px;
+    margin-bottom: -20px;
+}
+
 p {
-    text-align: center;
+    text-align: left;
+    margin-left: 30px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-right: 50px;
+    align-items: baseline;
+    width: 80%;
 }
 
-.img {
-    margin-left: 0px;
-    margin-right: 2%;
-    width: 20%;
-}
+.moviecard ul {
+    list-style: none;
+    margin-left: 30px;
+    padding: 0;
+  }
+  
+  .moviecard ul li {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+  }
 
-.description {
-    background-color: white;
-    width: 60%;
-    margin-right: 2%;
-}
 
-.time {
-    margin-left: 3px;
-    background-color: rgb(118, 30, 30);
-    width: 20%;
+button{
+    height: 50px;
+    width: auto;
+    margin-right: auto;
+    background-color: rgb(156, 156, 156);
 }

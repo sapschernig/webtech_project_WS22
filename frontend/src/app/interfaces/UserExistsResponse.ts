@@ -1,0 +1,4 @@
+interface UserExistsResponse {
+    exists: boolean;
+  }
+  
