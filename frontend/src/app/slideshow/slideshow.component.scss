@@ -1,5 +1,12 @@
 .slideshow {
-    width: 100%;
     background-color: rgb(84, 81, 81);
     height: 350px;
-}
+    display: flex;
+  }
+  
+  .slideshow div {
+    flex: 1;
+    margin-right: 5px;
+    margin-top: 15px;
+  }
+  
