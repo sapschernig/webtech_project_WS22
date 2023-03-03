@@ -18,6 +18,7 @@ let path = require("path");
 app.use(express.static("public"));
 const http = require('http');
 const { MemoryStore } = require("express-session");
+const { AsyncLocalStorage } = require("async_hooks");
 
 // Connect to PostgreSQL
 //TODO check back with actual values
@@ -45,7 +46,7 @@ app.use(session({
     }),
     secret: 'Jf8gZw$6c%hVpTqA', //secret key
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { 
         name: process.env.SESSION_COOKIE_NAME || 'sessionId',
         maxAge: process.env.SESSION_EXPIRATION_TIME_MS || 86400000, // 1 day
@@ -58,18 +59,6 @@ app.use(session({
     [sessionId, new Date()]
   );*/
   
-
-app.get('/login', (req, res) => {
-    req.session.isLoggedIn = true;
-    res.send('You are now logged in');
-});
-app.get('/account', (req, res) => {
-    if (req.session.isLoggedIn) {
-        res.send('Welcome to your profile page');
-    } else {
-        res.redirect('/login');
-    }
-});
 
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
@@ -119,14 +108,20 @@ catch(err){
 
 //authenticate Function
 async function authenticateUser(email, password) {
-    try {
-        const result = await client.query('SELECT * FROM customer WHERE email = $1 AND password = $2', [email, password]);
-        return result.rows[0] || null;
-      } catch (err) {
-        console.error('Error authenticating user:', err);
-        return null;
-      }
+  try {
+    const result = await client.query('SELECT * FROM customer WHERE email = $1 AND password = $2', [email, password]);
+    const user = result.rows[0] || null;
+    if (user) {
+      console.log('User found:', user);
+    } else {
+      console.log('User not found');
+    }
+    return user;
+  } catch (err) {
+    console.error('Error authenticating user:', err);
+    return null;
   }
+}
   
 function generateSessionId() {
     // Create a random session ID
@@ -139,35 +134,59 @@ app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
     // Verify user credentials
-  const user = authenticateUser(email, password);
+  const user = await authenticateUser(email, password);
 
   if (user) {
     // Save user ID to session
     req.session.userId = user.id;
 
     // Redirect to the account page
-    res.redirect('/account');
+    res.redirect('/api/account');
   } else {
     res.status(401).json({ success: false });
   }
 });
 
-//protected endpoint - requires authentication
-app.get('/account', (req, res) => {
-    const userId = req.session.userId;
+function getUserById(userId){
+  return client.query('SELECT * FROM customer WHERE id = $1', [userId])
+    .then(result => {
+      if (result.rows.length > 0) {
+        return result.rows[0];
+      } else {
+        return null;
+      }
+    })
+    .catch(err => {
+      console.error('Error retrieving user:', err);
+      return null;
+    });
+}
 
-  if (userId) {
-    const user = getUserById(userId);
+//protected endpoint - requires authentication
+app.get('/api/account', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.userId) {
+    res.status(401).json({ error: 'Not authenticated' });
+    res.redirect('/login');
+    return;
+  }
+
+  try {
+    // Fetch user data from database
+    const userId = req.session.userId;
+    const user = await getUserById(userId);
 
     if (user) {
       res.json(user);
     } else {
       res.status(404).json({ error: 'User not found' });
     }
-  } else {
-    res.status(401).json({ error: 'Not authenticated' });
+  } catch (err) {
+    console.error('Error retrieving user:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
-});
+}
+);
 
 //logout endpoint
 app.post('/logout', (req, res) => {

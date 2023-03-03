@@ -57,8 +57,8 @@ export class LoginComponent implements OnInit{
         this.errorMessage= 'Error checking if user exists';
       });
   }
-  
-  loginUser(){
+
+  loginUser() {
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
     const loginData = { email: email, password: password };
@@ -66,13 +66,29 @@ export class LoginComponent implements OnInit{
     this.http.post('/api/login', loginData).subscribe(
       (response: any) => {
         // If login is successful, navigate to the user page
-        this.router.navigate(['/user']);
+        this.router.navigate(['/account']);
+      },
+      (error: any) => {
+        console.log('Error logging in: ', error.message);
+        this.errorMessage = 'Error logging in';
+      });
+    }
+  /*loginUser(){
+    const email = this.loginForm.get('email')?.value;
+    const password = this.loginForm.get('password')?.value;
+    const loginData = { email: email, password: password };
+
+    this.http.post('/api/login', loginData).subscribe(
+      (response: any) => {
+        // If login is successful, navigate to the user page
+        this.router.navigate(['/account']);
       },
       (error: any) => {
         console.log('Error logging in: ', error.message);
         this.errorMessage= 'Error logging in';
       });
-  }
+  }*/
+
   get email(){
     return this.loginForm.get('email');
   }
