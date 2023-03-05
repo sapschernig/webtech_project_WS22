@@ -20,6 +20,8 @@ const http = require('http');
 const { MemoryStore } = require("express-session");
 const { AsyncLocalStorage } = require("async_hooks");
 
+//const { getUserById, authenticateUser} = require('./database');
+
 // Connect to PostgreSQL
 //TODO check back with actual values
 //login data for my local database - may differ
@@ -128,24 +130,6 @@ function generateSessionId() {
     const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     return sessionId;
 }
-  
-//login endpoint
-app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    // Verify user credentials
-  const user = await authenticateUser(email, password);
-
-  if (user) {
-    // Save user ID to session
-    req.session.userId = user.id;
-
-    // Redirect to the account page
-    res.redirect('/api/account');
-  } else {
-    res.status(401).json({ success: false });
-  }
-});
 
 function getUserById(userId){
   return client.query('SELECT * FROM customer WHERE id = $1', [userId])
@@ -162,12 +146,29 @@ function getUserById(userId){
     });
 }
 
-//protected endpoint - requires authentication
+
+// login endpoint
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Verify user credentials
+  const user = await authenticateUser(email, password);
+
+  if (user) {
+    // Save user ID to session
+    req.session.userId = user.id;
+
+    res.json(user);
+  } else {
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
+// protected endpoint - requires authentication
 app.get('/api/account', async (req, res) => {
   // Check if user is logged in
   if (!req.session.userId) {
     res.status(401).json({ error: 'Not authenticated' });
-    res.redirect('/login');
     return;
   }
 
@@ -185,29 +186,23 @@ app.get('/api/account', async (req, res) => {
     console.error('Error retrieving user:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
-}
-);
+});
 
 //logout endpoint
-app.post('/logout', (req, res) => {
-    const sessionId = req.cookies[SESSION_COOKIE_NAME];
-
-  if (sessionId) {
-    client.query(
-      'DELETE FROM sessions WHERE sid = $1',
-      [sessionId],
-      (err) => {
-        if (err) {
-          console.error('Error deleting session:', err);
-        }
-        res.clearCookie(SESSION_COOKIE_NAME);
-        res.json({ success: true });
-      }
-    );
-  } else {
-    res.json({ success: true });
-  }
+app.post('/api/logout', (req, res) => {
+  // Clear the session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    } 
+    res.redirect('/login');
+    }
+  );
 });
+
+
 
 //return a json object containing a list of movies
 app.get('/api/movies', (req, res) => {
@@ -303,6 +298,29 @@ app.get('/api/getCustomerData/:email', (req, res) => {
       });
 
 });
+
+
+// Edit customer endpoint
+app.put('/api/customers/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, email, phone, address, city, zipCode, country } = req.body;
+
+    // Update the customer in the database
+    const result = await db.query(
+      'UPDATE customers SET first_name=$1, last_name=$2, email=$3, phone=$4, address=$5, city=$6, zip_code=$7, country=$8 WHERE id=$9 RETURNING *',
+      [firstName, lastName, email, phone, address, city, zipCode, country, id]
+    );
+
+    // Send the updated customer data back to the client
+    const updatedCustomer = result.rows[0];
+    res.status(200).json(updatedCustomer);
+  } catch (err) {
+    console.error('Error updating customer:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 
 
