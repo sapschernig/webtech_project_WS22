@@ -2,10 +2,15 @@
 const express = require("express");
 const {Client} = require('pg');
 const cors = require('cors');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const crypto = require('crypto');
+const SESSION_COOKIE_NAME = 'my-session-cookie';
+const SESSION_EXPIRATION_TIME_MS = 3600000; // 1 hour in milliseconds
+
 
 //body parsing mw to handle incoming JSON data
 const bodyParser = require('body-parser');
-
 
 //create instance of Express.js app
 const app = express();
@@ -13,22 +18,49 @@ let path = require("path");
 app.use(express.static("public"));
 const http = require('http');
 const { MemoryStore } = require("express-session");
+const { AsyncLocalStorage } = require("async_hooks");
+
+//const { getUserById, authenticateUser} = require('./database');
+
+// Connect to PostgreSQL
+//TODO check back with actual values
+//login data for my local database - may differ
+const client = new Client({
+    user: 'postgres',
+    host: 'localhost',
+    // create_login
+    database: 'movie_db',
+    password: '*****',
+    port: 5432,
+});
 
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-/*app.use(session({
-    store: new MemoryStore({
-        checkPeriod: 86400000 //24h
+//session middleware
+app.use(session({
+    store: new pgSession({
+        pool: client,
+        tableName: 'sessions',
     }),
-    secret: 'your-secret-key',
+    secret: 'Jf8gZw$6c%hVpTqA', //secret key
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        maxAge: 3600000, //1h - in milliseconds
-        secure: false}
-}));*/
+        name: process.env.SESSION_COOKIE_NAME || 'sessionId',
+        maxAge: process.env.SESSION_EXPIRATION_TIME_MS || 86400000, // 1 day
+        httpOnly: true,
+        secure: false } //true falls https
+}));
+
+  /*const session = await client.query(
+    'SELECT * FROM sessions WHERE sid = $1 AND expire > $2',
+    [sessionId, new Date()]
+  );*/
+  
 
 app.get("/", function (req, res) {
   res.sendStatus(200).send("Test successful!");
@@ -37,6 +69,7 @@ app.get("/", function (req, res) {
 let port = 3000;
 app.listen(port);
 console.log("Server running at: http://localhost:" + port);
+
 
 // Connect to PostgreSQL
 //TODO check back with actual values
@@ -49,6 +82,7 @@ const client = new Client({
     password: 'hallo',
     port: 5432,
 });
+
 
 //middleware function to handle error that may occur in routes
 app.use((err, req, res, next) => {
@@ -87,45 +121,100 @@ catch(err){
     res.status(500).send("An error occurred while connecting to the database.")
 }
 
-//login endpoint
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-  
-    // verify user credentials
-    const user = authenticateUser(email, password);
-  
+//authenticate Function
+async function authenticateUser(email, password) {
+  try {
+    const result = await client.query('SELECT * FROM customer WHERE email = $1 AND password = $2', [email, password]);
+    const user = result.rows[0] || null;
     if (user) {
-      // create session
-      req.session.userId = user.id;
-      res.json({ success: true });
+      console.log('User found:', user);
     } else {
-      res.status(401).json({ success: false });
+      console.log('User not found');
     }
-  });
+    return user;
+  } catch (err) {
+    console.error('Error authenticating user:', err);
+    return null;
+  }
+}
+  
+function generateSessionId() {
+    // Create a random session ID
+    const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    return sessionId;
+}
 
-//protected endpoint - requires authentication
-app.get('/user', (req, res) => {
-    const { userId } = req.session;
-  
-    if (userId) {
-      // retrieve user data from session store
-      const user = getUserById(userId);
-  
-      if (user) {
-        res.json(user);
+function getUserById(userId){
+  return client.query('SELECT * FROM customer WHERE id = $1', [userId])
+    .then(result => {
+      if (result.rows.length > 0) {
+        return result.rows[0];
       } else {
-        res.status(404).json({ error: 'User not found' });
+        return null;
       }
+    })
+    .catch(err => {
+      console.error('Error retrieving user:', err);
+      return null;
+    });
+}
+
+
+// login endpoint
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Verify user credentials
+  const user = await authenticateUser(email, password);
+
+  if (user) {
+    // Save user ID to session
+    req.session.userId = user.id;
+
+    res.json(user);
+  } else {
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
+// protected endpoint - requires authentication
+app.get('/api/account', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.userId) {
+    res.status(401).json({ error: 'Not authenticated' });
+    return;
+  }
+
+  try {
+    // Fetch user data from database
+    const userId = req.session.userId;
+    const user = await getUserById(userId);
+
+    if (user) {
+      res.json(user);
     } else {
-      res.status(401).json({ error: 'Not authenticated' });
+      res.status(404).json({ error: 'User not found' });
     }
-  });
+  } catch (err) {
+    console.error('Error retrieving user:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 //logout endpoint
-app.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ success: true });
-  });
+app.post('/api/logout', (req, res) => {
+  // Clear the session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    } 
+    res.redirect('/login');
+    }
+  );
+});
+
 
 
 //return a json object containing a list of movies
@@ -222,6 +311,30 @@ app.get('/api/getCustomerData/:email', (req, res) => {
       });
 
 });
+
+
+// Edit customer endpoint
+/*app.put('/api/customers/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { firstName, lastName, email, phone, address, city, zipCode, country } = req.body;
+
+    // Update the customer in the database
+    const result = await db.query(
+      'UPDATE customers SET first_name=$1, last_name=$2, email=$3, phone=$4, address=$5, city=$6, zip_code=$7, country=$8 WHERE id=$9 RETURNING *',
+      [firstName, lastName, email, phone, address, city, zipCode, country, id]
+    );
+
+    // Send the updated customer data back to the client
+    const updatedCustomer = result.rows[0];
+    res.status(200).json(updatedCustomer);
+  } catch (err) {
+    console.error('Error updating customer:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});*/
+
+
 
 
 

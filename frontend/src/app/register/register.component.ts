@@ -33,6 +33,7 @@ export class RegisterComponent implements OnInit{
     address: new FormControl('', Validators.required),
     city: new FormControl('', Validators.required),
     zipCode: new FormControl('', Validators.required),
+    country: new FormControl('', Validators.required),
   });
 }
 
