@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./slideshow.component.scss']
 })
 export class SlideshowComponent {
+  images = ['assets/pictures/current_movies/darkknight.jpg', 'assets/pictures/current_movies/godfather.jpg', 'assets/pictures/current_movies/jurassicpark.jpg', 'assets/pictures/current_movies/shawshank.jpg'];
 
 }

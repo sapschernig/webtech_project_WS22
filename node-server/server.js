@@ -71,6 +71,19 @@ app.listen(port);
 console.log("Server running at: http://localhost:" + port);
 
 
+// Connect to PostgreSQL
+//TODO check back with actual values
+//login data for my local database - may differ
+const client = new Client({
+    user: 'postgres',
+    host: 'localhost',
+    // create_login
+    database: 'moviedb',
+    password: 'hallo',
+    port: 5432,
+});
+
+
 //middleware function to handle error that may occur in routes
 app.use((err, req, res, next) => {
     console.error(err);
@@ -214,9 +227,9 @@ app.get('/api/movies', (req, res) => {
     });
 });
 
-client.connect()
+/*client.connect()
     .then(()=> console.log('Connected to database'))
-    .catch(err => console.log('Error connecting to database', err.stack));
+    .catch(err => console.log('Error connecting to database', err.stack));*/
 
 
 //route to retrieve movie data from the database
