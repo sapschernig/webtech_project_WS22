@@ -301,7 +301,7 @@ app.get('/api/getCustomerData/:email', (req, res) => {
 
 
 // Edit customer endpoint
-app.put('/api/customers/:id', async (req, res) => {
+/*app.put('/api/customers/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { firstName, lastName, email, phone, address, city, zipCode, country } = req.body;
@@ -319,7 +319,7 @@ app.put('/api/customers/:id', async (req, res) => {
     console.error('Error updating customer:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
-});
+});*/
 
 
 

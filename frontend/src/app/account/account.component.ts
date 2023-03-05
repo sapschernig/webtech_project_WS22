@@ -24,12 +24,12 @@ export class AccountComponent implements OnInit{
   
   
     ngOnInit(): void {
-      this.userService.getUserData().subscribe(
+      /*this.userService.getUserData().subscribe(
         data => {
           this.userData = data;
         },
         error => console.error(error)
-      );
+      );*/
     }
 
     editUserData(){
