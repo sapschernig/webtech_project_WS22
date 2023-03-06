@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Customer } from '../interfaces/customer';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { Ticket } from '../interfaces/ticket';
 
 @Component({
   selector: 'app-account',
@@ -15,6 +16,7 @@ export class AccountComponent implements OnInit{
   errorMessage: string = '';
   registerForm!: FormGroup;
   userData: Customer | undefined;
+  customerTickets: Ticket[] = [];
 
   constructor(
     private formBuilder: FormBuilder, 
@@ -30,9 +32,23 @@ export class AccountComponent implements OnInit{
         },
         error => console.error(error)
       );*/
+      const customerId = '12345'; // replace with the actual customer ID
+      this.getCustomerTickets(customerId);
     }
-
-    editUserData(){
-      
+  
+    editUserData() {
+        
     }
-}
+  
+    getCustomerTickets(customerId: string) {
+      this.http.get<Ticket[]>(`/api/tickets/${customerId}`).subscribe(
+        data => {
+          this.customerTickets = data;
+        },
+        error => {
+          console.error(error);
+          this.errorMessage = 'Error retrieving customer tickets';
+        }
+      );
+    }
+  }

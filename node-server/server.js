@@ -30,7 +30,7 @@ const client = new Client({
     host: 'localhost',
     // create_login
     database: 'movie_db',
-    password: '*****',
+    password: 'Kavo.zada2',
     port: 5432,
 });
 
@@ -69,19 +69,6 @@ app.get("/", function (req, res) {
 let port = 3000;
 app.listen(port);
 console.log("Server running at: http://localhost:" + port);
-
-
-// Connect to PostgreSQL
-//TODO check back with actual values
-//login data for my local database - may differ
-const client = new Client({
-    user: 'postgres',
-    host: 'localhost',
-    // create_login
-    database: 'moviedb',
-    password: 'hallo',
-    port: 5432,
-});
 
 
 //middleware function to handle error that may occur in routes
@@ -312,8 +299,36 @@ app.get('/api/getCustomerData/:email', (req, res) => {
 
 });
 
+app.get('/api/tickets/:customerId', async (req, res) => {
+  try {
+    const customerId = req.params.customerId;
+
+    // Retrieve tickets for the given customer ID from the database
+    const tickets = await db.query('SELECT * FROM ticket WHERE customer_id = $1', [customerId]);
+
+    res.json(tickets.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 
 // Edit customer endpoint
+app.get('api/tickets/:customerId', async (req, res) => {
+  try{
+    const customerId = req.params.customerId;
+
+    // Retrieve tickets for the given customer ID from the database
+    const tickets = await db.query('SELECT * FROM ticket WHERE customer_id = $1', [customerId]);
+
+    res.json(tickets.rows);
+  } catch {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+})
 /*app.put('/api/customers/:id', async (req, res) => {
   try {
     const { id } = req.params;
