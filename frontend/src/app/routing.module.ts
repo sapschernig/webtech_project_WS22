@@ -7,6 +7,7 @@ import { MoviecardComponent } from './moviecard/moviecard.component';
 import { MyticketsComponent } from './mytickets/mytickets.component';
 import { RegisterComponent } from './register/register.component';
 import { AccountComponent } from './account/account.component';
+import { SeatselectComponent } from './seatselect/seatselect.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,9 @@ const routes: Routes = [
   },
   {
     path:'account', component: AccountComponent
+  },
+  {
+    path:'seat', component: SeatselectComponent
   }
 ];
 
