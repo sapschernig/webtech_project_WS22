@@ -1,0 +1,60 @@
+<div class="body_select">
+    <div class="movie-container">
+        <label>Pick a movie: </label>
+
+        <select id="movie" [(ngModel)]="selectedMovie">
+            <option value="{{movie.id}}" *ngFor="let movie of movies">{{ movie.title }}</option>
+        </select>
+
+
+        <select id="date" [(ngModel)]="selectedDate">
+            <ng-container *ngFor="let showtime of showtimes">
+                <option value="{{showtime.date}}" *ngIf="selectedMovie == showtime.movie_id">{{
+                    showtime.date }}
+                </option>
+            </ng-container>
+        </select>
+
+        <select id="time">
+            <ng-container *ngFor="let showtime of showtimes">
+                <option value="{{showtime.theater_id}}"
+                    *ngIf="selectedMovie == showtime.movie_id && selectedDate == showtime.date">{{
+                    showtime.start_time }}
+                </option>
+            </ng-container>
+        </select>
+
+
+        <ul class="showcase">
+            <li>
+                <div class="seat"></div>
+                <small>N/A</small>
+            </li>
+            <li>
+                <div class="seat selected"></div>
+                <small>Selected</small>
+            </li>
+            <li>
+                <div class="seat occupied"></div>
+                <small>Occupied</small>
+            </li>
+        </ul>
+
+        <div class="container">
+            <div class="screen"></div>
+
+
+            <div class="row" *ngFor="let n of numSequence(4)">
+                <ng-container *ngFor="let n of numSequence(8)">
+                    <div class="seat"></div>
+                </ng-container>
+            </div>
+        </div>
+
+
+
+        <p class="text">
+            You have selected <span id="count">0</span> seats for the total price of Rs. <span id="total">0</span>
+        </p>
+    </div>
+</div>

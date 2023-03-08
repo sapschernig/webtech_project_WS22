@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManagementViewComponent } from './management-view/management-view.component';
 import { AddAMovieComponent } from './add-amovie/add-amovie.component';
 import { AccountComponent } from './account/account.component';
+import { SeatselectComponent } from './seatselect/seatselect.component';
 
 
 
@@ -34,7 +35,8 @@ import { AccountComponent } from './account/account.component';
     MyticketsComponent,
     ManagementViewComponent,
     AddAMovieComponent,
-    AccountComponent
+    AccountComponent,
+    SeatselectComponent
   ],
   imports: [
     BrowserModule,

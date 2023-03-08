@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
 
 
-
 @Component({
   selector: 'app-moviecard',
   templateUrl: './moviecard.component.html',
