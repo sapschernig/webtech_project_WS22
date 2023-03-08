@@ -30,7 +30,7 @@ const client = new Client({
     host: 'localhost',
     // create_login
     database: 'moviedb1',
-    password: 'Benjamin89',
+    password: 'hallo',
     port: 5432,
 });
 
