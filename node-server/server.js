@@ -158,7 +158,10 @@ app.post('/api/login', async (req, res) => {
     // Save user ID to session
     req.session.userId = user.id;
 
-    res.json(user);
+    //retrieve tickets for user
+    const tickets = await getCustomerTickets(user.id);
+
+    res.json({user, tickets});
   } else {
     res.status(401).json({ error: 'Invalid credentials' });
   }

@@ -16,7 +16,7 @@ export class AccountComponent implements OnInit{
   errorMessage: string = '';
   registerForm!: FormGroup;
   userData: Customer | undefined;
-  customerTickets: Ticket[] = [];
+  tickets: Ticket[] = [];
 
   constructor(
     private formBuilder: FormBuilder, 
@@ -32,23 +32,50 @@ export class AccountComponent implements OnInit{
         },
         error => console.error(error)
       );*/
-      const customerId = '12345'; // replace with the actual customer ID
+      const sessionId = sessionStorage.getItem('sessionId');
+    if (!sessionId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.http.get('/api/account').subscribe(
+      (data) => {
+        this.userData = data as Customer;    
+      },
+      (error) => {
+        console.log(error);
+        this.errorMessage = 'Error fetching user data';
+      }
+    );
+
+    const customerId = sessionStorage.getItem('customerId');
+     if (customerId) {
       this.getCustomerTickets(customerId);
-    }
-  
-    editUserData() {
-        
-    }
-  
-    getCustomerTickets(customerId: string) {
-      this.http.get<Ticket[]>(`/api/tickets/${customerId}`).subscribe(
-        data => {
-          this.customerTickets = data;
+    } else {
+      this.http.get<{ customer_id: string }>(`/api/session/${sessionId}`).subscribe(
+        (data) => {
+          sessionStorage.setItem('customerId', data.customer_id);
+          this.getCustomerTickets(data.customer_id);
         },
-        error => {
+        (error) => {
           console.error(error);
-          this.errorMessage = 'Error retrieving customer tickets';
+          this.errorMessage = 'Error fetching tickets';
         }
       );
     }
   }
+  
+  getCustomerTickets(customerId: string) {
+    this.http.get<Ticket[]>(`/api/tickets/${customerId}`).subscribe(
+      (data) => {
+        this.tickets = data;
+      },
+      (error) => {
+        console.error(error);
+        this.errorMessage = 'Error fetching tickets';
+      }
+    );
+  }
+
+  editUserData() {}
+
+}
