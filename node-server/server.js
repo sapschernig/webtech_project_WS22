@@ -124,6 +124,17 @@ async function authenticateUser(email, password) {
     return null;
   }
 }
+
+async function getCustomerTickets(customerId) {
+  try {
+    const response = await fetch(`/api/customers/${customerId}/tickets`);
+    const tickets = await response.json();
+    return tickets;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
   
 function generateSessionId() {
     // Create a random session ID
@@ -145,6 +156,15 @@ function getUserById(userId){
       return null;
     });
 }
+/*app.get('/api/session/:sessionId', (req, res) => {
+  const sessionId = req.params.sessionId;
+  //TODO add code to retrieve customer_id based on sessionId
+  if (customerId){
+    res.status(200).json({ customer_id: customerId});
+  } else {
+    res.status(404).json({ error: 'Session not found'});
+  }
+})*/
 
 
 // login endpoint
@@ -302,23 +322,9 @@ app.get('/api/getCustomerData/:email', (req, res) => {
 
 });
 
-app.get('/api/tickets/:customerId', async (req, res) => {
-  try {
-    const customerId = req.params.customerId;
-
-    // Retrieve tickets for the given customer ID from the database
-    const tickets = await db.query('SELECT * FROM ticket WHERE customer_id = $1', [customerId]);
-
-    res.json(tickets.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
 
 
-
-// Edit customer endpoint
+// Get tickets
 app.get('api/tickets/:customerId', async (req, res) => {
   try{
     const customerId = req.params.customerId;
