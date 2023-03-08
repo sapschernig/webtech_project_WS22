@@ -29,8 +29,8 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'movie_db',
-    password: '*****',
+    database: 'moviedb1',
+    password: 'Benjamin89',
     port: 5432,
 });
 
@@ -74,14 +74,14 @@ console.log("Server running at: http://localhost:" + port);
 // Connect to PostgreSQL
 //TODO check back with actual values
 //login data for my local database - may differ
-const client = new Client({
+/*const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
     database: 'moviedb',
     password: 'hallo',
     port: 5432,
-});
+});*/
 
 
 //middleware function to handle error that may occur in routes
@@ -255,6 +255,17 @@ app.get('/api/showtimes', async (req, res) => {
       res.status(500).send(err);
     }
   });
+
+  app.get('/api/theater', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM theater');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+  
 
 app.get('/api/checkUserExists/:email', (req, res) => {
     const email = req.params.email;
