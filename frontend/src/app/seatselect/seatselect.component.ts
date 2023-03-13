@@ -18,7 +18,7 @@ export class SeatselectComponent implements OnInit {
   tickets: any[] = [];
   selectedMovie: any;
   selectedDate: any;
-  selectedTime: any;
+  selectedShow: any;
 
   
 
@@ -62,12 +62,19 @@ export class SeatselectComponent implements OnInit {
 
     onSelectionChange(): void {
     for(let ticket of this.tickets){
-      if(ticket.movie_id == this.selectedMovie && this.selectedTime == ticket.show_id){
-        let seat = document.getElementsByClassName('seat')[ticket.seat_id-1];
-        seat.classList.add('occupied')
+      if(this.selectedShow == ticket.show_id){
+        let seat = document.getElementsByClassName('seat');
+        seat[ticket.seat_id-1].classList.add('occupied')
       }
     }
   }
+
+    onMovieChange(): void{
+        let seat = document.getElementsByClassName('seat');
+        for(let i = 0; i<seat.length; i++){
+        seat[i].classList.remove('occupied')
+        }
+    }
 
   /*
   changeSeatClass(n: number): void {
