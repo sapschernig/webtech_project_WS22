@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
 import { Ticket } from '../interfaces/ticket';
@@ -11,12 +11,15 @@ import { Ticket } from '../interfaces/ticket';
   styleUrls: ['./seatselect.component.scss']
 })
 export class SeatselectComponent implements OnInit {
+
   movies: any[] = [];
   showtimes: any[] = [];
   theaters: any[] = [];
   tickets: any[] = [];
   selectedMovie: any;
   selectedDate: any;
+  selectedShow: any;
+
   
 
   constructor(private http: HttpClient) {}
@@ -54,7 +57,39 @@ export class SeatselectComponent implements OnInit {
   }
 
    numSequence(n: number): Array<number> {
-    return Array(n);} }
+    return Array(n);} 
+  
+
+    onSelectionChange(): void {
+    for(let ticket of this.tickets){
+      if(this.selectedShow == ticket.show_id){
+        let seat = document.getElementsByClassName('seat');
+        seat[ticket.seat_id-1].classList.add('occupied')
+      }
+    }
+  }
+
+    onMovieChange(): void{
+        let seat = document.getElementsByClassName('seat');
+        for(let i = 0; i<seat.length; i++){
+        seat[i].classList.remove('occupied')
+        }
+    }
+
+  /*
+  changeSeatClass(n: number): void {
+    let seat = document.getElementsByClassName('seat')[n];
+    seat.classList.add('occupied')
+  }
+
+  ngAfterViewInit(): void{
+    this.checkSeat();
+  }  */
+
+  }
+
+
+
 /*
   const container = document.querySelector('.container');
   const seats = document.querySelectorAll('.row .seat:not(.occupied)');

@@ -2,12 +2,12 @@
     <div class="movie-container">
         <label>Pick a movie: </label>
 
-        <select id="movie" [(ngModel)]="selectedMovie">
+        <select id="movie" [(ngModel)]="selectedMovie" (change)="onMovieChange()">
             <option value="{{movie.id}}" *ngFor="let movie of movies">{{ movie.title }}</option>
         </select>
 
 
-        <select id="date" [(ngModel)]="selectedDate">
+        <select id="date" [(ngModel)]="selectedDate" (change)="onMovieChange()">
             <ng-container *ngFor="let showtime of showtimes">
                 <option value="{{showtime.date}}" *ngIf="selectedMovie == showtime.movie_id">{{
                     showtime.date }}
@@ -15,9 +15,9 @@
             </ng-container>
         </select>
 
-        <select id="time">
+        <select id="time" [(ngModel)]="selectedShow" (change)="onSelectionChange()">
             <ng-container *ngFor="let showtime of showtimes">
-                <option value="{{showtime.theater_id}}"
+                <option value="{{showtime.id}}"
                     *ngIf="selectedMovie == showtime.movie_id && selectedDate == showtime.date">{{
                     showtime.start_time }}
                 </option>
@@ -27,15 +27,15 @@
 
         <ul class="showcase">
             <li>
-                <div class="seat"></div>
+                <div class="free"></div>
                 <small>N/A</small>
             </li>
             <li>
-                <div class="seat selected"></div>
+                <div class="selected"></div>
                 <small>Selected</small>
             </li>
             <li>
-                <div class="seat occupied"></div>
+                <div class="occupied"></div>
                 <small>Occupied</small>
             </li>
         </ul>
@@ -44,9 +44,9 @@
             <div class="screen"></div>
 
 
-            <div class="row" *ngFor="let n of numSequence(4)">
-                <ng-container *ngFor="let n of numSequence(8)">
-                    <div class="seat"></div>
+            <div class="row" *ngFor="let m of numSequence(4); let rowIndex=index">
+                <ng-container *ngFor="let n of numSequence(8); let seatIndex=index">
+                    <div class="seat" [id]="rowIndex * 8 + seatIndex + 1"></div>
                 </ng-container>
             </div>
         </div>
