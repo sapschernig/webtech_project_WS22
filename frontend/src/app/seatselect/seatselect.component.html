@@ -7,7 +7,7 @@
         </select>
 
 
-        <select id="date" [(ngModel)]="selectedDate">
+        <select id="date" [(ngModel)]="selectedDate" (change)="onMovieChange()">
             <ng-container *ngFor="let showtime of showtimes">
                 <option value="{{showtime.date}}" *ngIf="selectedMovie == showtime.movie_id">{{
                     showtime.date }}
