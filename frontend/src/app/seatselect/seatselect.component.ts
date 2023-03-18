@@ -19,6 +19,7 @@ export class SeatselectComponent implements OnInit {
   selectedMovie: any;
   selectedDate: any;
   selectedShow: any;
+  seatIdList: number[] = [];
 
   
 
@@ -74,6 +75,12 @@ export class SeatselectComponent implements OnInit {
         for(let i = 0; i<seat.length; i++){
         seat[i].classList.remove('occupied')
         }
+    }
+
+    addToSeatIdList(id: number){
+      this.seatIdList.push(id);
+      let seat = document.getElementsByClassName('seat');
+      seat[id-1].classList.add('selected')
     }
 
   /*

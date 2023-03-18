@@ -46,7 +46,8 @@
 
             <div class="row" *ngFor="let m of numSequence(4); let rowIndex=index">
                 <ng-container *ngFor="let n of numSequence(8); let seatIndex=index">
-                    <div class="seat" [id]="rowIndex * 8 + seatIndex + 1"></div>
+                    <div class="seat" [id]="rowIndex * 8 + seatIndex + 1"
+                        (click)="addToSeatIdList(rowIndex * 8 + seatIndex + 1)"></div>
                 </ng-container>
             </div>
         </div>
