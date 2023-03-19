@@ -29,8 +29,8 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'moviedb2',
-    password: 'Benjamin89',
+    database: 'movie_db',
+    password: 'Kavo.zada2',
     port: 5432,
 });
 

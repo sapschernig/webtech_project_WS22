@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./management-view.component.scss']
 })
 export class ManagementViewComponent {
+  hideSlideshow = true; 
 
 }
