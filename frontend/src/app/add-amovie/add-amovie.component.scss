@@ -5,5 +5,26 @@ p {
     color: white;
 }
 div{
- color: white;
+ color: black;
+}
+.movieInfo{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    padding-left: 30px;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    
+}
+.addMovie {
+    padding-bottom: 100px;
+}
+.card-footer{
+    background-color: rgb(156, 156, 156);
+    padding-left: 190px;
 }
