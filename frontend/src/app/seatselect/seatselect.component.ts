@@ -16,10 +16,11 @@ export class SeatselectComponent implements OnInit {
   showtimes: any[] = [];
   theaters: any[] = [];
   tickets: any[] = [];
-  selectedMovie: any;
-  selectedDate: any;
-  selectedShow: any;
+  selectedMovie: string ='';
+  selectedDate: string = '';
+  selectedShow: string = '';
   seatIdList: string[] = [];
+
 
   
 
@@ -82,6 +83,8 @@ export class SeatselectComponent implements OnInit {
     }
 
     addToSeatIdList(id: number){
+
+      if(this.selectedMovie != "" && this.selectedDate !="" && this.selectedShow != ""){
       let seat = document.getElementsByClassName('seat');
       let idString = id.toString();
       const index = this.seatIdList.indexOf(idString);
@@ -95,6 +98,7 @@ export class SeatselectComponent implements OnInit {
         this.seatIdList.push(idString);
         seat[id-1].classList.add('selected');
       }
+    }
     }
 
   /*

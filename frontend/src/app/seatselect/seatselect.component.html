@@ -3,23 +3,26 @@
         <label>Pick a movie: </label>
 
         <select id="movie" [(ngModel)]="selectedMovie" (change)="onMovieChange()">
+            <option value="" selected disabled>Select a movie</option>
             <option value="{{movie.id}}" *ngFor="let movie of movies">{{ movie.title }}</option>
         </select>
 
 
         <select id="date" [(ngModel)]="selectedDate" (change)="onMovieChange()">
+            <option value="" selected disabled>Select a date</option>
             <ng-container *ngFor="let showtime of showtimes">
                 <option value="{{showtime.date}}" *ngIf="selectedMovie == showtime.movie_id">{{
-                    showtime.date }}
+                    showtime.date | date:'shortDate'}}
                 </option>
             </ng-container>
         </select>
 
         <select id="time" [(ngModel)]="selectedShow" (change)="onSelectionChange()">
+            <option value="" selected disabled>Select a time</option>
             <ng-container *ngFor="let showtime of showtimes">
                 <option value="{{showtime.id}}"
                     *ngIf="selectedMovie == showtime.movie_id && selectedDate == showtime.date">{{
-                    showtime.start_time }}
+                    showtime.start_time}}
                 </option>
             </ng-container>
         </select>
