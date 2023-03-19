@@ -74,6 +74,10 @@ export class SeatselectComponent implements OnInit {
         let seat = document.getElementsByClassName('seat');
         for(let i = 0; i<seat.length; i++){
         seat[i].classList.remove('occupied');
+        seat[i].classList.remove('selected');
+        }
+        while(this.seatIdList.length>0){
+          this.seatIdList.pop();
         }
     }
 
@@ -85,7 +89,8 @@ export class SeatselectComponent implements OnInit {
       if(this.seatIdList.includes(idString)){
         seat[id-1].classList.remove('selected');
         this.seatIdList.splice(index,1);
-      }
+        console.log(this.seatIdList);
+      } else
       if(!seat[id-1].classList.contains('occupied')){
         this.seatIdList.push(idString);
         seat[id-1].classList.add('selected');
