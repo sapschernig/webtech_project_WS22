@@ -20,6 +20,8 @@ export class SeatselectComponent implements OnInit {
   selectedDate: string = '';
   selectedShow: string = '';
   seatIdList: string[] = [];
+  seatCount = 0;
+  totalPrice = 0;
 
 
   
@@ -69,6 +71,8 @@ export class SeatselectComponent implements OnInit {
         seat[ticket.seat_id-1].classList.add('occupied')
       }
     }
+    this.seatCount = 0;
+    this.totalPrice = 0;
   }
 
     onMovieChange(): void{
@@ -80,6 +84,8 @@ export class SeatselectComponent implements OnInit {
         while(this.seatIdList.length>0){
           this.seatIdList.pop();
         }
+        this.seatCount = 0;
+        this.totalPrice = 0;
     }
 
     addToSeatIdList(id: number){
@@ -93,23 +99,23 @@ export class SeatselectComponent implements OnInit {
         seat[id-1].classList.remove('selected');
         this.seatIdList.splice(index,1);
         console.log(this.seatIdList);
+        this.seatCount -= 1;
+        this.totalPrice = this.seatCount * 10.99;
       } else
       if(!seat[id-1].classList.contains('occupied')){
         this.seatIdList.push(idString);
         seat[id-1].classList.add('selected');
+        this.seatCount += 1;
+        this.totalPrice = this.seatCount * 10.99;
       }
     }
     }
 
-  /*
-  changeSeatClass(n: number): void {
-    let seat = document.getElementsByClassName('seat')[n];
-    seat.classList.add('occupied')
-  }
+    /*
+    calculatePrice(): void{
+      this.totalPrice = this.seatCount * 10.99;
+    }*/
 
-  ngAfterViewInit(): void{
-    this.checkSeat();
-  }  */
 
   }
 
