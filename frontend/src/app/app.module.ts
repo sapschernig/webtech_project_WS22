@@ -23,6 +23,7 @@ import { SeatselectComponent } from './seatselect/seatselect.component';
 import { AuthGuard } from './services/AuthGuard';
 import { AuthService } from './services/authservice';
 import { AuthInterceptor } from './services/AuthInterceptor';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -50,6 +51,7 @@ import { AuthInterceptor } from './services/AuthInterceptor';
     ReactiveFormsModule
   ],
   providers: [
+    DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
