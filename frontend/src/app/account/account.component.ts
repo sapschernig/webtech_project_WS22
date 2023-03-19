@@ -78,4 +78,40 @@ export class AccountComponent implements OnInit{
 
   editUserData() {}
 
+  logout() {
+    fetch('/api/logout', { method: 'POST' })
+      .then(() => {
+        // clear session cookies
+        document.cookie = 'sessionId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        // redirect to login page
+        window.location.href = '/login';
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+  
+  deleteAccount(): void {
+    // Show a confirmation dialog to the user
+    const confirmed = confirm('Are you sure you want to delete your account?');
+  
+    if (confirmed) {
+      // If the user confirmed, delete the account
+      this.http.delete('/api/deleteUser').subscribe(
+        (response) => {
+          // If the account was successfully deleted, redirect the user to the login page
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          // If there was an error deleting the account, display an error message to the user
+          console.error(error);
+          alert('There was an error deleting your account. Please try again later.');
+        }
+      );
+    }
+  }
+  
+  
+  
 }
+

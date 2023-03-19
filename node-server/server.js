@@ -1,6 +1,6 @@
 //import required modules
 const express = require("express");
-const {Client} = require('pg');
+const { Client } = require('pg');
 const cors = require('cors');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -156,15 +156,42 @@ function getUserById(userId){
       return null;
     });
 }
-/*app.get('/api/session/:sessionId', (req, res) => {
+app.get('/api/session/:sessionId', async (req, res) => {
+  
   const sessionId = req.params.sessionId;
-  //TODO add code to retrieve customer_id based on sessionId
-  if (customerId){
-    res.status(200).json({ customer_id: customerId});
-  } else {
-    res.status(404).json({ error: 'Session not found'});
+  console.log(sessionId);
+  if (!sessionId) {
+    res.status(400).json({ error: 'Invalid sessionId' });
+    return;
   }
-})*/
+  try {
+    const customerId = await getSessionCustomerId(sessionId);
+    if (customerId) {
+      res.status(200).json({ customer_id: customerId });
+    } else {
+      res.status(404).json({ error: 'Session not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error retrieving session' });
+  }
+});
+
+
+
+async function getSessionCustomerId(sessionId) {
+  const query = {
+    text: 'SELECT sess FROM sessions WHERE sid = $1',
+    values: [sessionId],
+  };
+  const result = await client.query(query);
+  if (result.rowCount === 0) {
+    return null;
+  }
+  const sessionData = result.rows[0].sess;
+  const customerData = JSON.parse(sessionData);
+  return customerData.userId;
+}
 
 
 // login endpoint
@@ -177,9 +204,24 @@ app.post('/api/login', async (req, res) => {
   if (user) {
     // Save user ID to session
     req.session.userId = user.id;
+    req.session.email = user.email;
+
+    console.log('Session ID:', req.session.id);
+
+    // Generate sessionId
+    const sessionId = generateSessionId();
+    req.session.sessionId = sessionId;
 
     //retrieve tickets for user
     const tickets = await getCustomerTickets(user.id);
+
+    // Set the sessionId cookie in the response
+    res.cookie('sessionId', sessionId, {
+      maxAge: process.env.SESSION_EXPIRATION_TIME_MS || 86400000, // 1 day
+      httpOnly: true,
+      secure: false, // Set to true in production
+    });
+
 
     res.json({user, tickets});
   } else {
@@ -224,6 +266,61 @@ app.post('/api/logout', (req, res) => {
     }
   );
 });
+
+// delete user account endpoint
+app.delete('/api/delete-account', async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    await deleteUser(userId);
+
+    // Destroy session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(err);
+      } else {
+        res.clearCookie(process.env.SESSION_COOKIE_NAME || 'sessionId');
+        res.status(200).send();
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error deleting user account' });
+  }
+});
+
+
+async function deleteUser(userId) {
+  const query = {
+    text: 'DELETE FROM customers WHERE id = $1',
+    values: [userId],
+  };
+  await client.query(query);
+}
+
+app.get('/api/someEndpoint', (req, res) => {
+  const sessionId = req.headers.authorization;
+  if (sessionId) {
+    req.sessionStore.get(sessionId, (err, session) => {
+      if (err) {
+        console.log('Error retrieving session: ', err);
+        res.status(500).send('Error retrieving session');
+      } else if (!session) {
+        console.log('Session not found: ', sessionId);
+        res.status(401).send('Unauthorized');
+      } else {
+        console.log('Session found: ', sessionId);
+        // TODO: handle the request using the session data
+        res.send('Success');
+      }
+    });
+  } else {
+    console.log('Session ID not found in Authorization header');
+    res.status(401).send('Unauthorized');
+  }
+});
+
+
 
 
 

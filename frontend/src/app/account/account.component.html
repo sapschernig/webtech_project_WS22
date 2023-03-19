@@ -1,9 +1,10 @@
 <h1>{{ title }}</h1>
 
     <div class="userData">
-    <h3>User Data</h3>
+   
     
     <div *ngIf="userData">
+      <h3>User Data</h3>
         <p>First Name: {{ userData.firstName }}</p>
         <p>Last Name: {{ userData.lastName }}</p>
         <p>Email: {{ userData.email }}</p>
@@ -13,13 +14,21 @@
         <p>Zip Code: {{ userData.zipCode }}</p>
         <p>Country: {{ userData.country }}</p>
         <button (click)="editUserData()">Edit Data</button>
+        <button id="delete-account" (click)="deleteAccount()">Delete account</button>
+        <br>
+        <h3>Tickets</h3>
+
+
+        <button (click)="logout()">Logout</button>
       </div>
 
+     
       
       
     </div>
 
 <button (click)="editUserData()">Edit Data</button>
+
 
 
 

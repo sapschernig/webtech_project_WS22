@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -10,6 +10,11 @@ import { UserService } from '../user.service';
   styleUrls: ['./login.component.scss'],
   providers: [UserService]
 })
+
+@Injectable({
+  providedIn:'root'
+})
+
 export class LoginComponent implements OnInit{
   title = 'Login';
   errorMessage = '';
@@ -56,6 +61,18 @@ export class LoginComponent implements OnInit{
               console.log('Login successful');
               // Set session ID
               sessionStorage.setItem('sessionId', response.sessionId);
+              const sessionId = sessionStorage.getItem('sessionId');
+                if (sessionId) {
+                  const headers = { Authorization: sessionId };
+                  this.http.get('/api/someEndpoint', { headers }).subscribe(
+                    (response: any) => {
+                      console.log(response);
+                    },
+                    (error: any) => {
+                      console.log(error);
+                    }
+  );
+}
               this.router.navigate(['/account']);
             },
             (error: any) => {

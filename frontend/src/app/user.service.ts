@@ -45,7 +45,7 @@ export class UserService {
     );
   }
   getUserData(){
-    return this.http.get<Customer>('/api/customers');
+    return this.http.get<Customer>('/api/customer');
   }
   editUserData(editedUserData: {
     firstName: any;
@@ -57,7 +57,10 @@ export class UserService {
     zipCode: any;
     country: any;
   }) {
-    return this.http.put<Customer>('/api/customers', editedUserData);
+    return this.http.put<Customer>('/api/customer', editedUserData);
+  }
+  deleteUser(): Observable<void> {
+    return this.http.delete<void>('/api/account');
   }
   
 
