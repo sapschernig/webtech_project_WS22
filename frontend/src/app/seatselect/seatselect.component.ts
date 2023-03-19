@@ -16,9 +16,13 @@ export class SeatselectComponent implements OnInit {
   showtimes: any[] = [];
   theaters: any[] = [];
   tickets: any[] = [];
-  selectedMovie: any;
-  selectedDate: any;
-  selectedShow: any;
+  selectedMovie: string ='';
+  selectedDate: string = '';
+  selectedShow: string = '';
+  seatIdList: string[] = [];
+  seatCount = 0;
+  totalPrice = 0;
+
 
   
 
@@ -67,24 +71,51 @@ export class SeatselectComponent implements OnInit {
         seat[ticket.seat_id-1].classList.add('occupied')
       }
     }
+    this.seatCount = 0;
+    this.totalPrice = 0;
   }
 
     onMovieChange(): void{
         let seat = document.getElementsByClassName('seat');
         for(let i = 0; i<seat.length; i++){
-        seat[i].classList.remove('occupied')
+        seat[i].classList.remove('occupied');
+        seat[i].classList.remove('selected');
         }
+        while(this.seatIdList.length>0){
+          this.seatIdList.pop();
+        }
+        this.seatCount = 0;
+        this.totalPrice = 0;
     }
 
-  /*
-  changeSeatClass(n: number): void {
-    let seat = document.getElementsByClassName('seat')[n];
-    seat.classList.add('occupied')
-  }
+    addToSeatIdList(id: number){
 
-  ngAfterViewInit(): void{
-    this.checkSeat();
-  }  */
+      if(this.selectedMovie != "" && this.selectedDate !="" && this.selectedShow != ""){
+      let seat = document.getElementsByClassName('seat');
+      let idString = id.toString();
+      const index = this.seatIdList.indexOf(idString);
+
+      if(this.seatIdList.includes(idString)){
+        seat[id-1].classList.remove('selected');
+        this.seatIdList.splice(index,1);
+        console.log(this.seatIdList);
+        this.seatCount -= 1;
+        this.totalPrice = this.seatCount * 10.99;
+      } else
+      if(!seat[id-1].classList.contains('occupied')){
+        this.seatIdList.push(idString);
+        seat[id-1].classList.add('selected');
+        this.seatCount += 1;
+        this.totalPrice = this.seatCount * 10.99;
+      }
+    }
+    }
+
+    /*
+    calculatePrice(): void{
+      this.totalPrice = this.seatCount * 10.99;
+    }*/
+
 
   }
 
