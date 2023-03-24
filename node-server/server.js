@@ -336,13 +336,13 @@ app.get('/api/getCustomerData/:email', (req, res) => {
 
 app.post('/api/movies', async (req, res) => {
   try {
-    const { title, releaseDate, duration, ageRestriction, genre, description } = req.body;
-    
-  
+    const { title, release_date, duration, age_restriction, genre, description } = req.body;
+    console.log(req.body);
 
-    // Insert the movie data into the "movies" table
+    // Insert the movie data into the "movie" table
     const query = 'INSERT INTO movie(title, release_date, duration, genre, description, age_restriction) VALUES($1, $2, $3, $4, $5, $6)';
-    const values = [title, releaseDate, duration, genre, description, ageRestriction];
+    const values = [title, release_date, duration, genre, description, age_restriction];
+    console.log(values);
 
     await client.query(query, values);
     

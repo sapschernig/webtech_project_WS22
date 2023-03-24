@@ -41,13 +41,14 @@ export class AddAMovieComponent implements OnInit{
     const formData = this.addMovieForm.value;
     const formattedDate = this.datePipe.transform(formData.releaseDate, 'yyyy-MM-dd');
     console.log(formData.releaseDate);
+    console.log(formData);
     console.log(formattedDate);
 
     const movie = {
       title: formData.title,
       release_date: formattedDate,
       duration: formData.duration,
-      age_restriction: formData.age_restriction,
+      age_restriction: formData.ageRestriction,
       genre: formData.genre,
       description: formData.description
     };
