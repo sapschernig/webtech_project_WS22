@@ -7,8 +7,8 @@ const pgSession = require('connect-pg-simple')(session);
 const crypto = require('crypto');
 const SESSION_COOKIE_NAME = 'my-session-cookie';
 const SESSION_EXPIRATION_TIME_MS = 3600000; // 1 hour in milliseconds
-const { DatePipe } = require('@angular/common');
-const datePipe = new DatePipe('en-US');
+
+
 
 //body parsing mw to handle incoming JSON data
 const bodyParser = require('body-parser');
@@ -338,12 +338,11 @@ app.post('/api/movies', async (req, res) => {
   try {
     const { title, releaseDate, duration, ageRestriction, genre, description } = req.body;
     
-    // Format the release date using DatePipe
-    const formattedDate = datePipe.transform(releaseDate, 'yyyy-MM-dd');
+  
 
     // Insert the movie data into the "movies" table
     const query = 'INSERT INTO movie(title, release_date, duration, genre, description, age_restriction) VALUES($1, $2, $3, $4, $5, $6)';
-    const values = [title, formattedDate, duration, genre, description, ageRestriction];
+    const values = [title, releaseDate, duration, genre, description, ageRestriction];
 
     await client.query(query, values);
     
