@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
@@ -11,7 +11,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./add-amovie.component.scss'],
   providers: [DatePipe]
 })
-export class AddAMovieComponent {
+export class AddAMovieComponent implements OnInit{
 
   title = 'Add a movie';
   errorMessage: string = '';
@@ -22,7 +22,8 @@ export class AddAMovieComponent {
     private http: HttpClient, 
     private userService: UserService,
     private router: Router,
-    private datePipe: DatePipe) {}
+    private datePipe: DatePipe,
+    ) {}
   
   
   ngOnInit(): void {
