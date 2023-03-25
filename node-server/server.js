@@ -30,8 +30,9 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'movie_db',
-    password: 'Kavo.zada2',
+    database: 'movie_db1',
+    password: 'hallo123',
+
     port: 5432,
 });
 
@@ -270,6 +271,16 @@ app.get('/api/showtimes', async (req, res) => {
   app.get('/api/ticket', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM ticket');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/seat', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM seat');
       res.send(rows);
     } catch (err) {
       console.error(err);

@@ -1,8 +1,19 @@
-.ticket {
+.tickets {
     width: 80%;
     background-color: rgb(55, 55, 55);
     margin: auto;
     display: flex;
+    margin-top: 20px;
+}
+
+.ticket {
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: last baseline;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
     margin-top: 20px;
 }
 
@@ -15,5 +26,15 @@ img {
 }
 
 .ticketinfo {
+    width: 80%;
+}
+
+p {
+    text-align: left;
+    margin-left: 30px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-right: 50px;
+    align-items: baseline;
     width: 80%;
 }
