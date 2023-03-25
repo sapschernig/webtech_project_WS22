@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
 import { Ticket } from '../interfaces/ticket';
+import { LoginComponent } from '../login/login.component';
 
 
 
@@ -133,24 +134,32 @@ export class SeatselectComponent implements OnInit {
 
       console.log(sessionStorage);
 
-      
+      let i = 0;
 
-      const data = {
-        id: this.tickets.length + 1,
-        price: this.totalPrice,
-        show_id: this.selectedShow,
-        seat_id: this.seatIdList[0],
-        customer_id: 1,
-      };
-      this.http.post('/api/ticket', data).subscribe(
-        (response) => {
-          this.message = 'Ticket created successfully';
-        },
-        (error) => {
-          console.error(error);
-          this.message = 'Error creating ticket';
-        }
-      );
+      while (i < this.seatIdList.length) {
+
+        const data = {
+          id: this.tickets.length + 1 + i,
+          price: this.totalPrice/this.seatIdList.length,
+          show_id: this.selectedShow,
+          seat_id: this.seatIdList[i],
+          customer_id: 1,
+        };
+        this.http.post('/api/ticket', data).subscribe(
+          (response) => {
+            this.message = 'Ticket created successfully';
+          },
+          (error) => {
+            console.error(error);
+            this.message = 'Error creating ticket';
+          }
+        );
+
+        i++;
+
+      }
+
+      
 
 
 
