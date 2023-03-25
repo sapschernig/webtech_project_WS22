@@ -51,10 +51,6 @@ export class MoviecardComponent implements OnInit{
     
   }
 
-  calculateRating()
-  for(let x of movies){
-
-  }
 
 
 }

@@ -31,7 +31,11 @@
         <ul class="showcase">
             <li>
                 <div class="free"></div>
-                <small>N/A</small>
+                <small>Free Seat</small>
+            </li>
+            <li>
+                <div class="deluxe"></div>
+                <small>Deluxe Seat</small>
             </li>
             <li>
                 <div class="selected"></div>
@@ -53,13 +57,12 @@
                         (click)="addToSeatIdList(rowIndex * 8 + seatIndex + 1)"></div>
                 </ng-container>
             </div>
+            <p class="text">
+                You have selected <span id="count">{{seatCount}}</span> seats for the total price of € <span
+                    id="total">{{totalPrice}}</span>
+            </p>
+            <button class="buttonticket">Buy Tickets</button>
         </div>
 
-
-
-        <p class="text">
-            You have selected <span id="count">{{seatCount}}</span> seats for the total price of € <span
-                id="total">{{totalPrice}}</span>
-        </p>
     </div>
 </div>
