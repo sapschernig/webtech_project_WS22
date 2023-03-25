@@ -11,4 +11,9 @@ export class AppServiceService {
   getTest(){
     return this.http.get('/api/movies')
   }
+
+  insertDataForBooking(id: number, price: number, show_id: number, seat_id: number, customer_id: number){
+    return this.http.post('/ticket', {id, price, show_id, seat_id, customer_id});
+  }
+
 }

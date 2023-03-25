@@ -30,8 +30,8 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'movie_db',
-    password: 'Kavo.zada2',
+    database: 'movie_db1',
+    password: 'hallo123',
     port: 5432,
 });
 
@@ -353,7 +353,24 @@ app.post('/api/movies', async (req, res) => {
   }
 });
 
+app.post('/api/ticket', async (req, res) => {
+  try {
+    const { id, price, show_id, seat_id, customer_id } = req.body;
+    console.log(req.body);
 
+    // Insert the movie data into the "movie" table
+    const query = 'INSERT INTO ticket(id, price, show_id, seat_id, customer_id) VALUES($1, $2, $3, $4, $5)';
+    const values = [id, price, show_id, seat_id, customer_id];
+    console.log(values);
+
+    await client.query(query, values);
+    
+    res.status(201).json({ message: 'Ticket added successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 // Edit customer endpoint

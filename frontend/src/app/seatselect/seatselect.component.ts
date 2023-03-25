@@ -22,6 +22,7 @@ export class SeatselectComponent implements OnInit {
   seatIdList: string[] = [];
   seatCount = 0;
   totalPrice = 0;
+  message: string='';
 
 
   
@@ -122,4 +123,48 @@ export class SeatselectComponent implements OnInit {
     }
     }
 
-}
+    bookTicket() {
+      console.log("Test");
+      console.log(this.selectedMovie);
+      console.log(this.selectedShow);
+      console.log(this.seatIdList[0]);
+      console.log(this.tickets.length);
+
+
+      console.log(sessionStorage);
+
+      
+
+      const data = {
+        id: this.tickets.length + 1,
+        price: this.totalPrice,
+        show_id: this.selectedShow,
+        seat_id: this.seatIdList[0],
+        customer_id: 1,
+      };
+      this.http.post('/api/ticket', data).subscribe(
+        (response) => {
+          this.message = 'Ticket created successfully';
+        },
+        (error) => {
+          console.error(error);
+          this.message = 'Error creating ticket';
+        }
+      );
+
+
+
+
+
+    }
+
+      
+
+
+
+
+    }
+
+    
+
+
