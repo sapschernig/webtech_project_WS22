@@ -32,6 +32,7 @@ const client = new Client({
     // create_login
     database: 'movie_db1',
     password: 'hallo123',
+
     port: 5432,
 });
 
@@ -79,8 +80,8 @@ console.log("Server running at: http://localhost:" + port);
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'moviedb',
-    password: 'hallo',
+    database: 'moviedb2',
+    password: 'Benjamin89',
     port: 5432,
 });*/
 
@@ -179,7 +180,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // protected endpoint - requires authentication
-app.get('/api/account', async (req, res) => {
+app.get('/api/mytickets', async (req, res) => {
   // Check if user is logged in
   if (!req.session.userId) {
     res.status(401).json({ error: 'Not authenticated' });
@@ -267,9 +268,39 @@ app.get('/api/showtimes', async (req, res) => {
     }
   });
 
+  app.get('/api/rating', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM rating');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/theater', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM theater');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
   app.get('/api/ticket', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM ticket');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/seat', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM seat');
       res.send(rows);
     } catch (err) {
       console.error(err);

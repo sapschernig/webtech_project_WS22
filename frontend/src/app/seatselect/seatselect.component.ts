@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
+
 import { Customer } from '../interfaces/customer';
 import { Ticket } from '../interfaces/ticket';
 import { LoginComponent } from '../login/login.component';
+
 
 
 
@@ -18,15 +20,18 @@ export class SeatselectComponent implements OnInit {
   showtimes: any[] = [];
   theaters: any[] = [];
   tickets: any[] = [];
+  theater: any[] = [];
   selectedMovie: string ='';
   selectedDate: string = '';
   selectedShow: string = '';
   seatIdList: string[] = [];
   seatCount = 0;
   totalPrice = 0;
+
   message: string='';
   userData: Customer | undefined;
 
+  numberSeats = 0;
 
   
 
@@ -63,6 +68,7 @@ export class SeatselectComponent implements OnInit {
       }
     );
 
+
     this.http.get('/api/account').subscribe(
       (data) => {
         console.log(data);
@@ -77,39 +83,61 @@ export class SeatselectComponent implements OnInit {
     );
 
     
+
+    this.http.get<any[]>('/api/theater').subscribe(
+      (theater) => {
+        this.theater = theater;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
   }
 
    numSequence(n: number): Array<number> {
     return Array(n);} 
   
 
-    onSelectionChange(): void {
-    for(let ticket of this.tickets){
-      if(this.selectedShow == ticket.show_id){
-        let seat = document.getElementsByClassName('seat');
-        seat[ticket.seat_id-1].classList.add('occupied')
-      }
-    }
-    this.seatCount = 0;
-    this.totalPrice = 0;
-  }
-
     onMovieChange(): void{
-        let seat = document.getElementsByClassName('seat');
+      let seat = document.getElementsByClassName('seat');
         for(let i = 0; i<seat.length; i++){
         seat[i].classList.remove('occupied');
         seat[i].classList.remove('selected');
+        seat[i].classList.remove('deluxe');
         }
-
-      for(let i = 25; i <=32; i++){
-      seat[i-1].classList.add('deluxe');
-      }
         while(this.seatIdList.length>0){
           this.seatIdList.pop();
         }
         this.seatCount = 0;
         this.totalPrice = 0;
     }
+
+    onSelectionChange(): void {
+      for(let t of this.theater){
+        let idString = t.id.toString();
+        if(this.selectedShow == idString)
+        this.numberSeats = t.capacity/20;
+      }
+      setTimeout(() =>{
+      
+        let seat = document.getElementsByClassName('seat');
+
+        for(let i = (this.numberSeats-1)*20+1; i <=this.numberSeats*20; i++){
+          seat[i-1].classList.add('deluxe');
+          }
+    
+      for(let ticket of this.tickets){
+        if(this.selectedShow == ticket.show_id){
+          seat[ticket.seat_id-1].classList.add('occupied')
+        }
+      }
+      this.seatCount = 0;
+      this.totalPrice = 0;},100);
+
+
+  }
+
 
     addToSeatIdList(id: number){
 
@@ -124,7 +152,7 @@ export class SeatselectComponent implements OnInit {
 
         this.seatCount -= 1;
         this.totalPrice -= 12.50;
-        if(parseFloat(seat[id].id)>25){
+        if(parseFloat(seat[id].id)>(this.numberSeats-1)*20+1){
           this.totalPrice -= 2.0;
         }
       } else
@@ -133,13 +161,14 @@ export class SeatselectComponent implements OnInit {
         seat[id-1].classList.add('selected');
         this.seatCount += 1;
         this.totalPrice += 12.50;
-        if(parseFloat(seat[id].id)>25){
+        if(parseFloat(seat[id].id)>(this.numberSeats-1)*20+1){
           this.totalPrice += 2.0;
 
         }
       }
     }
     }
+
 
     bookTicket() {
       console.log("Test");
@@ -177,22 +206,6 @@ export class SeatselectComponent implements OnInit {
         i++;
 
       }
-
-      
-
-
-
-
-
     }
 
-      
-
-
-
-
     }
-
-    
-
-
