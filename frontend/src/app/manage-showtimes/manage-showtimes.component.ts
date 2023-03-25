@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MovieService } from '../services/movieService';
 import { TheaterService } from '../services/theaterService';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-manage-showtimes',
@@ -14,13 +15,26 @@ export class ManageShowtimesComponent implements OnInit{
   //to keep track of the currently sorted field and sorting direction
   sortField: string = '';
   sortDirection: string = '';
+  movies: any[] | undefined;
+  theaters: any[] | undefined;
 
   constructor(
     private showtimesService: MovieService,
-    private theaterService: TheaterService) { }
+    private theaterService: TheaterService,
+    private http: HttpClient) { }
 
   ngOnInit() {
     this.fetchData();
+    this.http.get<any[]>('api/movies').subscribe(movies => {
+      this.movies = movies;
+    });
+    this.getTheaters();
+  }
+
+  getTheaters() {
+    this.http.get<any[]>('/api/theater').subscribe(theaters => {
+      this.theaters = theaters;
+    });
   }
 
   fetchData() {
