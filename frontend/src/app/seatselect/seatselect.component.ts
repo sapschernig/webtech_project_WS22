@@ -93,22 +93,24 @@ export class SeatselectComponent implements OnInit {
         if(this.selectedShow == idString)
         this.numberSeats = t.capacity/20;
       }
+      setTimeout(() =>{
+      
+        let seat = document.getElementsByClassName('seat');
 
-      let seat = document.getElementsByClassName('seat');
-
-      for(let i = (this.numberSeats-1)*20+1; i <=this.numberSeats*20; i++){
-        seat[i-1].classList.add('deluxe');
+        for(let i = (this.numberSeats-1)*20+1; i <=this.numberSeats*20; i++){
+          seat[i-1].classList.add('deluxe');
+          }
+    
+      for(let ticket of this.tickets){
+        if(this.selectedShow == ticket.show_id){
+          seat[ticket.seat_id-1].classList.add('occupied')
         }
-
-    for(let ticket of this.tickets){
-      if(this.selectedShow == ticket.show_id){
-        seat[ticket.seat_id-1].classList.add('occupied')
       }
-    }
-    this.seatCount = 0;
-    this.totalPrice = 0;
-  }
+      this.seatCount = 0;
+      this.totalPrice = 0;},100);
 
+
+  }
 
 
     addToSeatIdList(id: number){
