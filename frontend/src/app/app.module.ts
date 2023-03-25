@@ -24,6 +24,7 @@ import { AuthGuard } from './services/AuthGuard';
 import { AuthService } from './services/authservice';
 import { AuthInterceptor } from './services/AuthInterceptor';
 import { DatePipe } from '@angular/common';
+import { ManageShowtimesComponent } from './manage-showtimes/manage-showtimes.component';
 
 
 
@@ -40,7 +41,8 @@ import { DatePipe } from '@angular/common';
     ManagementViewComponent,
     AddAMovieComponent,
     AccountComponent,
-    SeatselectComponent
+    SeatselectComponent,
+    ManageShowtimesComponent
   ],
   imports: [
     BrowserModule,
