@@ -8,7 +8,7 @@ import { MyticketsComponent } from './mytickets/mytickets.component';
 import { RegisterComponent } from './register/register.component';
 import { AccountComponent } from './account/account.component';
 import { SeatselectComponent } from './seatselect/seatselect.component';
-import { AuthGuard } from './services/AuthGuard';
+//import { AuthGuard } from './services/AuthGuard';
 
 
 const routes: Routes = [
@@ -49,6 +49,6 @@ const routes: Routes = [
   declarations: [],
   imports: [RouterModule.forRoot(routes)],
   exports:[RouterModule],
-  providers:[AuthGuard]
+  //providers:[AuthGuard]
 })
 export class RoutingModule { }

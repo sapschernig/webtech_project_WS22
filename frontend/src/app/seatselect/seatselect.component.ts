@@ -81,6 +81,10 @@ export class SeatselectComponent implements OnInit {
         seat[i].classList.remove('occupied');
         seat[i].classList.remove('selected');
         }
+
+      for(let i = 25; i <=32; i++){
+      seat[i-1].classList.add('deluxe');
+      }
         while(this.seatIdList.length>0){
           this.seatIdList.pop();
         }
@@ -98,58 +102,24 @@ export class SeatselectComponent implements OnInit {
       if(this.seatIdList.includes(idString)){
         seat[id-1].classList.remove('selected');
         this.seatIdList.splice(index,1);
-        console.log(this.seatIdList);
+
         this.seatCount -= 1;
-        this.totalPrice = this.seatCount * 10.99;
+        this.totalPrice -= 12.50;
+        if(parseFloat(seat[id].id)>25){
+          this.totalPrice -= 2.0;
+        }
       } else
       if(!seat[id-1].classList.contains('occupied')){
         this.seatIdList.push(idString);
         seat[id-1].classList.add('selected');
         this.seatCount += 1;
-        this.totalPrice = this.seatCount * 10.99;
+        this.totalPrice += 12.50;
+        if(parseFloat(seat[id].id)>25){
+          this.totalPrice += 2.0;
+
+        }
       }
     }
     }
 
-    /*
-    calculatePrice(): void{
-      this.totalPrice = this.seatCount * 10.99;
-    }*/
-
-
-  }
-
-
-
-/*
-  const container = document.querySelector('.container');
-  const seats = document.querySelectorAll('.row .seat:not(.occupied)');
-  const count = document.getElementById('count');
-  const total = document.getElementById('total');
-  const movieSelect = document.getElementById('movie');
-  
-  var ticketPrice = +movieSelect.value;
-  
-  //Update total and count
-  function updateSelectedCount() {
-    const selectedSeats = document.querySelectorAll('.row .seat.selected');
-    const selectedSeatsCount = selectedSeats.length;
-    count.innerText = selectedSeatsCount;
-    total.innerText = selectedSeatsCount * ticketPrice;
-  }
-  
-  //Movie Select Event
-  movieSelect.addEventListener('change', e => {
-    ticketPrice = +e.target.value;
-    updateSelectedCount();
-  });
-  
-  //Seat click event
-  container.addEventListener('click', e => {
-    if (e.target.classList.contains('seat') &&
-       !e.target.classList.contains('occupied')) {
-      e.target.classList.toggle('selected');
-    }
-    updateSelectedCount();
-  });
-}*/
+}
