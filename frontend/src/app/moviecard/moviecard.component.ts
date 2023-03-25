@@ -12,6 +12,8 @@ import { Showtime } from '../interfaces/showtime';
 export class MoviecardComponent implements OnInit{
   movies: any[] = [];
   showtimes: any[] = [];
+  rating: any[] = [];
+  ratingmovie = 0;
 
   constructor(private http: HttpClient) {}
 
@@ -36,6 +38,17 @@ export class MoviecardComponent implements OnInit{
         console.error(error);
       }
     );
+
+
+    this.http.get<any[]>('/api/rating').subscribe(
+      (rating) => {
+        this.rating = rating;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
     
   }
+
 }
