@@ -284,7 +284,18 @@ app.get('/api/showtimes', async (req, res) => {
     }
   });
   
-
+  app.post('/api/check-availability', async (req, res) => {
+    const { query, values } = req.body;
+    try {
+      const { rows } = await client.query(query, values);
+      const count = parseInt(rows[0].count);
+      res.json({ count });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+  
 
 
   app.get('/api/ticket', async (req, res) => {
