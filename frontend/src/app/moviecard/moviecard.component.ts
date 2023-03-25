@@ -51,6 +51,4 @@ export class MoviecardComponent implements OnInit{
     
   }
 
-
-
 }

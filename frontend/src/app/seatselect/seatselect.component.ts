@@ -123,4 +123,3 @@ export class SeatselectComponent implements OnInit {
     }
 
 }
-
