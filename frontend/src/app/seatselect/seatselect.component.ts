@@ -23,7 +23,6 @@ export class SeatselectComponent implements OnInit {
   seatCount = 0;
   totalPrice = 0;
 
-
   
 
   constructor(private http: HttpClient) {}
