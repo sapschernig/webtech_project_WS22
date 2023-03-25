@@ -32,6 +32,7 @@ const client = new Client({
     // create_login
     database: 'moviedb2',
     password: 'Benjamin89',
+
     port: 5432,
 });
 
@@ -290,6 +291,16 @@ app.get('/api/showtimes', async (req, res) => {
   app.get('/api/ticket', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM ticket');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/seat', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM seat');
       res.send(rows);
     } catch (err) {
       console.error(err);
