@@ -9,6 +9,7 @@ const SESSION_COOKIE_NAME = 'my-session-cookie';
 const SESSION_EXPIRATION_TIME_MS = 3600000; // 1 hour in milliseconds
 
 
+
 //body parsing mw to handle incoming JSON data
 const bodyParser = require('body-parser');
 
@@ -29,8 +30,8 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'moviedb2',
-    password: 'Benjamin89',
+    database: 'movie_db',
+    password: 'Kavo.zada2',
     port: 5432,
 });
 
@@ -332,6 +333,27 @@ app.get('/api/getCustomerData/:email', (req, res) => {
       });
 
 });
+
+app.post('/api/movies', async (req, res) => {
+  try {
+    const { title, release_date, duration, age_restriction, genre, description } = req.body;
+    console.log(req.body);
+
+    // Insert the movie data into the "movie" table
+    const query = 'INSERT INTO movie(title, release_date, duration, genre, description, age_restriction) VALUES($1, $2, $3, $4, $5, $6)';
+    const values = [title, release_date, duration, genre, description, age_restriction];
+    console.log(values);
+
+    await client.query(query, values);
+    
+    res.status(201).json({ message: 'Movie added successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 
 
 // Edit customer endpoint

@@ -8,6 +8,8 @@ import { MyticketsComponent } from './mytickets/mytickets.component';
 import { RegisterComponent } from './register/register.component';
 import { AccountComponent } from './account/account.component';
 import { SeatselectComponent } from './seatselect/seatselect.component';
+import { AuthGuard } from './services/AuthGuard';
+
 
 const routes: Routes = [
   {
@@ -23,13 +25,20 @@ const routes: Routes = [
     path:'mytickets', component: MyticketsComponent
   },
   {
-    path:'management', component: ManagementViewComponent
+    path: 'admin',
+    component: ManagementViewComponent,
+    //canActivate: [AuthGuard],
+    data: { isAdmin: true }
   },
   {
     path:'addAMovie', component: AddAMovieComponent
   },
   {
-    path:'account', component: AccountComponent
+    path: 'account',
+    component: AccountComponent,
+    //canActivate: [AuthGuard],
+    data: { isAdmin: false }
+    
   },
   {
     path:'seat', component: SeatselectComponent
@@ -38,9 +47,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [],
-  imports: [
-    RouterModule.forRoot(routes)
-  ],
-  exports:[RouterModule]
+  imports: [RouterModule.forRoot(routes)],
+  exports:[RouterModule],
+  providers:[AuthGuard]
 })
 export class RoutingModule { }

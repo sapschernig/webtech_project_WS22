@@ -9,6 +9,7 @@ import { lastValueFrom } from 'rxjs';
 })
 export class AppComponent implements OnInit {
   title = 'webtech-projekt';
+  hideSlideshow = false;
 
   constructor(private service : AppServiceService) {
 
