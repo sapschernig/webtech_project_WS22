@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@angular/common": "^15.2.3",
+    "connect-pg-simple": "^8.0.0",
+    "cors": "^2.8.5",
+    "express-session": "^1.17.3"
+  }
+}

@@ -1,0 +1,68 @@
+<div class="body_select">
+    <div class="movie-container">
+        <label>Pick a movie: </label>
+
+        <select id="movie" [(ngModel)]="selectedMovie" (change)="onMovieChange()">
+            <option value="" selected disabled>Select a movie</option>
+            <option value="{{movie.id}}" *ngFor="let movie of movies">{{ movie.title }}</option>
+        </select>
+
+
+        <select id="date" [(ngModel)]="selectedDate" (change)="onMovieChange()">
+            <option value="" selected disabled>Select a date</option>
+            <ng-container *ngFor="let showtime of showtimes">
+                <option value="{{showtime.date}}" *ngIf="selectedMovie == showtime.movie_id">{{
+                    showtime.date | date:'shortDate'}}
+                </option>
+            </ng-container>
+        </select>
+
+        <select id="time" [(ngModel)]="selectedShow" (change)="onSelectionChange()">
+            <option value="" selected disabled>Select a time</option>
+            <ng-container *ngFor="let showtime of showtimes">
+                <option value="{{showtime.id}}"
+                    *ngIf="selectedMovie == showtime.movie_id && selectedDate == showtime.date">{{
+                    showtime.start_time}}
+                </option>
+            </ng-container>
+        </select>
+
+
+        <ul class="showcase">
+            <li>
+                <div class="free"></div>
+                <small>Free Seat</small>
+            </li>
+            <li>
+                <div class="deluxe"></div>
+                <small>Deluxe Seat</small>
+            </li>
+            <li>
+                <div class="selected"></div>
+                <small>Selected</small>
+            </li>
+            <li>
+                <div class="occupied"></div>
+                <small>Occupied</small>
+            </li>
+        </ul>
+
+        <div class="container">
+            <div class="screen"></div>
+
+
+            <div class="row" *ngFor="let m of numSequence(numberSeats); let rowIndex=index">
+                <ng-container *ngFor="let n of numSequence(20); let seatIndex=index">
+                    <div class="seat" [id]="rowIndex * 20 + seatIndex + 1"
+                        (click)="addToSeatIdList(rowIndex * 20 + seatIndex + 1)"></div>
+                </ng-container>
+            </div>
+            <p class="text">
+                You have selected <span id="count">{{seatCount}}</span> seats for the total price of € <span
+                    id="total">{{totalPrice}}</span>
+            </p>
+            <button class="buttonticket" (click)="bookTicket()">Buy Tickets</button>
+        </div>
+
+    </div>
+</div>

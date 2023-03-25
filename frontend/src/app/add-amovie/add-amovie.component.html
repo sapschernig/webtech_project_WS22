@@ -1,0 +1,46 @@
+<h1>{{ title }}</h1>
+
+<div class="addMovie">
+<form [formGroup]="addMovieForm" (ngSubmit)="addMovie()">
+    <div class="movieInfo">
+        
+        <div>
+            <p>Title</p>
+            <input type="text" id="title" formControlName="title" required>
+          </div>
+       
+          <div>
+            <p>Release Date</p>
+            <input type="date" id="releaseDate" formControlName="releaseDate">
+          </div>
+          <div>
+            <p>Duration</p>
+            <input type="number" id="duration" formControlName="duration">
+          </div>
+          <div>
+            <p>Age Restriction</p>
+            <input type="number" id="ageRestriction" formControlName="ageRestriction">
+          </div>
+          
+
+            <div>
+                <p>Genre</p>
+                <select id="genre" formControlName="genre">
+                <option value="">Select a genre</option>
+                <option value="Action">Action</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Drama">Drama</option>
+                <option value="Horror">Horror</option>
+                <option value="Romance">Romance</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Thriller">Thriller</option>
+                </select>
+            </div>
+
+      <div class="description">
+        <p>Description</p>
+        <textarea id="description" formControlName="description"></textarea>
+      </div>
+      <button type="submit" [disabled]="!addMovieForm.valid">Add Movie</button>
+
+</div>

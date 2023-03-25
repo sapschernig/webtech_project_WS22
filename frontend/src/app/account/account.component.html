@@ -1,0 +1,23 @@
+<h1>{{ title }}</h1>
+
+    <div class="userData">
+    <h3>User Data</h3>
+    
+    <div *ngIf="userData">
+        <p>First Name: {{ userData.first_name }}</p>
+        <p>Last Name: {{ userData.last_name }}</p>
+        <p>Email: {{ userData.email }}</p>
+        <p>Phone: {{ userData.phone }}</p>
+        <p>Address: {{ userData.address }}</p>
+        <p>City: {{ userData.city }}</p>
+        <p>Zip Code: {{ userData.zipcode }}</p>
+        <p>Country: {{ userData.country }}</p>
+        <button (click)="editUserData()">Edit Data</button>
+      </div>
+    </div>
+
+<button (click)="editUserData()">Edit Data</button>
+
+
+
+

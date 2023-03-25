@@ -1,0 +1,35 @@
+h1 {
+    color: rgb(255, 255, 255);
+    margin-left: 30px;
+}
+p {
+    color: white;
+    margin-left: 30px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+input {
+    margin-left: 30px;
+    margin-bottom: 10px;
+}
+button{
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-bottom: 30px;
+}
+
+.register {
+    width: auto;
+    display: flex;
+    justify-content: left;
+    align-items: last baseline;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 100px;
+}
+#address {
+    width: 318px;
+}

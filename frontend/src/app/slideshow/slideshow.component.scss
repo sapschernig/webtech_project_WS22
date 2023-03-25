@@ -1,4 +1,17 @@
 .slideshow {
+  height: 350px;
+  display: flex;
+  position: relative;
+  margin-top: 5px;
+  margin-left: 40%;
+}
+
+.slide {
+  width: 230px;
+  height: 350px;
+  border-radius: 10px;
+  background-size: cover;
+
     width: 100%;
     background-color: rgb(84, 81, 81);
     height: 350px;
