@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
+import { Customer } from '../interfaces/customer';
 import { Ticket } from '../interfaces/ticket';
 import { LoginComponent } from '../login/login.component';
 
@@ -24,6 +25,7 @@ export class SeatselectComponent implements OnInit {
   seatCount = 0;
   totalPrice = 0;
   message: string='';
+  userData: Customer | undefined;
 
 
   
@@ -60,6 +62,21 @@ export class SeatselectComponent implements OnInit {
         console.error(error);
       }
     );
+
+    this.http.get('/api/account').subscribe(
+      (data) => {
+        console.log(data);
+        this.userData = data as Customer;  
+        console.log(this.userData.first_name);
+        console.log(this.userData.id);
+      },
+      (error) => {
+        console.log(error);
+        this.message = 'Error fetching user data';
+      }
+    );
+
+    
   }
 
    numSequence(n: number): Array<number> {
@@ -138,12 +155,14 @@ export class SeatselectComponent implements OnInit {
 
       while (i < this.seatIdList.length) {
 
+      
+
         const data = {
           id: this.tickets.length + 1 + i,
           price: this.totalPrice/this.seatIdList.length,
           show_id: this.selectedShow,
           seat_id: this.seatIdList[i],
-          customer_id: 1,
+          customer_id: this.userData?.id
         };
         this.http.post('/api/ticket', data).subscribe(
           (response) => {
