@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
+import { Component } from '@angular/core';
+
 @Component({
   selector: 'app-slideshow',
   templateUrl: './slideshow.component.html',
@@ -50,4 +52,7 @@ export class SlideshowComponent implements OnInit, OnDestroy{
   getCurrentSlideUrl() {
     return `url('${this.images[this.currentIndex]}')`;
   }
+
+export class SlideshowComponent {
+
 }

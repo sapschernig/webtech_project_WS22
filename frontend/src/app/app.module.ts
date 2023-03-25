@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -24,6 +25,7 @@ import { AuthGuard } from './services/AuthGuard';
 import { AuthService } from './services/authservice';
 import { AuthInterceptor } from './services/AuthInterceptor';
 import { DatePipe } from '@angular/common';
+
 
 
 
@@ -53,6 +55,14 @@ import { DatePipe } from '@angular/common';
   providers: [
     DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
+
+    FooterComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
