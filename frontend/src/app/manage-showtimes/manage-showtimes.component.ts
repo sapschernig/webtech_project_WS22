@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MovieService } from '../services/movieService';
+import { TheaterService } from '../services/theaterService';
 
 @Component({
   selector: 'app-manage-showtimes',
@@ -14,35 +15,50 @@ export class ManageShowtimesComponent implements OnInit{
   sortField: string = '';
   sortDirection: string = '';
 
-  constructor(private showtimesService: MovieService) { }
+  constructor(
+    private showtimesService: MovieService,
+    private theaterService: TheaterService) { }
 
   ngOnInit() {
     this.fetchData();
   }
 
   fetchData() {
-    this.showtimesService.getWeeklyShowtimes(this.sortField, this.sortDirection).subscribe(
-      data => {
-        console.log('data:', data);
-        this.showtimes = data.map(showtime => ({
-          id: showtime.id,
-          movie_id: showtime.movie_id,
-          theater_id: showtime.theater_id,
-          start_time: showtime.start_time,
-          date: showtime.date,
-          movie_title: showtime.movie_title || '', // use a ternary operator to check if the movie_title is defined
-          theater_name: showtime.theater ? showtime.theater.name : '' // use a ternary operator to check if the theater object is defined
-        }));
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.showtimesService
+      .getWeeklyShowtimes(this.sortField, this.sortDirection)
+      .subscribe(
+        (data) => {
+          console.log('data:', data);
+          this.showtimes = data.map((showtime) => ({
+            id: showtime.id,
+            movie_id: showtime.movie_id,
+            theater_id: showtime.theater_id,
+            start_time: showtime.start_time,
+            date: showtime.date,
+            movie_title: showtime.movie_title || '',
+            theater_name: '',
+          }));
+
+          // Get the theater names for each showtime
+          this.showtimes.forEach((showtime) => {
+            this.theaterService.getTheater(showtime.theater_id).subscribe(
+              (theater) => {
+                showtime.theater_name = theater.name;
+              },
+              (error) => {
+                console.log(error);
+              }
+            );
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   }
-  
 
   sort(field: string) {
-    //If the field to sort is the same, toggle the sorting direction. Otherwise, reset to default (ascending).
+    // If the field to sort is the same, toggle the sorting direction. Otherwise, reset to default (ascending).
     if (field === this.sortField) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {

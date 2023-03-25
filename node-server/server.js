@@ -251,7 +251,7 @@ app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM showtimes');
       res.send(rows);
-      console.log(rows);
+      
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
@@ -262,12 +262,30 @@ app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM theater');
       res.send(rows);
-      console.log(rows);
+      
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
     }
   });
+
+  app.get('/api/theater/:id', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM theater WHERE id = $1', [req.params.id]);
+      if (rows.length > 0) {
+        res.send(rows[0]);
+        
+      } else {
+        res.status(404).send('Theater not found');
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+  
+
+
 
   app.get('/api/ticket', async (req, res) => {
     try {

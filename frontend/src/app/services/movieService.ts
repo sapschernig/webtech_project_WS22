@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { forkJoin, map, mergeMap, Observable } from 'rxjs';
-import * as moment from 'moment';
 
 
 @Injectable({
@@ -13,8 +12,8 @@ export class MovieService {
     getWeeklyShowtimes(sortField: string, sortDirection: string): Observable<any[]> {
         // set up the query parameters for the API call
         let params = new HttpParams();
-        params = params.append('start_date', moment().startOf('week').format('YYYY-MM-DD'));
-        params = params.append('end_date', moment().endOf('week').format('YYYY-MM-DD'));
+        // params = params.append('start_date', moment().startOf('week').format('YYYY-MM-DD'));
+        // params = params.append('end_date', moment().endOf('week').format('YYYY-MM-DD'));
       
         return this.http.get<any[]>('api/showtimes', { params }).pipe(
           mergeMap(showtimes => {
@@ -54,22 +53,26 @@ export class MovieService {
             );
           }),
           map(data => {
-            // sort the data based on the sort field and direction
-            data.sort((a, b) => {
-              const fieldA = a[sortField];
-              const fieldB = b[sortField];
-              if (fieldA < fieldB) {
-                return sortDirection === 'asc' ? -1 : 1;
-              } else if (fieldA > fieldB) {
-                return sortDirection === 'asc' ? 1 : -1;
-              } else {
-                return 0;
-              }
-            });
-      
             return data;
-          })
-        );
+          }))
+          
+        //   map(data => {
+        //     // sort the data based on the sort field and direction
+        //     data.sort((a, b) => {
+        //       const fieldA = a[sortField];
+        //       const fieldB = b[sortField];
+        //       if (fieldA < fieldB) {
+        //         return sortDirection === 'asc' ? -1 : 1;
+        //       } else if (fieldA > fieldB) {
+        //         return sortDirection === 'asc' ? 1 : -1;
+        //       } else {
+        //         return 0;
+        //       }
+        //     });
+      
+        //     return data;
+        //   })
+        // );
             
           
       }
