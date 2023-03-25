@@ -12,6 +12,7 @@
           <div class="rating">
             <span>Rating: </span>
             <span>{{calculateRating(movie.id)}}</span>
+            <span> <br> <a href='#' (click)="openRatings(movie.id)">Read Customer Ratings</a></span>
           </div>
           <h4>Duration: {{ movie.duration }} minutes</h4>
           <h4>Age restriction: {{ movie.age_restriction }}</h4>

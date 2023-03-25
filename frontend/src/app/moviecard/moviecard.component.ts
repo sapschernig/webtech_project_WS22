@@ -65,4 +65,17 @@ let average = (ratingmovie/i).toFixed(1);
 return average;
   }
 
+  openRatings(x: number){
+   const ratingpopup = window.open('','popup', 'width=600,height=400');
+
+   ratingpopup?.document.write('<h1>Ratings</h1><ul>')
+
+this.rating.forEach(r => {
+    if(x == r.movie_id){
+      ratingpopup?.document.write(`<li>${r.review}</li>`);
+  }
+  });
+  ratingpopup?.document.write('</ul>')
+
+}
 }

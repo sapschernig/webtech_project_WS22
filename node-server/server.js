@@ -179,7 +179,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // protected endpoint - requires authentication
-app.get('/api/account', async (req, res) => {
+app.get('/api/mytickets', async (req, res) => {
   // Check if user is logged in
   if (!req.session.userId) {
     res.status(401).json({ error: 'Not authenticated' });
@@ -250,6 +250,16 @@ app.get('api/movies', (req,res)=> {
 app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM showtimes');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/theater', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM theater');
       res.send(rows);
     } catch (err) {
       console.error(err);
