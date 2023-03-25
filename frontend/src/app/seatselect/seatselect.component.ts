@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
-import { Ticket } from '../interfaces/ticket';
 
 
 
@@ -74,31 +73,6 @@ export class SeatselectComponent implements OnInit {
     return Array(n);} 
   
 
-    onSelectionChange(): void {
-      let seat = document.getElementsByClassName('seat');
-
-     for(let t of this.theater){
-      let idString = t.id.toString();
-      if(this.selectedShow == idString)
-      this.numberSeats = t.capacity/20;
-    }
-
-
-    for(let ticket of this.tickets){
-      if(this.selectedShow == ticket.show_id){
-        let seat = document.getElementsByClassName('seat');
-        seat[ticket.seat_id-1].classList.add('occupied')
-      }
-    }
-
-    for(let i = (this.numberSeats-1)*20+1; i <=this.numberSeats*20; i++){
-      seat[i-1].classList.add('deluxe');
-      }
-
-    this.seatCount = 0;
-    this.totalPrice = 0;
-  }
-
     onMovieChange(): void{
       let seat = document.getElementsByClassName('seat');
         for(let i = 0; i<seat.length; i++){
@@ -112,6 +86,30 @@ export class SeatselectComponent implements OnInit {
         this.seatCount = 0;
         this.totalPrice = 0;
     }
+
+    onSelectionChange(): void {
+      for(let t of this.theater){
+        let idString = t.id.toString();
+        if(this.selectedShow == idString)
+        this.numberSeats = t.capacity/20;
+      }
+
+      let seat = document.getElementsByClassName('seat');
+
+      for(let i = (this.numberSeats-1)*20+1; i <=this.numberSeats*20; i++){
+        seat[i-1].classList.add('deluxe');
+        }
+
+    for(let ticket of this.tickets){
+      if(this.selectedShow == ticket.show_id){
+        seat[ticket.seat_id-1].classList.add('occupied')
+      }
+    }
+    this.seatCount = 0;
+    this.totalPrice = 0;
+  }
+
+
 
     addToSeatIdList(id: number){
 
