@@ -13,7 +13,8 @@ export class MoviecardComponent implements OnInit{
   movies: any[] = [];
   showtimes: any[] = [];
   rating: any[] = [];
-  ratingmovie = 0;
+
+
 
   constructor(private http: HttpClient) {}
 
@@ -49,6 +50,19 @@ export class MoviecardComponent implements OnInit{
       }
     );
     
+  }
+
+  calculateRating(x: number): string{
+    let i = 0;
+    let ratingmovie = 0;
+  for(let r of this.rating){
+    if(x == r.movie_id){
+      i++;
+      ratingmovie += r.rating;
+  }
+  }
+let average = (ratingmovie/i).toFixed(1);
+return average;
   }
 
 }

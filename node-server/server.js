@@ -30,8 +30,8 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'movie_db',
-    password: 'Kavo.zada2',
+    database: 'moviedb2',
+    password: 'Benjamin89',
     port: 5432,
 });
 
@@ -79,8 +79,8 @@ console.log("Server running at: http://localhost:" + port);
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'moviedb',
-    password: 'hallo',
+    database: 'moviedb2',
+    password: 'Benjamin89',
     port: 5432,
 });*/
 
@@ -250,6 +250,16 @@ app.get('api/movies', (req,res)=> {
 app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM showtimes');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/rating', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM rating');
       res.send(rows);
     } catch (err) {
       console.error(err);
