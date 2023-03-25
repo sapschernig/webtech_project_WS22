@@ -4,3 +4,24 @@ h1 {
 p {
     color: white;
 }
+.manageShowtimes{
+    padding-bottom: 100px;
+}
+
+.showtimesOverview{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 30px;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    
+}
+td{
+    align-items: center;
+}

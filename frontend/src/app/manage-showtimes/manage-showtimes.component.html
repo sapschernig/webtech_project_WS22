@@ -1,1 +1,27 @@
 <h1>{{ title }}</h1>
+<div class="manageShowtimes">
+
+<div class="showtimesOverview">
+<h2>Weekly Movie Showtimes</h2>
+
+<table>
+  <thead>
+    <tr>
+        <th (click)="sort('movie_title')">Movie</th>
+        <th (click)="sort('theater_name')">Theater</th>
+        <th (click)="sort('date')">Date</th>
+        <th (click)="sort('start_time')">Start Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let showtime of showtimes">
+      <td>{{ showtime.movie_title }}</td>
+      <td>{{ showtime.theater_name }}</td>
+      <td>{{ showtime.date | date: 'yyyy-MM-dd'}}</td>
+      <td>{{ showtime.start_time}}</td>
+
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>

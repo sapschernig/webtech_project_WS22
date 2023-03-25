@@ -251,6 +251,7 @@ app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM showtimes');
       res.send(rows);
+      console.log(rows);
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
@@ -261,6 +262,7 @@ app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM theater');
       res.send(rows);
+      console.log(rows);
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
