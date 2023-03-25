@@ -39,7 +39,9 @@ export class AccountComponent implements OnInit{
     }
     this.http.get('/api/account').subscribe(
       (data) => {
-        this.userData = data as Customer;    
+        console.log(data);
+        this.userData = data as Customer;  
+        console.log(this.userData.first_name); 
       },
       (error) => {
         console.log(error);

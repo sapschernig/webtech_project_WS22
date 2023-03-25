@@ -1,13 +1,13 @@
 export interface Customer {
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     email: string;
     password: string;
     phone: string;
     address: string;
     city: string;
-    state: string;
-    zipCode: string;
+    zipcode: string;
     country: string;
+    id: number;
   }
   
