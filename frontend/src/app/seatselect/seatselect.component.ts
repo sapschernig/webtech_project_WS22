@@ -2,6 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
 
+import { Customer } from '../interfaces/customer';
+import { Ticket } from '../interfaces/ticket';
+import { LoginComponent } from '../login/login.component';
+
+
 
 
 @Component({
@@ -22,7 +27,12 @@ export class SeatselectComponent implements OnInit {
   seatIdList: string[] = [];
   seatCount = 0;
   totalPrice = 0;
+
+  message: string='';
+  userData: Customer | undefined;
+
   numberSeats = 0;
+
   
 
   constructor(private http: HttpClient) {}
@@ -57,6 +67,22 @@ export class SeatselectComponent implements OnInit {
         console.error(error);
       }
     );
+
+
+    this.http.get('/api/account').subscribe(
+      (data) => {
+        console.log(data);
+        this.userData = data as Customer;  
+        console.log(this.userData.first_name);
+        console.log(this.userData.id);
+      },
+      (error) => {
+        console.log(error);
+        this.message = 'Error fetching user data';
+      }
+    );
+
+    
 
     this.http.get<any[]>('/api/theater').subscribe(
       (theater) => {
@@ -143,4 +169,43 @@ export class SeatselectComponent implements OnInit {
     }
     }
 
-}
+
+    bookTicket() {
+      console.log("Test");
+      console.log(this.selectedMovie);
+      console.log(this.selectedShow);
+      console.log(this.seatIdList[0]);
+      console.log(this.tickets.length);
+
+
+      console.log(sessionStorage);
+
+      let i = 0;
+
+      while (i < this.seatIdList.length) {
+
+      
+
+        const data = {
+          id: this.tickets.length + 1 + i,
+          price: this.totalPrice/this.seatIdList.length,
+          show_id: this.selectedShow,
+          seat_id: this.seatIdList[i],
+          customer_id: this.userData?.id
+        };
+        this.http.post('/api/ticket', data).subscribe(
+          (response) => {
+            this.message = 'Ticket created successfully';
+          },
+          (error) => {
+            console.error(error);
+            this.message = 'Error creating ticket';
+          }
+        );
+
+        i++;
+
+      }
+    }
+
+    }
