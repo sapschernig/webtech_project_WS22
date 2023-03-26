@@ -29,6 +29,7 @@ import { DatePipe } from '@angular/common';
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,15 +55,8 @@ import { DatePipe } from '@angular/common';
   ],
   providers: [
     DatePipe,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
-
-    FooterComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [],
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+  ], 
   bootstrap: [AppComponent]
 })
 export class AppModule { }

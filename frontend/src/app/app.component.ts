@@ -1,9 +1,6 @@
-
 import { Component, OnInit } from '@angular/core';
 import { AppServiceService } from './app-service.service';
 import { lastValueFrom } from 'rxjs';
-
-import { Component } from '@angular/core';
 
 
 @Component({
@@ -35,11 +32,5 @@ export class AppComponent implements OnInit {
       console.log('Error: ', err);
     }
   }
-  
-
-
-
-export class AppComponent {
-  title = 'webtech-projekt';
-
 }
+

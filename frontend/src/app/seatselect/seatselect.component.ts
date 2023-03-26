@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
-
 import { Customer } from '../interfaces/customer';
 import { Ticket } from '../interfaces/ticket';
 import { LoginComponent } from '../login/login.component';
