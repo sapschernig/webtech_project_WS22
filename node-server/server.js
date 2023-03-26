@@ -161,6 +161,29 @@ function getUserById(userId){
     });
 }
 
+app.get('/api/account', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.userId) {
+    res.status(401).json({ error: 'Not authenticated' });
+    return;
+  }
+
+  try {
+    // Fetch user data from database
+    const userId = req.session.userId;
+    const user = await getUserById(userId);
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (err) {
+    console.error('Error retrieving user:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 // login endpoint
 app.post('/api/login', async (req, res) => {
