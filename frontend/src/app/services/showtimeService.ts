@@ -39,6 +39,16 @@ export class showtimesService {
           
       );
   }
+  addShowtime(movieId: number, theaterId: number, date: string, time: string): Observable<any> {
+    const data = {
+      movie_id: movieId,
+      theater_id: theaterId,
+      date: date,
+      start_time: time
+    };
+    return this.http.post<any>('api/showtimes', data);
+  }
+  
 
   
 }

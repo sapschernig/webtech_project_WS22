@@ -23,6 +23,9 @@ export class ManageShowtimesComponent implements OnInit{
   movies: any[] | undefined;
   theaters: any[] | undefined;
   movieSelect!: string;
+  showtimeAvailable: boolean = false;
+  showtimeMessage: string | undefined;
+  submitDisabled: boolean | undefined;
 
   constructor(
     private showtimesService: MovieService,
@@ -144,13 +147,46 @@ export class ManageShowtimesComponent implements OnInit{
         console.log('Showtime exists:', showtimeExists);
         if (showtimeExists) {
           console.log('Showtime already exists');
+          this.showtimeAvailable = false;
+          this.showtimeMessage = 'Showtime is not available';
         } else {
           console.log('Showtime is available');
+          this.showtimeAvailable = true;
+          this.showtimeMessage = 'Showtime is available';
         }
+        this.submitDisabled = !this.showtimeAvailable;
       },
       (error) => {
         console.log(error);
       }
     );
   }
+
+  onSubmit(){
+    console.log('Form submitted');
+
+    //retrieve data from form
+    const movieId = this.showtimeForm.get('movieSelect')?.value;
+    const theaterId = this.showtimeForm.get('theaterSelect')?.value;
+    const date = this.showtimeForm.get('dateInput')?.value;
+    let time = this.showtimeForm.get('timeInput')?.value;
+    time += ':00';
+
+    // Call the addShowtime method of the ShowtimeService
+  this.showtimeService.addShowtime(movieId, theaterId, date, time).subscribe(
+    (response) => {
+      console.log('Showtime added:', response);
+      // Clear the form
+      this.showtimeForm.reset();
+      // Disable the submit button again
+      this.showtimeAvailable = false;
+    },
+    (error) => {
+      console.log('Error adding showtime:', error);
+    }
+  );
+
+  }
+
+
 }
