@@ -50,7 +50,7 @@ export class SeatselectComponent implements OnInit {
     this.http.get<Showtime[]>('/api/showtimes').subscribe(
       (showtimes) => {
         this.showtimes = showtimes.map((showtime) => {
-          const date = new Date(showtime.time);
+          const date = new Date(showtime.start_time);
           return { ...showtime, time: date.toLocaleDateString() };
         });
       },
