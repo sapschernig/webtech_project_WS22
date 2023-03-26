@@ -60,7 +60,7 @@
       </div>
       <div *ngIf="showtimeAvailable === true">
         <p>This showtime is available.</p>
-        <button type="submit">Submit</button>
+        <button type="submit" (click)="onSubmit()">Submit</button>
       </div>
       <div *ngIf="showtimeAvailable === false">
         <p>This showtime is not available.</p>

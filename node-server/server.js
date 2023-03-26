@@ -403,6 +403,26 @@ app.post('/api/movies', async (req, res) => {
   }
 });
 
+app.post('/api/showtimes', (req, res) => {
+  // Extract the movie_id, theater_id, start_time and date from the request body
+  const { movie_id, theater_id, start_time, date } = req.body;
+  console.log(req.body);
+
+  // insert data into "showtimes" table
+  const query = `INSERT INTO showtimes (movie_id, theater_id, start_time, date) VALUES ($1, $2, $3, $4)`;
+  const values = [movie_id, theater_id, start_time, date];
+  console.log(values); 
+
+  client.query(query, values, (err, result) => {
+    if (err) {
+      console.log(err.message);
+      console.log(err.stack);
+      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      res.status(201).json({ message: 'Showtime added successfully!'});
+    }
+  });
+});
 
 
 
