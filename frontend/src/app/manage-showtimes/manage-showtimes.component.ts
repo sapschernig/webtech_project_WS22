@@ -142,7 +142,7 @@ export class ManageShowtimesComponent implements OnInit{
     this.showtimeService.getShowtimesByTheaterAndTime(theaterId, date, time).subscribe(
       (showtimeExists) => {
         console.log('Showtime exists:', showtimeExists);
-        if (showtimeExists) {
+        if (!showtimeExists) {
           console.log('Showtime already exists');
         } else {
           console.log('Showtime is available');
