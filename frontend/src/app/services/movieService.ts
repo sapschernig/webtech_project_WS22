@@ -76,7 +76,9 @@ export class MovieService {
             
           
       }
-    
+      getMovieDuration(movieId: number) {
+        return this.http.get<number>(`api/movies/${movieId}/duration`);
+      }
 }
 
 function moment() {

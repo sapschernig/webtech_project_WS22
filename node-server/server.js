@@ -247,6 +247,25 @@ app.get('api/movies', (req,res)=> {
     .catch(err => console.error('Error querying the database', err.stack));
 });
 
+app.get('/api/movies/:movieId/duration', (req, res) => {
+  const movieId = req.params.movieId;
+
+  db.query('SELECT duration FROM movie WHERE id = ?', [movieId], (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      if (results.length === 0) {
+        res.status(404).json({ message: `Movie with id ${movieId} not found` });
+      } else {
+        const duration = results[0].duration;
+        res.json({ duration });
+      }
+    }
+  });
+});
+
+
 app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM showtimes');
