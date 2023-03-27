@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { showtimesService } from '../services/showtimeService';
 import { map, tap } from 'rxjs';
 import * as moment from 'moment';
+import { Movie } from '../interfaces/movie';
 
 
 
@@ -28,11 +29,13 @@ export class ManageShowtimesComponent implements OnInit{
   showtimeAvailable: boolean = false;
   showtimeMessage: string | undefined;
   submitDisabled: boolean | undefined;
+  
 
   constructor(
     private showtimesService: MovieService,
     private theaterService: TheaterService,
     private http: HttpClient,
+    private movieService: MovieService,
     private showtimeService: showtimesService,
     private formBuilder: FormBuilder
     ) { 
@@ -144,7 +147,12 @@ export class ManageShowtimesComponent implements OnInit{
     console.log('Date:', date);
     console.log('Time:', time);
 
-    
+    //get selected start time
+    this.movieService.getMovieById(movieId).subscribe((movie) => {
+      const startTime = moment(`${date} ${time}`);
+        const earliestTime = moment(startTime).subtract(3, 'hours');
+        const latestTime = moment(startTime).add(3, 'hours');
+    })
 
     this.showtimeService.getShowtimesByTheaterAndTime(theaterId, date, time).subscribe(
       (showtimeExists) => {
