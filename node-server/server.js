@@ -409,7 +409,7 @@ app.post('/api/showtimes', (req, res) => {
   console.log(req.body);
 
   // insert data into "showtimes" table
-  const query = `INSERT INTO showtimes (movie_id, theater_id, start_time, date) VALUES ($1, $2, $3, $4)`;
+  const query = `INSERT INTO showtimes (movie_id, theater_id, start_time, date) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`;
   const values = [movie_id, theater_id, start_time, date];
   console.log(values); 
 

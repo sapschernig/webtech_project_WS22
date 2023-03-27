@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { showtimesService } from '../services/showtimeService';
 import { map, tap } from 'rxjs';
+import * as moment from 'moment';
+
 
 
 @Component({
@@ -142,6 +144,13 @@ export class ManageShowtimesComponent implements OnInit{
     console.log('Date:', date);
     console.log('Time:', time);
 
+    //get movie duration
+    const duration = this.movies?.find(movie => movie.id === movieId)?.duration;
+
+    if(duration){
+      //calculate end time
+      const endTime= moment('${date} ${time}', 'YYYY-MM-DD HH:mm:ss').add(duration, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+
     this.showtimeService.getShowtimesByTheaterAndTime(theaterId, date, time).subscribe(
       (showtimeExists) => {
         console.log('Showtime exists:', showtimeExists);
@@ -161,7 +170,7 @@ export class ManageShowtimesComponent implements OnInit{
       }
     );
   }
-
+  }
   onSubmit(){
     console.log('Form submitted');
 
