@@ -144,12 +144,7 @@ export class ManageShowtimesComponent implements OnInit{
     console.log('Date:', date);
     console.log('Time:', time);
 
-    //get movie duration
-    const duration = this.movies?.find(movie => movie.id === movieId)?.duration;
-
-    if(duration){
-      //calculate end time
-      const endTime= moment('${date} ${time}', 'YYYY-MM-DD HH:mm:ss').add(duration, 'minutes').format('YYYY-MM-DD HH:mm:ss');
+    
 
     this.showtimeService.getShowtimesByTheaterAndTime(theaterId, date, time).subscribe(
       (showtimeExists) => {
@@ -170,7 +165,7 @@ export class ManageShowtimesComponent implements OnInit{
       }
     );
   }
-  }
+  
   onSubmit(){
     console.log('Form submitted');
 
