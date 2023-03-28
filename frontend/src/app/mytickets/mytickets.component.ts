@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Ticket } from '../interfaces/ticket';
 import { NgFor } from '@angular/common';
+import { Customer } from '../interfaces/customer';
 
 @Component({
   selector: 'app-mytickets',
@@ -13,6 +14,9 @@ export class MyticketsComponent implements OnInit {
   tickets: any[] = [];
   movies: any[] = [];
   seats: any[] = [];
+
+  userData: Customer | undefined;
+  message: string='';
 
   
 
@@ -43,6 +47,19 @@ export class MyticketsComponent implements OnInit {
       },
       (error) => {
         console.error(error);
+      }
+    );
+
+    this.http.get('/api/account').subscribe(
+      (data) => {
+        console.log(data);
+        this.userData = data as Customer;  
+        console.log(this.userData.first_name);
+        console.log(this.userData.id);
+      },
+      (error) => {
+        console.log(error);
+        this.message = 'Error fetching user data';
       }
     );
 

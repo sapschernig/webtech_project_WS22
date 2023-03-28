@@ -5,7 +5,7 @@
             <div *ngFor="let movie of movies">
                 <img *ngIf="ticket.movie_id === movie.id" height=90px src="assets/pictures/current_movies/{{ movie.picture }}">
             </div>
-            <div class="ticketinfo">
+            <div *ngIf="ticket.customer_id === userData?.id" class="ticketinfo">
                 <p> Alle Daten zum Ticket</p>
                 <p>{{ ticket.id }}</p>
                 <p>{{ ticket.price }}</p>
