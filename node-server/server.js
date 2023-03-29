@@ -314,6 +314,47 @@ app.get('/api/showtimes', async (req, res) => {
       res.status(500).send(err);
     }
   });
+
+  app.post('/api/theater/add', async (req, res) => {
+    // Validate and sanitize the input
+    const { name, capacity, features } = req.body;
+    const errors = [];
+    if (!name) {
+      errors.push('Name is required');
+    }
+    if (!capacity) {
+      errors.push('Capacity is required');
+    }
+    if (!Array.isArray(features)) {
+      errors.push('Features must be an array');
+    } else {
+      features.forEach((feature, i) => {
+        if (typeof feature !== 'string' || !feature.trim()) {
+          errors.push(`Feature ${i + 1} is invalid`);
+        }
+      });
+    }
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+    const sanitizedFeatures = features.map(feature => feature.trim());
+  
+    // Insert the theater into the database
+    try {
+      const result = await client.query(
+        'INSERT INTO theater (name, capacity, features) VALUES ($1, $2, $3) RETURNING id',
+        [name, capacity, sanitizedFeatures]
+      );
+      const newTheaterId = result.rows[0].id;
+      return res.status(201).json({ id: newTheaterId });
+    } catch (error) {
+      console.error('Error inserting theater:', error);
+      return res.sendStatus(500);
+    }
+  });
+  
+  
+  
   
 
 

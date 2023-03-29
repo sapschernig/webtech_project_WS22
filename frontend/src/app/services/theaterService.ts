@@ -20,6 +20,10 @@ export class TheaterService {
     return this.http.get<Theater>(`${this.apiUrl}/${id}`);
   }
 
+  addTheater(theater: Theater): Observable<any> {
+    return this.http.post<any>('/api/theater/add', theater);
+  }
+
   updateTheater(theater: Theater): Observable<any> {
     return this.http.put(`${this.apiUrl}/${theater.id}`, theater);
   }

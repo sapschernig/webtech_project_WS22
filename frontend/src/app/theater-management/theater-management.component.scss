@@ -1,0 +1,35 @@
+h1 {
+    color: white;
+}
+p {
+    color: white;
+}
+.manageTheaters{
+    padding-bottom: 100px;
+}
+
+.theaterOverview{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 30px;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+form div {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    margin-right: 10px;
+  }
+  
