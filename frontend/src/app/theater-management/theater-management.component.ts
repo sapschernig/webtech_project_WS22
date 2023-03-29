@@ -15,6 +15,8 @@ export class TheaterManagementComponent implements OnInit{
 
   theaters!: Theater[];
   theaterForm!: FormGroup;
+  selectedTheater: Theater | undefined;
+  isEditMode = false;
 
   constructor(
     private theaterService: TheaterService,
@@ -24,7 +26,7 @@ export class TheaterManagementComponent implements OnInit{
       this.loadTheaters();
       this.createForm();
     }
-  
+    
     loadTheaters(): void {
       this.theaterService.getAllTheaters().subscribe(
         theaters => {
@@ -35,9 +37,10 @@ export class TheaterManagementComponent implements OnInit{
         }
       );
     }
-  
+    
     createForm(): void {
       this.theaterForm = this.formBuilder.group({
+        id: [0],
         name: ['', Validators.required],
         capacity: ['', Validators.required],
         features: ['']
@@ -47,14 +50,14 @@ export class TheaterManagementComponent implements OnInit{
     addTheater(): void {
       const featuresArr = this.theaterForm.get('features')?.value;
       const features = Array.isArray(featuresArr) ? featuresArr : [featuresArr];
-    
+  
       const newTheater: Theater = {
         id: 0,
         name: this.theaterForm.get('name')?.value,
         capacity: this.theaterForm.get('capacity')?.value,
         features: features
       };
-    
+  
       this.theaterService.addTheater(newTheater).subscribe(
         () => {
           this.loadTheaters();
@@ -66,4 +69,51 @@ export class TheaterManagementComponent implements OnInit{
       );
     }
   
+    editTheater(theater: Theater): void {
+      this.isEditMode = true;
+      this.theaterForm.setValue({
+        id: theater.id,
+        name: theater.name,
+        capacity: theater.capacity,
+        features: theater.features
+      });
+    }
+    
+    cancelEditMode() {
+      this.isEditMode = false;
+      this.theaterForm.reset();
+    }
+  
+    updateTheater(): void {
+      const updatedTheater: Theater = {
+        id: this.theaterForm.get('id')?.value,
+        name: this.theaterForm.get('name')?.value,
+        capacity: this.theaterForm.get('capacity')?.value,
+        features: this.theaterForm.get('features')?.value
+      };
+  
+      this.theaterService.updateTheater(updatedTheater).subscribe(
+        () => {
+          this.loadTheaters();
+          this.theaterForm.reset();
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }
+  
+    deleteTheater(theater: Theater): void {
+      if (confirm('Are you sure you want to delete this theater?')) {
+        this.theaterService.deleteTheater(theater.id).subscribe(
+          () => {
+            this.loadTheaters();
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      }
+    }
+    
   }

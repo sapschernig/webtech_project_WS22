@@ -8,6 +8,7 @@
           <th>Name of Theater</th>
           <th>Capacity</th>
           <th>Features</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -15,11 +16,14 @@
           <td>{{ theater.name }}</td>
           <td>{{ theater.capacity }}</td>
           <td>{{ theater.features }}</td>
+          <td>
+            <button (click)="editTheater(theater)">Edit</button>
+          </td>
         </tr>
       </tbody>
     </table>
-    <h2>Add a new theater</h2>
-    <form [formGroup]="theaterForm" (ngSubmit)="addTheater()">
+    <h2>{{ isEditMode ? 'Edit Theater' : 'Add a new theater' }}</h2>
+    <form [formGroup]="theaterForm" (ngSubmit)="isEditMode ? updateTheater() : addTheater()">
       <div>
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" formControlName="name" required>
@@ -30,15 +34,17 @@
       </div>
       <div>
         <label for="features">Features:</label>
-        <select name="features" id="features" multiple>
+        <select name="features" id="features" multiple formControlName="features">
           <option value="3D">3D</option>
           <option value="IMAX">IMAX</option>
           <option value="4DX">4DX</option>
           <option value="Dolby Atmos">Dolby Atmos</option>
+          <option value="Wheelchair Accessbile">Wheelchair Accessible</option>
         </select>
       </div>
       <div>
-        <button type="submit">Add Theater</button>
+        <button type="submit">{{ isEditMode ? 'Update Theater' : 'Add Theater' }}</button>
+        <button type="button" *ngIf="isEditMode" (click)="cancelEditMode()">Cancel</button>
       </div>
     </form>
   </div>

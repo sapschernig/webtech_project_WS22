@@ -21,6 +21,8 @@ const http = require('http');
 const { MemoryStore } = require("express-session");
 const { AsyncLocalStorage } = require("async_hooks");
 
+const theaters = [];
+
 //const { getUserById, authenticateUser} = require('./database');
 
 // Connect to PostgreSQL
@@ -352,11 +354,26 @@ app.get('/api/showtimes', async (req, res) => {
       return res.sendStatus(500);
     }
   });
-  
-  
-  
-  
 
+  app.put('/api/theater/:id', (req, res) => {
+    const theaterId = parseInt(req.params.id);
+    const updatedTheater = req.body;
+    let found = false;
+    
+    theaters.forEach((theater, index) => {
+      if (theater.id === theaterId) {
+        theaters[index] = updatedTheater;
+        found = true;
+      }
+    });
+    
+    if (found) {
+      res.status(200).json(updatedTheater);
+    } else {
+      res.status(404).send('Theater not found');
+    }
+  });
+  
 
   app.get('/api/ticket', async (req, res) => {
     try {

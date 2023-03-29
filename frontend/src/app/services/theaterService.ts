@@ -27,4 +27,9 @@ export class TheaterService {
   updateTheater(theater: Theater): Observable<any> {
     return this.http.put(`${this.apiUrl}/${theater.id}`, theater);
   }
+  deleteTheater(theaterId: number): Observable<void> {
+    const url = `${this.apiUrl}/theater/${theaterId}`;
+    return this.http.delete<void>(url);
+  }
+  
 }
