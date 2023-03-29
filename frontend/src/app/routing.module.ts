@@ -10,6 +10,7 @@ import { AccountComponent } from './account/account.component';
 import { SeatselectComponent } from './seatselect/seatselect.component';
 import { AuthGuard } from './services/AuthGuard';
 import { ManageShowtimesComponent } from './manage-showtimes/manage-showtimes.component';
+import { TheaterManagementComponent } from './theater-management/theater-management.component';
 
 
 const routes: Routes = [
@@ -34,6 +35,12 @@ const routes: Routes = [
   {
     path: 'showtimes',
     component: ManageShowtimesComponent,
+    //canActivate: [AuthGuard],
+    data: { isAdmin: true }
+  },
+  {
+    path: 'theaters',
+    component: TheaterManagementComponent,
     //canActivate: [AuthGuard],
     data: { isAdmin: true }
   },
