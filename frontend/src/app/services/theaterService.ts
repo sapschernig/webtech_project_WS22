@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Theater } from '../interfaces/theater';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class TheaterService {
   }
 
   getTheater(id: number): Observable<Theater> {
-    return this.http.get<Theater>(`${this.apiUrl}/${id}`);
+    return this.http.get<Theater>(`api/theater/${id}`);
   }
 
   addTheater(theater: Theater): Observable<any> {
@@ -25,11 +25,21 @@ export class TheaterService {
   }
 
   updateTheater(theater: Theater): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${theater.id}`, theater);
+    return this.http.put(`/api/theater/${theater.id}`, theater);
   }
-  deleteTheater(theaterId: number): Observable<void> {
-    const url = `${this.apiUrl}/theater/${theaterId}`;
-    return this.http.delete<void>(url);
+  deleteTheater(id: number): Observable<any> {
+    const url = `/api/theater/${id}`;
+    return this.http.delete(url)
+      .pipe(
+        catchError(error => {
+          if (error.status === 409) {
+            return throwError('Theater has associated shows and cannot be deleted');
+          } else {
+            return throwError('An error occurred while deleting the theater');
+          }
+        })
+      );
   }
+   
   
 }

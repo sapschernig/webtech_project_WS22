@@ -374,6 +374,25 @@ app.get('/api/showtimes', async (req, res) => {
     }
   });
   
+  app.delete('/api/theater/:id', (req, res) => {
+    const theaterId = parseInt(req.params.id);
+    const theaterIndex = theaters.findIndex(theater => theater.id === theaterId);
+  
+    if (theaterIndex >= 0) {
+      const theaterShows = shows.filter(show => show.theaterId === theaterId);
+  
+      if (theaterShows.length > 0) {
+        res.status(409).send('Theater has associated shows and cannot be deleted');
+      } else {
+        theaters.splice(theaterIndex, 1);
+        res.status(204).send(); // 204 means "No Content"
+      }
+    } else {
+      res.status(404).send('Theater not found');
+    }
+  });
+  
+  
 
   app.get('/api/ticket', async (req, res) => {
     try {
