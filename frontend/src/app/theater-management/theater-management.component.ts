@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./theater-management.component.scss']
 })
 export class TheaterManagementComponent {
-
+  
 }
