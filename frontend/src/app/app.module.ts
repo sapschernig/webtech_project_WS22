@@ -25,6 +25,7 @@ import { AuthService } from './services/authservice';
 import { AuthInterceptor } from './services/AuthInterceptor';
 import { DatePipe } from '@angular/common';
 import { ManageShowtimesComponent } from './manage-showtimes/manage-showtimes.component';
+import { TheaterManagementComponent } from './theater-management/theater-management.component';
 
 
 
@@ -42,7 +43,8 @@ import { ManageShowtimesComponent } from './manage-showtimes/manage-showtimes.co
     AddAMovieComponent,
     AccountComponent,
     SeatselectComponent,
-    ManageShowtimesComponent
+    ManageShowtimesComponent,
+    TheaterManagementComponent
   ],
   imports: [
     BrowserModule,
