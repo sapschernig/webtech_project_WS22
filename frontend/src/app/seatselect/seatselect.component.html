@@ -31,7 +31,11 @@
         <ul class="showcase">
             <li>
                 <div class="free"></div>
-                <small>N/A</small>
+                <small>Free Seat</small>
+            </li>
+            <li>
+                <div class="deluxe"></div>
+                <small>Deluxe Seat</small>
             </li>
             <li>
                 <div class="selected"></div>
@@ -47,19 +51,18 @@
             <div class="screen"></div>
 
 
-            <div class="row" *ngFor="let m of numSequence(4); let rowIndex=index">
-                <ng-container *ngFor="let n of numSequence(8); let seatIndex=index">
-                    <div class="seat" [id]="rowIndex * 8 + seatIndex + 1"
-                        (click)="addToSeatIdList(rowIndex * 8 + seatIndex + 1)"></div>
+            <div class="row" *ngFor="let m of numSequence(numberSeats); let rowIndex=index">
+                <ng-container *ngFor="let n of numSequence(20); let seatIndex=index">
+                    <div class="seat" [id]="rowIndex * 20 + seatIndex + 1"
+                        (click)="addToSeatIdList(rowIndex * 20 + seatIndex + 1)"></div>
                 </ng-container>
             </div>
+            <p class="text">
+                You have selected <span id="count">{{seatCount}}</span> seats for the total price of € <span
+                    id="total">{{totalPrice}}</span>
+            </p>
+            <button class="buttonticket" (click)="bookTicket()">Buy Tickets</button>
         </div>
 
-
-
-        <p class="text">
-            You have selected <span id="count">{{seatCount}}</span> seats for the total price of € <span
-                id="total">{{totalPrice}}</span>
-        </p>
     </div>
 </div>

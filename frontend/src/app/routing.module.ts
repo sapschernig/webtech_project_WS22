@@ -13,6 +13,7 @@ import { ManageShowtimesComponent } from './manage-showtimes/manage-showtimes.co
 import { TheaterManagementComponent } from './theater-management/theater-management.component';
 
 
+
 const routes: Routes = [
   {
     path:'movies', component: MoviecardComponent
@@ -63,6 +64,6 @@ const routes: Routes = [
   declarations: [],
   imports: [RouterModule.forRoot(routes)],
   exports:[RouterModule],
-  providers:[AuthGuard]
+  //providers:[AuthGuard]
 })
 export class RoutingModule { }

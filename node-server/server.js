@@ -32,8 +32,10 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
+
     database: 'movie_db',
     password: '****',
+
     port: 5432,
 });
 
@@ -81,8 +83,8 @@ console.log("Server running at: http://localhost:" + port);
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'moviedb',
-    password: 'hallo',
+    database: 'moviedb2',
+    password: 'Benjamin89',
     port: 5432,
 });*/
 
@@ -162,6 +164,29 @@ function getUserById(userId){
     });
 }
 
+app.get('/api/account', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.userId) {
+    res.status(401).json({ error: 'Not authenticated' });
+    return;
+  }
+
+  try {
+    // Fetch user data from database
+    const userId = req.session.userId;
+    const user = await getUserById(userId);
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (err) {
+    console.error('Error retrieving user:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 // login endpoint
 app.post('/api/login', async (req, res) => {
@@ -181,7 +206,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // protected endpoint - requires authentication
-app.get('/api/account', async (req, res) => {
+app.get('/api/mytickets', async (req, res) => {
   // Check if user is logged in
   if (!req.session.userId) {
     res.status(401).json({ error: 'Not authenticated' });
@@ -423,9 +448,39 @@ app.delete('api/showtimes/:id', (req, res) => {
   
   
 
+  app.get('/api/rating', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM rating');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/theater', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM theater');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
   app.get('/api/ticket', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM ticket');
+      res.send(rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+
+  app.get('/api/seat', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM seat');
       res.send(rows);
     } catch (err) {
       console.error(err);
@@ -509,6 +564,7 @@ app.post('/api/movies', async (req, res) => {
   }
 });
 
+
 app.post('/api/showtimes', (req, res) => {
   // Extract the movie_id, theater_id, start_time and date from the request body
   const { movie_id, theater_id, start_time, date } = req.body;
@@ -530,6 +586,37 @@ app.post('/api/showtimes', (req, res) => {
   });
 });
 
+app.post('/api/ticket', async (req, res) => {
+  try {
+    const { id, price, show_id, seat_id, customer_id } = req.body;
+    console.log(req.body);
+
+    // Insert the movie data into the "movie" table
+    const query = 'INSERT INTO ticket(id, price, show_id, seat_id, customer_id) VALUES($1, $2, $3, $4, $5)';
+    const values = [id, price, show_id, seat_id, customer_id];
+    console.log(values);
+
+
+    await client.query(query, values);
+    
+    res.status(201).json({ message: 'Ticket added successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.post('/api/deleteTicket', (req, res) => {
+  const id = req.body.id;
+  console.log(id);
+
+  client.query('DELETE FROM ticket WHERE id = $1', [id], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    res.send(`Deleted ${result.rowCount} record(s)`);
+  });
+});
 
 
 // Edit customer endpoint

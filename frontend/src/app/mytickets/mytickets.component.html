@@ -1,12 +1,32 @@
-<div class="ticket">
+<div class="tickets">
+    <div class="ticket">
+        <div *ngFor="let ticket of tickets">
 
-    <div class="image">
-        <img height=90px src="assets\pictures\current_movies\shawshank.jpg">
-    </div>
-    <div class="ticketinfo">
-        <p> Alle Daten zum Ticket</p>
-    </div>
-    <div class="Storno">
-        <p> Ticket stornieren</p>
+            <div *ngIf="ticket.customer_id === userData?.id" class="ticketinfo">
+                <p> Alle Daten zum Ticket</p>
+                <p>{{ ticket.id }}</p>
+                <p>{{ ticket.price }}</p>
+                <ng-container *ngFor="let movie of movies">
+                    <p *ngIf="ticket.movie_id === movie.id">
+                        {{ movie.title }}
+                    </p>
+                </ng-container>
+                <h4>Details vom Sitz (Typ, Nummer)</h4>
+                <ng-container *ngFor="let seat of seats">
+                    <p *ngIf="ticket.seat_id === seat.id">
+                        {{ seat.type }}
+                        {{ seat.number }}
+                    </p>
+                </ng-container>
+                  
+                <div class="Storno">
+                    <p> Ticket stornieren</p>
+                    <button type="button" (click)="cancelTicket(ticket.id)">Stornieren</button>
+                    
+                </div>
+       
+            </div>
+        
+        </div>
     </div>
 </div>

@@ -1,29 +1,38 @@
 <div class="moviecard">
-    <div class="movies">
-        <div *ngFor="let movie of movies">
-            <div class="movie">
-                <div class="movie_img">
-                  <img src="assets/pictures/current_movies/{{ movie.picture }}">
-                </div>
-                <div class="movie_info">
-                    <h2>{{ movie.title }}</h2>
-                    <h3>{{ movie.genre }}</h3>
-                    <h4>Duration: {{ movie.duration }} minutes</h4>
-                    <h4>Age restriction: {{ movie.age_restriction }}</h4>
-                    <p>{{ movie.description }}</p>
-                    
-                    <!-- Showtimes information -->
-                    <ul>
-                        <ng-container *ngFor="let showtime of showtimes">
-                          <li *ngIf="showtime.movie_id === movie.id">
-                            {{ showtime.date | date:'shortDate' }} {{ '1970-01-01T' + showtime.start_time | date:'shortTime' }}
-                          </li>
-                        </ng-container>
-                      </ul>
-                      
-                </div>
-                <!--<button>Get Tickets</button> doesn't look like I want it to yet-->
-            </div>
+  <div class="movies">
+    <div *ngFor="let movie of movies">
+      <div class="movie">
+        <div class="movie_img">
+          <img src="assets/pictures/current_movies/{{ movie.picture }}">
         </div>
+        <div class="movie_info">
+          <h2>{{ movie.title }}</h2>
+
+          <h3>{{ movie.genre }}</h3>
+          <div class="rating">
+            <span>Rating: </span>
+            <span>{{calculateRating(movie.id)}}</span>
+            <span> <br> <a href='#' (click)="openRatings(movie.id)">Read Customer Ratings</a></span>
+          </div>
+          <h4>Duration: {{ movie.duration }} minutes</h4>
+          <h4>Age restriction: {{ movie.age_restriction }}</h4>
+          <p>{{ movie.description }}</p>
+
+
+          <!-- Showtimes information -->
+          <ul>
+            <ng-container *ngFor="let showtime of showtimes">
+              <li *ngIf="showtime.movie_id === movie.id">
+                {{ showtime.date | date:'shortDate' }} {{ '1970-01-01T' + showtime.start_time | date:'shortTime' }}
+              </li>
+            </ng-container>
+
+          </ul>
+        </div>
+
+        <button class="buttonticket" routerLink="/seat">Get Tickets</button>
+        <!--<button>Get Tickets</button> doesn't look like I want it to yet-->
+      </div>
     </div>
+  </div>
 </div>

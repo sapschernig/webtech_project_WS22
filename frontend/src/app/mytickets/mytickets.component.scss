@@ -1,10 +1,31 @@
-.ticket {
+.tickets {
     width: 80%;
     background-color: rgb(55, 55, 55);
     margin: auto;
     display: flex;
     margin-top: 20px;
+    flex-direction: column;
 }
+
+.ticket {
+    width: 90%; /* oder jede andere geeignete Breite */
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+  }
+  
+  .Storno {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+  }
 
 .image {
     width: 10%;
@@ -15,5 +36,15 @@ img {
 }
 
 .ticketinfo {
+    width: 80%;
+}
+
+p {
+    text-align: left;
+    margin-left: 30px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-right: 50px;
+    align-items: baseline;
     width: 80%;
 }
