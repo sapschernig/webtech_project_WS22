@@ -33,7 +33,7 @@ const client = new Client({
     host: 'localhost',
     // create_login
     database: 'movie_db',
-    password: 'Kavo.zada2',
+    password: '****',
     port: 5432,
 });
 
