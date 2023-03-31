@@ -307,15 +307,18 @@ app.get('/api/showtimes', async (req, res) => {
   
   app.post('/api/check-availability', async (req, res) => {
     const { query, values } = req.body;
+    console.log('checkAvailability called with', query, values);
     try {
-      const { rows } = await client.query(query, values);
-      const count = parseInt(rows[0].count);
-      res.json({ count });
+        const { rows } = await client.query(query, values);
+        const count = parseInt(rows[0].count);
+        console.log('checkAvailability response', count);
+        res.json({ count });
     } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
+        console.error(err);
+        res.status(500).send(err);
     }
-  });
+});
+
 
   app.post('/api/theater/add', async (req, res) => {
     // Validate and sanitize the input

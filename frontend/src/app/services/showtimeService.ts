@@ -49,8 +49,18 @@ export class showtimesService {
   }
 
   isShowtimeAvailable(movieId: number, theaterId: number, date: string, startTime: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiBaseUrl}/showtimes/available?movieId=${movieId}&theaterId=${theaterId}&date=${date}&startTime=${startTime}`);
-  }
+    console.log('isShowtimeAvailable called with', movieId, theaterId, date, startTime);
+    const query = 'SELECT COUNT(*) FROM showtimes WHERE movie_id = $1 AND theater_id = $2 AND date = $3 AND start_time = $4';
+    const values = [movieId, theaterId, date, startTime];
+    const body = { query, values };
+    return this.http.post<{count: number}>('/api/check-availability', body)
+        .pipe(map(response => {
+            console.log('isShowtimeAvailable response', response);
+            return response.count > 0;
+        }));
+}
+
+
   
   addShowtime(movieId: number, theaterId: number, date: string, time: string): Observable<any> {
     const data = {

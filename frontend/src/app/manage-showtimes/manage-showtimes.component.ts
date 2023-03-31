@@ -25,12 +25,20 @@ export class ManageShowtimesComponent implements OnInit {
   isEditMode = false;
   showtimeToEdit: Showtime | null | undefined;
   selectedMovie: any;
+  showForm = false;
+  isAddMode: boolean | undefined;
 
   constructor(
     private movieService: MovieService,
     private theaterService: TheaterService,
     private showtimeService: showtimesService
   ) { }
+
+  toggleAddMode() {
+    this.isAddMode = true;
+    this.isEditMode = false;
+    this.showtimeForm.reset();
+  }  
 
   ngOnInit() {
     this.showtimeForm = new FormGroup({
@@ -65,13 +73,10 @@ export class ManageShowtimesComponent implements OnInit {
     return `${('0' + (hour + 1)).slice(-2)}:${minute}`;
   }
   getMovieTitle(movieId: number): string {
-    const movie = this.movies.find(m => m.id === movieId);
-    if (movie) {
-      return movie.title;
-    } else {
-      return 'Movie not found';
-    }
+    const movie = this.movies.find(movie => movie.id === movieId);
+    return movie ? movie.title : '';
   }
+  
   getTheaterName(theaterId: number): string {
     const theater = this.theaters.find(t => t.id === theaterId);
     if (theater) {
