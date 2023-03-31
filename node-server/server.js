@@ -34,8 +34,8 @@ const client = new Client({
     // create_login
 
 
-    database: 'moviedb_final',
-    password: 'hallo',
+    database: 'moviedb',
+    password: '****',
 
 
     port: 5432,
