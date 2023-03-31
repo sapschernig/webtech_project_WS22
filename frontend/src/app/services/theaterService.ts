@@ -28,18 +28,18 @@ export class TheaterService {
     return this.http.put(`/api/theater/${encodeURIComponent(theater.id)}`, theater);
   }
   deleteTheater(id: number): Observable<any> {
-    const url = '/api/theater/${id}';
-    return this.http.delete(url)
-      .pipe(
-        catchError(error => {
-          if (error.status === 409) {
-            return throwError('Theater has associated shows and cannot be deleted');
-          } else {
-            return throwError('An error occurred while deleting the theater');
-          }
-        })
-      );
+    const url = `/api/theater/${encodeURIComponent(id)}`;
+    return this.http.delete(url).pipe(
+      catchError((error) => {
+        if (error.status === 409) {
+          return throwError('Theater has associated shows and cannot be deleted');
+        } else {
+          return throwError('An error occurred while deleting the theater');
+        }
+      })
+    );
   }
+  
    
   
 }

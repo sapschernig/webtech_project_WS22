@@ -380,23 +380,30 @@ app.get('/api/showtimes', async (req, res) => {
   });
   
   
-  app.delete('/api/theater/:id', (req, res) => {
+  app.delete('/api/theater/:id', async (req, res) => {
     const theaterId = parseInt(req.params.id);
-    const theaterIndex = theaters.findIndex(theater => theater.id === theaterId);
-  
-    if (theaterIndex >= 0) {
-      const theaterShows = shows.filter(show => show.theaterId === theaterId);
-  
-      if (theaterShows.length > 0) {
-        res.status(409).send('Theater has associated shows and cannot be deleted');
+    
+    try {
+      const { rows } = await client.query('SELECT * FROM theater WHERE id = $1', [theaterId]);
+      if (rows.length > 0) {
+        const theaterShows = await client.query('SELECT * FROM showtimes WHERE theater_id = $1', [theaterId]);
+        
+        if (theaterShows.rows.length > 0) {
+          res.status(409).send('Theater has associated shows and cannot be deleted');
+        } else {
+          await client.query('DELETE FROM theater WHERE id = $1', [theaterId]);
+          res.status(204).send(); // 204 means "No Content"
+        }
       } else {
-        theaters.splice(theaterIndex, 1);
-        res.status(204).send(); // 204 means "No Content"
+        res.status(404).send('Theater not found');
       }
-    } else {
-      res.status(404).send('Theater not found');
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
     }
   });
+  
+  
   
   
 
