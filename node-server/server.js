@@ -34,7 +34,7 @@ const client = new Client({
     // create_login
 
     database: 'movie_db',
-    password: 'Kavo.zada2',
+    password: '+++',
 
     port: 5432,
 });
