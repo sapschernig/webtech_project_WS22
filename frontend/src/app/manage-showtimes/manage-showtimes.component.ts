@@ -11,7 +11,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'app-manage-showtimes',
   templateUrl: './manage-showtimes.component.html',
-  styleUrls: ['./manage-showtimes.component.css']
+  styleUrls: ['./manage-showtimes.component.scss']
 })
 export class ManageShowtimesComponent implements OnInit {
 
@@ -82,17 +82,21 @@ export class ManageShowtimesComponent implements OnInit {
   }
   
   onSubmit(){
-    this.addShowtime();
+    if (this.isEditMode) {
+      this.updateShowtime();
+    } else {
+      this.addShowtime();
+    }
   }
   
 
   addShowtime() {
     const showtime = this.getShowtimeFromForm();
-this.showtimeService.addShowtime(showtime.movie_id, showtime.theater_id, showtime.date, showtime.start_time)
-  .subscribe(showtime => {
-    this.showtimes.push(showtime);
-    this.showtimeForm.reset();
-    this.showtimeAvailable = null;
+    this.showtimeService.addShowtime(showtime.movie_id, showtime.theater_id, showtime.date, showtime.start_time)
+    .subscribe(showtime => {
+      this.showtimes.push(showtime);
+      this.showtimeForm.reset();
+      this.showtimeAvailable = null;
   });
   }
   
@@ -112,10 +116,13 @@ this.showtimeService.addShowtime(showtime.movie_id, showtime.theater_id, showtim
 
   editShowtime(showtime: Showtime) {
     this.showtimeToEdit = showtime;
+    const date = moment(showtime.date).toDate();
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+    
     this.showtimeForm.setValue({
       movieSelect: showtime.movie_id,
       theaterSelect: showtime.theater_id,
-      dateInput: showtime.date,
+      dateInput: formattedDate,
       timeInput: showtime.start_time
     });
     this.isEditMode = true;
