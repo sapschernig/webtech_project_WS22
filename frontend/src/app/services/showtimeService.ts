@@ -71,11 +71,8 @@ addShowtime(movieId: number, theaterId: number, date: string, time: string): Obs
     start_time: time
   };
   console.log('data:', data);
-  return this.http.post<any>('api/showtimes', data);
+  return this.http.post<any>('/api/showtimes', data);
 }
-
-
-
 
   private handleError(error: any) {
     let errorMessage = '';

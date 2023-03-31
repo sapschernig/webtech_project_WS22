@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { MovieService } from '../services/movieService';
 import { TheaterService } from '../services/theaterService';
 import { showtimesService } from '../services/showtimeService';
@@ -20,7 +21,8 @@ export class ManageShowtimesComponent implements OnInit {
   showtimeForm!: FormGroup;
   movies!: Movie[];
   theaters!: Theater[];
-  showtimes!: Showtime[];
+  //showtimes!: Showtime[];
+  showtimes: any[]= [];
   showtimeAvailable: boolean | null = null;
   isEditMode = false;
   showtimeToEdit: Showtime | null | undefined;
@@ -30,6 +32,7 @@ export class ManageShowtimesComponent implements OnInit {
 
   constructor(
     private movieService: MovieService,
+    private http: HttpClient,
     private theaterService: TheaterService,
     private showtimeService: showtimesService
   ) { }
@@ -109,6 +112,8 @@ getTheaterName(theaterId: number): string {
   
   
   
+  
+  
   getShowtimeFromForm(): Showtime {
     const values = this.showtimeForm.value;
     const showtime: Showtime = {
@@ -176,6 +181,20 @@ getTheaterName(theaterId: number): string {
         });
       }
     }
+}
+
+deleteShowtime2(id:number) {
+
+  this.http.post('/api/deleteShowtime', {id}).subscribe(
+    (response) => {
+      console.log(response);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+  window.location.reload();
+  
 }
 
 

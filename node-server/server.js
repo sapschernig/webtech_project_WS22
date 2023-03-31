@@ -566,14 +566,14 @@ app.post('/api/movies', async (req, res) => {
 
 
 app.post('/api/showtimes', (req, res) => {
-  // Extract the movie_id, theater_id, start_time and date from the request body
   const { movie_id, theater_id, start_time, date } = req.body;
-  console.log(req.body);
+  if (!movie_id || !theater_id || !start_time || !date) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
 
-  // insert data into "showtimes" table
   const query = `INSERT INTO showtimes (movie_id, theater_id, start_time, date) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`;
   const values = [movie_id, theater_id, start_time, date];
-  console.log(values); 
+  console.log(values);
 
   client.query(query, values, (err, result) => {
     if (err) {
@@ -585,6 +585,7 @@ app.post('/api/showtimes', (req, res) => {
     }
   });
 });
+
 
 app.post('/api/ticket', async (req, res) => {
   try {
@@ -611,6 +612,19 @@ app.post('/api/deleteTicket', (req, res) => {
   console.log(id);
 
   client.query('DELETE FROM ticket WHERE id = $1', [id], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    res.send(`Deleted ${result.rowCount} record(s)`);
+  });
+});
+
+app.post('/api/deleteShowtime', (req, res) => {
+  const id = req.body.id;
+  console.log(id);
+  
+
+  client.query('DELETE FROM showtimes WHERE id = $1', [id], (error, result) => {
     if (error) {
       throw error;
     }

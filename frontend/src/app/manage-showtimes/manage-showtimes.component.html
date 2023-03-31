@@ -21,7 +21,7 @@
           <td>{{ showtime.date | date: 'yyyy-MM-dd'}}</td>
           <td>{{ showtime.start_time}}</td>
           <td><button (click)="editShowtime(showtime)">Edit</button></td>
-          <td><button (click)="deleteShowtime(showtime)">Delete</button></td>
+          <td><button (click)="deleteShowtime2(showtime.id)">Delete</button></td>
         </tr>
       </tbody>
       <button (click)="toggleAddMode()">Add Showtime</button>
