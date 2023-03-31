@@ -91,14 +91,20 @@ export class TheaterManagementComponent implements OnInit{
         capacity: this.theaterForm.get('capacity')?.value,
         features: this.theaterForm.get('features')?.value
       };
+      console.log('Theater to update:', updatedTheater);
+      const theaterId = updatedTheater.id;
+      const apiUrl = `http://localhost:4200/api/theater/${theaterId}`;
+
+      console.log('API URL:', apiUrl);
   
       this.theaterService.updateTheater(updatedTheater).subscribe(
         () => {
+          console.log('Theater updated successfully');
           this.loadTheaters();
           this.theaterForm.reset();
         },
         error => {
-          console.log(error);
+          console.log('Error updating theater:', error);
         }
       );
     }

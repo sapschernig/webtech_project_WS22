@@ -21,7 +21,7 @@ const http = require('http');
 const { MemoryStore } = require("express-session");
 const { AsyncLocalStorage } = require("async_hooks");
 
-const theaters = [];
+
 
 //const { getUserById, authenticateUser} = require('./database');
 
@@ -355,24 +355,30 @@ app.get('/api/showtimes', async (req, res) => {
     }
   });
 
-  app.put('/api/theater/:id', (req, res) => {
+
+
+  app.put('/api/theater/:id', async (req, res) => {
     const theaterId = parseInt(req.params.id);
     const updatedTheater = req.body;
     let found = false;
     
-    theaters.forEach((theater, index) => {
-      if (theater.id === theaterId) {
-        theaters[index] = updatedTheater;
+    try {
+      const { rows } = await client.query('SELECT * FROM theater WHERE id = $1', [theaterId]);
+      if (rows.length > 0) {
+        const theater = rows[0];
+        await client.query('UPDATE theater SET name = $1, capacity = $2, features = $3 WHERE id = $4',
+          [updatedTheater.name, updatedTheater.capacity, updatedTheater.features, theaterId]);
         found = true;
+        res.status(200).json(updatedTheater);
+      } else {
+        res.status(404).send('Theater not found');
       }
-    });
-    
-    if (found) {
-      res.status(200).json(updatedTheater);
-    } else {
-      res.status(404).send('Theater not found');
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
     }
   });
+  
   
   app.delete('/api/theater/:id', (req, res) => {
     const theaterId = parseInt(req.params.id);

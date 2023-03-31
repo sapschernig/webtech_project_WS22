@@ -17,7 +17,7 @@ export class TheaterService {
   }
 
   getTheater(id: number): Observable<Theater> {
-    return this.http.get<Theater>(`api/theater/${id}`);
+    return this.http.get<Theater>('api/theater/${id}');
   }
 
   addTheater(theater: Theater): Observable<any> {
@@ -25,10 +25,10 @@ export class TheaterService {
   }
 
   updateTheater(theater: Theater): Observable<any> {
-    return this.http.put(`/api/theater/${theater.id}`, theater);
+    return this.http.put(`/api/theater/${encodeURIComponent(theater.id)}`, theater);
   }
   deleteTheater(id: number): Observable<any> {
-    const url = `/api/theater/${id}`;
+    const url = '/api/theater/${id}';
     return this.http.delete(url)
       .pipe(
         catchError(error => {
