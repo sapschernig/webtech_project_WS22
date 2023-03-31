@@ -16,6 +16,7 @@ export class AddAMovieComponent implements OnInit{
   title = 'Add a movie';
   errorMessage: string = '';
   addMovieForm!: FormGroup;
+  movies: any[]= [];
   
   constructor(
     private formBuilder: FormBuilder, 
@@ -27,6 +28,17 @@ export class AddAMovieComponent implements OnInit{
   
   
   ngOnInit(): void {
+    this.http.get<any[]>('/api/movies').subscribe(
+      (movies) => {
+        this.movies = movies;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+
+
   this.addMovieForm= this.formBuilder.group({
     title: ['', Validators.required],
     releaseDate: ['', Validators.required],
@@ -66,5 +78,19 @@ export class AddAMovieComponent implements OnInit{
       }
     );
   
+  }
+
+  deleteMovie(id:number) {
+    if (confirm('Attention! Delete showtimes first before deleting the movie!')) {
+    this.http.post('/api/deleteMovie', {id}).subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    window.location.reload();
+    }
   }
 }
