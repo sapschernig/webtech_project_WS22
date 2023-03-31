@@ -1,0 +1,74 @@
+<h1>{{ title }}</h1>
+<div class="manageShowtimes">
+
+  <div class="showtimesOverview">
+    <p routerLink="/admin">Back</p>
+    <h2>Weekly Movie Showtimes</h2>
+
+    <table>
+      <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Theater</th>
+            <th>Date</th>
+            <th>Start Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let showtime of showtimes">
+          <td>{{ getMovieTitle(showtime.movie_id) }}</td>
+          <td>{{ getTheaterName(showtime.theater_id) }}</td>
+          <td>{{ showtime.date | date: 'yyyy-MM-dd'}}</td>
+          <td>{{ showtime.start_time}}</td>
+          <td><button (click)="editShowtime(showtime)">Edit</button></td>
+          <td><button (click)="deleteShowtime2(showtime.id)">Delete</button></td>
+        </tr>
+      </tbody>
+      <button (click)="toggleAddMode()">Add Showtime</button>
+    </table>
+
+    <h2>{{ isEditMode ? 'Edit Showtime' : 'Add a new showtime' }}</h2>
+    <div class="addShowtime" *ngIf="isEditMode || isAddMode">
+      
+      <form [formGroup]="showtimeForm" (ngSubmit)="isEditMode ? updateShowtime() : addShowtime()">
+        <div class="form-group">
+          <label for="movieSelect">Select a movie: </label>
+          <select formControlName="movieSelect" id="movieSelect">
+            <option *ngFor="let movie of movies" [value]="movie.id">{{ movie.title }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="theaterSelect">Select a theater: </label>
+          <select formControlName="theaterSelect" id="theaterSelect">
+            <option *ngFor="let theater of theaters" [value]="theater.id">{{ theater.name }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="dateInput">Select a date: </label>
+          <input type="date" formControlName="dateInput" id="dateInput" [min]="getCurrentDate()" required value="{{ getCurrentDate() }}">
+        </div>
+        
+        <div class="form-group">
+          <label for="timeInput">Select a time (after 3pm, in half-hour steps): </label>
+          <input type="time" formControlName="timeInput" id="timeInput" [min]="getMinimumTime()" [step]="1800" pattern="([01][0-9]|2[0-3]):(00|30)" required>
+        </div>
+
+        <button type="button" (click)="checkAvailability()">Check Availability</button>
+
+        <div *ngIf="showtimeAvailable !== null">
+          <div *ngIf="showtimeAvailable">
+            <p>This showtime is available.</p>
+            <button type="submit">Submit</button>
+          </div>
+          <div *ngIf="!showtimeAvailable">
+            <p>This showtime is not available.</p>
+            <button type="submit" [disabled]="true">Submit</button>
+    </div>
+  </div>
+
+</form>
+</div>
+</div>
+</div>

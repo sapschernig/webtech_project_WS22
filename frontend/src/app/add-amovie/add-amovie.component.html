@@ -1,8 +1,35 @@
 <h1>{{ title }}</h1>
 
+
 <div class="addMovie">
+
+  <p routerLink="/admin">Back</p>
+   
+  
+
 <form [formGroup]="addMovieForm" (ngSubmit)="addMovie()">
     <div class="movieInfo">
+      <h2>Movies</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name of Movie</th>
+          <th>Release Date</th>
+          <th>Genre</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let movie of movies">
+          <td>{{ movie.title }}</td>
+          <td>{{ movie.release_date }}</td>
+          <td>{{ movie.genre }}</td>
+          <td>
+            <button (click)="deleteMovie(movie.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
         
         <div>
             <p>Title</p>

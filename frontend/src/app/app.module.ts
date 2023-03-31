@@ -25,6 +25,9 @@ import { AuthGuard } from './services/AuthGuard';
 import { AuthService } from './services/authservice';
 import { AuthInterceptor } from './services/AuthInterceptor';
 import { DatePipe } from '@angular/common';
+import { ManageShowtimesComponent } from './manage-showtimes/manage-showtimes.component';
+import { TheaterManagementComponent } from './theater-management/theater-management.component';
+
 
 
 
@@ -42,7 +45,9 @@ import { DatePipe } from '@angular/common';
     ManagementViewComponent,
     AddAMovieComponent,
     AccountComponent,
-    SeatselectComponent
+    SeatselectComponent,
+    ManageShowtimesComponent,
+    TheaterManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -54,15 +59,8 @@ import { DatePipe } from '@angular/common';
   ],
   providers: [
     DatePipe,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
-
-    FooterComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [],
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+  ], 
   bootstrap: [AppComponent]
 })
 export class AppModule { }

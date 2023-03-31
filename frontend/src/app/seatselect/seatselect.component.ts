@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Showtime } from '../interfaces/showtime';
-
 import { Customer } from '../interfaces/customer';
 import { Ticket } from '../interfaces/ticket';
 import { LoginComponent } from '../login/login.component';
@@ -59,7 +58,7 @@ export class SeatselectComponent implements OnInit {
     this.http.get<Showtime[]>('/api/showtimes').subscribe(
       (showtimes) => {
         this.showtimes = showtimes.map((showtime) => {
-          const date = new Date(showtime.time);
+          const date = new Date(showtime.start_time);
           return { ...showtime, time: date.toLocaleDateString() };
         });
       },
