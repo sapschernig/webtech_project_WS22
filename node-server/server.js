@@ -21,6 +21,8 @@ const http = require('http');
 const { MemoryStore } = require("express-session");
 const { AsyncLocalStorage } = require("async_hooks");
 
+
+
 //const { getUserById, authenticateUser} = require('./database');
 
 // Connect to PostgreSQL
@@ -30,8 +32,9 @@ const client = new Client({
     user: 'postgres',
     host: 'localhost',
     // create_login
-    database: 'moviedb1',
-    password: 'hallo',
+
+    database: 'movie_db',
+    password: '****',
 
     port: 5432,
 });
@@ -271,10 +274,30 @@ app.get('api/movies', (req,res)=> {
     .catch(err => console.error('Error querying the database', err.stack));
 });
 
+app.get('/api/movies/:movieId/duration', (req, res) => {
+  const movieId = req.params.movieId;
+
+  db.query('SELECT duration FROM movie WHERE id = ?', [movieId], (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      if (results.length === 0) {
+        res.status(404).json({ message: `Movie with id ${movieId} not found` });
+      } else {
+        const duration = results[0].duration;
+        res.json({ duration });
+      }
+    }
+  });
+});
+
+
 app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM showtimes');
       res.send(rows);
+      
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
@@ -285,11 +308,145 @@ app.get('/api/showtimes', async (req, res) => {
     try {
       const { rows } = await client.query('SELECT * FROM theater');
       res.send(rows);
+      
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
     }
   });
+
+  app.get('/api/theater/:id', async (req, res) => {
+    try {
+      const { rows } = await client.query('SELECT * FROM theater WHERE id = $1', [req.params.id]);
+      if (rows.length > 0) {
+        res.send(rows[0]);
+        
+      } else {
+        res.status(404).send('Theater not found');
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+  
+  app.post('/api/check-availability', async (req, res) => {
+    const { query, values } = req.body;
+    console.log('checkAvailability called with', query, values);
+    try {
+        const { rows } = await client.query(query, values);
+        const count = parseInt(rows[0].count);
+        console.log('checkAvailability response', count);
+        res.json({ count });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+
+  app.post('/api/theater/add', async (req, res) => {
+    // Validate and sanitize the input
+    const { name, capacity, features } = req.body;
+    const errors = [];
+    if (!name) {
+      errors.push('Name is required');
+    }
+    if (!capacity) {
+      errors.push('Capacity is required');
+    }
+    if (!Array.isArray(features)) {
+      errors.push('Features must be an array');
+    } else {
+      features.forEach((feature, i) => {
+        if (typeof feature !== 'string' || !feature.trim()) {
+          errors.push(`Feature ${i + 1} is invalid`);
+        }
+      });
+    }
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+    const sanitizedFeatures = features.map(feature => feature.trim());
+  
+    // Insert the theater into the database
+    try {
+      const result = await client.query(
+        'INSERT INTO theater (name, capacity, features) VALUES ($1, $2, $3) RETURNING id',
+        [name, capacity, sanitizedFeatures]
+      );
+      const newTheaterId = result.rows[0].id;
+      return res.status(201).json({ id: newTheaterId });
+    } catch (error) {
+      console.error('Error inserting theater:', error);
+      return res.sendStatus(500);
+    }
+  });
+
+
+
+  app.put('/api/theater/:id', async (req, res) => {
+    const theaterId = parseInt(req.params.id);
+    const updatedTheater = req.body;
+    let found = false;
+    
+    try {
+      const { rows } = await client.query('SELECT * FROM theater WHERE id = $1', [theaterId]);
+      if (rows.length > 0) {
+        const theater = rows[0];
+        await client.query('UPDATE theater SET name = $1, capacity = $2, features = $3 WHERE id = $4',
+          [updatedTheater.name, updatedTheater.capacity, updatedTheater.features, theaterId]);
+        found = true;
+        res.status(200).json(updatedTheater);
+      } else {
+        res.status(404).send('Theater not found');
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+  
+  
+  app.delete('/api/theater/:id', async (req, res) => {
+    const theaterId = parseInt(req.params.id);
+    
+    try {
+      const { rows } = await client.query('SELECT * FROM theater WHERE id = $1', [theaterId]);
+      if (rows.length > 0) {
+        const theaterShows = await client.query('SELECT * FROM showtimes WHERE theater_id = $1', [theaterId]);
+        
+        if (theaterShows.rows.length > 0) {
+          res.status(409).send('Theater has associated shows and cannot be deleted');
+        } else {
+          await client.query('DELETE FROM theater WHERE id = $1', [theaterId]);
+          res.status(204).send(); // 204 means "No Content"
+        }
+      } else {
+        res.status(404).send('Theater not found');
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+ 
+app.delete('api/showtimes/:id', (req, res) => {
+  const id = req.params.id;
+  Showtime.findByIdAndDelete(id, (err, showtime) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else if (!showtime) {
+      res.status(404).send(`Showtime with ID ${id} not found`);
+    } else {
+      res.sendStatus(204); // Successful deletion - no content to send
+    }
+  });
+});
+  
+  
+  
 
   app.get('/api/rating', async (req, res) => {
     try {
@@ -407,6 +564,28 @@ app.post('/api/movies', async (req, res) => {
   }
 });
 
+
+app.post('/api/showtimes', (req, res) => {
+  // Extract the movie_id, theater_id, start_time and date from the request body
+  const { movie_id, theater_id, start_time, date } = req.body;
+  console.log(req.body);
+
+  // insert data into "showtimes" table
+  const query = `INSERT INTO showtimes (movie_id, theater_id, start_time, date) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`;
+  const values = [movie_id, theater_id, start_time, date];
+  console.log(values); 
+
+  client.query(query, values, (err, result) => {
+    if (err) {
+      console.log(err.message);
+      console.log(err.stack);
+      res.status(500).json({ message: 'Internal server error' });
+    } else {
+      res.status(201).json({ message: 'Showtime added successfully!'});
+    }
+  });
+});
+
 app.post('/api/ticket', async (req, res) => {
   try {
     const { id, price, show_id, seat_id, customer_id } = req.body;
@@ -416,6 +595,7 @@ app.post('/api/ticket', async (req, res) => {
     const query = 'INSERT INTO ticket(id, price, show_id, seat_id, customer_id) VALUES($1, $2, $3, $4, $5)';
     const values = [id, price, show_id, seat_id, customer_id];
     console.log(values);
+
 
     await client.query(query, values);
     
