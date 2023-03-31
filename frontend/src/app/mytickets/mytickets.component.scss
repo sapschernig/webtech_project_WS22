@@ -4,18 +4,28 @@
     margin: auto;
     display: flex;
     margin-top: 20px;
+    flex-direction: column;
 }
 
 .ticket {
-    width: auto;
+    width: 90%; /* oder jede andere geeignete Breite */
     display: flex;
-    justify-content: center;
-    align-items: last baseline;
+    flex-direction: column;
     background-color: rgb(156, 156, 156);
     height: auto;
     margin: auto;
     margin-top: 20px;
-}
+  }
+  
+  .Storno {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(156, 156, 156);
+    height: auto;
+    margin: auto;
+    margin-top: 20px;
+  }
 
 .image {
     width: 10%;

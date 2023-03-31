@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Ticket } from '../interfaces/ticket';
 import { NgFor } from '@angular/common';
 import { Customer } from '../interfaces/customer';
+import { Movie } from '../interfaces/movie';
+
+
 
 @Component({
   selector: 'app-mytickets',
@@ -12,8 +15,10 @@ import { Customer } from '../interfaces/customer';
 export class MyticketsComponent implements OnInit {
 
   tickets: any[] = [];
-  movies: any[] = [];
+  movies: Movie[] = [];
   seats: any[] = [];
+  rows:number = 0;
+  showtimes: any[] = [];
 
   userData: Customer | undefined;
   message: string='';
@@ -23,6 +28,7 @@ export class MyticketsComponent implements OnInit {
   constructor(private http: HttpClient) {
     
   }
+
 
   ngOnInit() {
     this.http.get<Ticket[]>('/api/ticket').subscribe(
@@ -50,6 +56,7 @@ export class MyticketsComponent implements OnInit {
       }
     );
 
+
     this.http.get('/api/account').subscribe(
       (data) => {
         console.log(data);
@@ -62,8 +69,20 @@ export class MyticketsComponent implements OnInit {
         this.message = 'Error fetching user data';
       }
     );
-
     
+  }
+
+  cancelTicket(id:number) {
+
+    this.http.post('/api/deleteTicket', {id}).subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    window.location.reload();
     
   }
 

@@ -2,9 +2,6 @@
     <div class="ticket">
         <div *ngFor="let ticket of tickets">
 
-            <div *ngFor="let movie of movies">
-                <img *ngIf="ticket.movie_id === movie.id" height=90px src="assets/pictures/current_movies/{{ movie.picture }}">
-            </div>
             <div *ngIf="ticket.customer_id === userData?.id" class="ticketinfo">
                 <p> Alle Daten zum Ticket</p>
                 <p>{{ ticket.id }}</p>
@@ -14,19 +11,17 @@
                         {{ movie.title }}
                     </p>
                 </ng-container>
-                <h4>Details vom Sitz (Typ, Reihe, Nummer)</h4>
+                <h4>Details vom Sitz (Typ, Nummer)</h4>
                 <ng-container *ngFor="let seat of seats">
                     <p *ngIf="ticket.seat_id === seat.id">
                         {{ seat.type }}
-                        {{ seat.row }}
                         {{ seat.number }}
                     </p>
                 </ng-container>
                   
-
                 <div class="Storno">
                     <p> Ticket stornieren</p>
-                    <button type="button">Stornieren</button>
+                    <button type="button" (click)="cancelTicket(ticket.id)">Stornieren</button>
                     
                 </div>
        
