@@ -56,9 +56,10 @@ export class showtimesService {
     return this.http.post<{count: number}>('/api/check-availability', body)
         .pipe(map(response => {
             console.log('isShowtimeAvailable response', response);
-            return response.count > 0;
+            return response.count === 0; // return true if count is 0, false otherwise
         }));
 }
+
 
 
   

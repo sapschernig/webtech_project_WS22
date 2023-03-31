@@ -405,7 +405,20 @@ app.get('/api/showtimes', async (req, res) => {
       res.status(500).send(err);
     }
   });
-  
+ 
+app.delete('api/showtimes/:id', (req, res) => {
+  const id = req.params.id;
+  Showtime.findByIdAndDelete(id, (err, showtime) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    } else if (!showtime) {
+      res.status(404).send(`Showtime with ID ${id} not found`);
+    } else {
+      res.sendStatus(204); // Successful deletion - no content to send
+    }
+  });
+});
   
   
   

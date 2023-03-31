@@ -57,18 +57,16 @@
 
   <button type="button" (click)="checkAvailability()">Check Availability</button>
 
-  <div *ngIf="showtimeAvailable === null">
-       
-        <button type="submit" [disabled]="true">Submit</button>
-      </div>
-      <div *ngIf="showtimeAvailable === true">
-        <p>This showtime is available.</p>
-        <button type="submit" (click)="onSubmit()">Submit</button>
-      </div>
-      <div *ngIf="showtimeAvailable === false">
-        <p>This showtime is not available.</p>
-        <button type="submit" [disabled]="true">Submit</button>
-      </div>
+  <div *ngIf="showtimeAvailable !== null">
+    <div *ngIf="showtimeAvailable">
+      <p>This showtime is available.</p>
+      <button type="submit">Submit</button>
+    </div>
+    <div *ngIf="!showtimeAvailable">
+      <p>This showtime is not available.</p>
+      <button type="submit" [disabled]="true">Submit</button>
+    </div>
+  </div>
 
 </form>
 </div>

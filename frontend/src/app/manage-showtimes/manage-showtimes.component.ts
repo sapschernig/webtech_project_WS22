@@ -26,7 +26,7 @@ export class ManageShowtimesComponent implements OnInit {
   showtimeToEdit: Showtime | null | undefined;
   selectedMovie: any;
   showForm = false;
-  isAddMode: boolean | undefined;
+  isAddMode!: true;
 
   constructor(
     private movieService: MovieService,
@@ -73,18 +73,18 @@ export class ManageShowtimesComponent implements OnInit {
     return `${('0' + (hour + 1)).slice(-2)}:${minute}`;
   }
   getMovieTitle(movieId: number): string {
-    const movie = this.movies.find(movie => movie.id === movieId);
+    const movie = this.movies ? this.movies.find(movie => movie.id === movieId) : undefined;
     return movie ? movie.title : '';
-  }
+}
   
-  getTheaterName(theaterId: number): string {
-    const theater = this.theaters.find(t => t.id === theaterId);
+getTheaterName(theaterId: number): string {
+    const theater = this.theaters ? this.theaters.find(t => t.id === theaterId) : undefined;
     if (theater) {
-      return theater.name;
+        return theater.name;
     } else {
-      return 'Theater not found';
+        return 'Theater not found';
     }
-  }
+}
   
   onSubmit(){
     if (this.isEditMode) {
