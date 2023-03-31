@@ -1,204 +1,168 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MovieService } from '../services/movieService';
 import { TheaterService } from '../services/theaterService';
-import { HttpClient } from '@angular/common/http';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { showtimesService } from '../services/showtimeService';
-import { map, tap } from 'rxjs';
-import * as moment from 'moment';
 import { Movie } from '../interfaces/movie';
-
-
+import { Theater } from '../interfaces/theater';
+import { Showtime } from '../interfaces/showtime';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-manage-showtimes',
   templateUrl: './manage-showtimes.component.html',
-  styleUrls: ['./manage-showtimes.component.scss']
+  styleUrls: ['./manage-showtimes.component.css']
 })
-export class ManageShowtimesComponent implements OnInit{
-  title = 'Manage Showtimes';
-  showtimeForm: FormGroup;
+export class ManageShowtimesComponent implements OnInit {
 
-  showtimes: any[] = [];
-  //to keep track of the currently sorted field and sorting direction
-  sortField: string = '';
-  sortDirection: string = '';
-  movies: any[] | undefined;
-  theaters: any[] | undefined;
-  movieSelect!: string;
-  showtimeAvailable: boolean = false;
-  showtimeMessage: string | undefined;
-  submitDisabled: boolean | undefined;
-  
+  title = 'Manage showtimes'
+
+  showtimeForm!: FormGroup;
+  movies!: Movie[];
+  theaters!: Theater[];
+  showtimes!: Showtime[];
+  showtimeAvailable: boolean | null = null;
+  isEditMode = false;
+  showtimeToEdit: Showtime | null | undefined;
+  selectedMovie: any;
 
   constructor(
-    private showtimesService: MovieService,
-    private theaterService: TheaterService,
-    private http: HttpClient,
     private movieService: MovieService,
-    private showtimeService: showtimesService,
-    private formBuilder: FormBuilder
-    ) { 
-      this.showtimeForm = this.formBuilder.group({
-        movieSelect: ['', Validators.required],
-        theaterSelect: ['', Validators.required],
-        dateInput: ['', Validators.required],
-        timeInput: ['', Validators.required]
-    });
-    
-  }
+    private theaterService: TheaterService,
+    private showtimeService: showtimesService
+  ) { }
 
   ngOnInit() {
-    this.fetchData();
-    this.http.get<any[]>('api/movies').subscribe(movies => {
-      this.movies = movies;
+    this.showtimeForm = new FormGroup({
+      movieSelect: new FormControl(null, Validators.required),
+      theaterSelect: new FormControl(null, Validators.required),
+      dateInput: new FormControl(this.getCurrentDate(), Validators.required),
+      timeInput: new FormControl(null, Validators.required)
     });
-    this.getTheaters();
+
+    this.movieService.getMovies()
+      .subscribe(movies => this.movies = movies);
+
+    this.theaterService.getAllTheaters()
+      .subscribe(theaters => this.theaters = theaters);
+
+    this.showtimeService.getShowtimes()
+      .subscribe(showtimes => this.showtimes = showtimes);
   }
 
-  getTheaters() {
-    this.http.get<any[]>('/api/theater').subscribe(theaters => {
-      this.theaters = theaters;
-    });
-  }
-
-  getCurrentDate() {
+  getCurrentDate(): string {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = ('0' + (today.getMonth() + 1)).slice(-2);
+    const day = ('0' + today.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
   }
 
-  getDefaultTime() {
-    const now = new Date();
-    const minimumTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 0, 0);
-    const defaultTime = new Date(Math.max(now.getTime(), minimumTime.getTime()));
-    const defaultTimeString = defaultTime.toTimeString().split(' ')[0];
-    return defaultTimeString;
+  getMinimumTime(): string {
+    const today = new Date();
+    const hour = today.getHours();
+    const minute = today.getMinutes() < 30 ? '30' : '00';
+    return `${('0' + (hour + 1)).slice(-2)}:${minute}`;
   }
-  
-
-  getMinimumTime(): Date {
-    const now = new Date();
-    const minimumTime = new Date();
-    minimumTime.setHours(15, 0, 0, 0); // set minimum time to 3pm
-    return new Date(Math.max(now.getTime(), minimumTime.getTime()));
-  }
-
-  fetchData() {
-    this.showtimesService
-      .getWeeklyShowtimes(this.sortField, this.sortDirection)
-      .subscribe(
-        (data) => {
-          console.log('data:', data);
-          const currentDate = new Date();
-          this.showtimes = data
-          .filter((showtime) => new Date(showtime.date) >= currentDate)
-          .map((showtime) => ({
-            id: showtime.id,
-            movie_id: showtime.movie_id,
-            theater_id: showtime.theater_id,
-            start_time: showtime.start_time,
-            date: showtime.date,
-            movie_title: showtime.movie_title || '',
-            theater_name: '',
-          }));
-
-          // Get the theater names for each showtime
-          this.showtimes.forEach((showtime) => {
-            this.theaterService.getTheater(showtime.theater_id).subscribe(
-              (theater) => {
-                showtime.theater_name = theater.name;
-              },
-              (error) => {
-                console.log(error);
-              }
-            );
-          });
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-  }
-
-  sort(field: string) {
-    // If the field to sort is the same, toggle the sorting direction. Otherwise, reset to default (ascending).
-    if (field === this.sortField) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+  getMovieTitle(movieId: number): string {
+    const movie = this.movies.find(m => m.id === movieId);
+    if (movie) {
+      return movie.title;
     } else {
-      this.sortField = field;
-      this.sortDirection = 'asc';
+      return 'Movie not found';
     }
-
-    this.fetchData();
   }
-  checkAvailability(){
-    console.log('checkAvailability() function called');
-    const movieId = this.showtimeForm.get('movieSelect')?.value;
-    const theaterId = this.showtimeForm.get('theaterSelect')?.value;
-    const date = this.showtimeForm.get('dateInput')?.value;
-    let time = this.showtimeForm.get('timeInput')?.value;
-    time += ':00';
-
-    console.log('Movie:', movieId);
-    console.log('Theater:', theaterId);
-    console.log('Date:', date);
-    console.log('Time:', time);
-
-    //get selected start time
-    this.movieService.getMovieById(movieId).subscribe((movie) => {
-      const startTime = moment(`${date} ${time}`);
-        const earliestTime = moment(startTime).subtract(3, 'hours');
-        const latestTime = moment(startTime).add(3, 'hours');
-    })
-
-    this.showtimeService.getShowtimesByTheaterAndTime(theaterId, date, time).subscribe(
-      (showtimeExists) => {
-        console.log('Showtime exists:', showtimeExists);
-        if (showtimeExists) {
-          console.log('Showtime already exists');
-          this.showtimeAvailable = false;
-          this.showtimeMessage = 'Showtime is not available';
-        } else {
-          console.log('Showtime is available');
-          this.showtimeAvailable = true;
-          this.showtimeMessage = 'Showtime is available';
-        }
-        this.submitDisabled = !this.showtimeAvailable;
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+  getTheaterName(theaterId: number): string {
+    const theater = this.theaters.find(t => t.id === theaterId);
+    if (theater) {
+      return theater.name;
+    } else {
+      return 'Theater not found';
+    }
   }
   
   onSubmit(){
-    console.log('Form submitted');
-
-    //retrieve data from form
-    const movieId = this.showtimeForm.get('movieSelect')?.value;
-    const theaterId = this.showtimeForm.get('theaterSelect')?.value;
-    const date = this.showtimeForm.get('dateInput')?.value;
-    let time = this.showtimeForm.get('timeInput')?.value;
-    time += ':00';
-
-    // Call the addShowtime method of the ShowtimeService
-  this.showtimeService.addShowtime(movieId, theaterId, date, time).subscribe(
-    (response) => {
-      console.log('Showtime added:', response);
-      // Clear the form
-      this.showtimeForm.reset();
-      // Disable the submit button again
-      this.showtimeAvailable = false;
-    },
-    (error) => {
-      console.log('Error adding showtime:', error);
-    }
-  );
-
+    this.addShowtime();
   }
+  
+
+  addShowtime() {
+    const showtime = this.getShowtimeFromForm();
+this.showtimeService.addShowtime(showtime.movie_id, showtime.theater_id, showtime.date, showtime.start_time)
+  .subscribe(showtime => {
+    this.showtimes.push(showtime);
+    this.showtimeForm.reset();
+    this.showtimeAvailable = null;
+  });
+  }
+  
+  getShowtimeFromForm(): Showtime {
+    const values = this.showtimeForm.value;
+    const showtime: Showtime = {
+      id: undefined,
+      movie_id: values.movie,
+      theater_id: values.theater,
+      date: moment(values.date).format('YYYY-MM-DD'),
+      start_time: values.start_time
+    };
+    return showtime;
+  }
+  
+  
+
+  editShowtime(showtime: Showtime) {
+    this.showtimeToEdit = showtime;
+    this.showtimeForm.setValue({
+      movieSelect: showtime.movie_id,
+      theaterSelect: showtime.theater_id,
+      dateInput: showtime.date,
+      timeInput: showtime.start_time
+    });
+    this.isEditMode = true;
+  }
+
+  checkAvailability() {
+    const movieId = this.showtimeForm.controls['movieSelect'].value;
+    const theaterId = this.showtimeForm.controls['theaterSelect'].value;
+    const date = this.showtimeForm.controls['dateInput'].value;
+    const startTime = this.showtimeForm.controls['timeInput'].value;
+  
+    // Call the service method to check if the showtime is available
+    this.showtimeService.isShowtimeAvailable(movieId, theaterId, date, startTime)
+      .subscribe((available: boolean) => {
+        this.showtimeAvailable = available;
+      });
+  }
+  
+
+  updateShowtime() {
+    const showtime = this.getShowtimeFromForm();
+    if (!this.showtimeToEdit || typeof this.showtimeToEdit.id !== 'number') {
+      alert('Cannot update showtime - invalid ID');
+      return;
+    }
+    showtime.id = this.showtimeToEdit.id;
+    this.showtimeService.updateShowtime(showtime, this.showtimeToEdit.id)
+      .subscribe(showtime => {
+        const index = this.showtimes.findIndex(s => s.id === showtime.id);
+        this.showtimes[index] = showtime;
+        this.showtimeForm.reset();
+        this.showtimeAvailable = null;
+        this.isEditMode = false;
+        this.showtimeToEdit = null;
+      });
+  }
+
+  deleteShowtime(showtime: Showtime) {
+    const confirmDelete = confirm("Are you sure you want to delete this showtime?");
+    if (confirmDelete) {
+      if (showtime.id !== undefined) {
+        this.showtimeService.deleteShowtime(showtime.id).subscribe(() => {
+          this.showtimes = this.showtimes.filter(st => st.id !== showtime.id);
+        });
+      }
+    }
+}
 
 
 }

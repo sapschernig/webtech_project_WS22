@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { Theater } from '../interfaces/theater';
 
 @Injectable({
@@ -18,6 +18,12 @@ export class TheaterService {
 
   getTheater(id: number): Observable<Theater> {
     return this.http.get<Theater>('api/theater/${id}');
+  }
+
+  getTheaterName(theaterId: number): Observable<string> {
+    return this.http.get<Theater>(`${this.apiUrl}/${theaterId}`).pipe(
+      map(theater => theater.name)
+    );
   }
 
   addTheater(theater: Theater): Observable<any> {

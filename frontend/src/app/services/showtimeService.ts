@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Showtime } from '../interfaces/showtime';
 import { format } from 'date-fns';
 
@@ -11,8 +11,16 @@ import { format } from 'date-fns';
 export class showtimesService {
 
   private apiBaseUrl = '/api';
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
 
   constructor(private http: HttpClient) { }
+
+
+  getShowtimes(): Observable<Showtime[]> {
+    return this.http.get<Showtime[]>('api/showtimes')
+  }
 
   postShowtime(showtime: any): Observable<any> {
     return this.http.post<any>(`${this.apiBaseUrl}/showtimes`, showtime);
@@ -39,6 +47,11 @@ export class showtimesService {
           
       );
   }
+
+  isShowtimeAvailable(movieId: number, theaterId: number, date: string, startTime: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiBaseUrl}/showtimes/available?movieId=${movieId}&theaterId=${theaterId}&date=${date}&startTime=${startTime}`);
+  }
+  
   addShowtime(movieId: number, theaterId: number, date: string, time: string): Observable<any> {
     const data = {
       movie_id: movieId,
@@ -48,7 +61,38 @@ export class showtimesService {
     };
     return this.http.post<any>('api/showtimes', data);
   }
+  private handleError(error: any) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    console.error(errorMessage);
+    return throwError(errorMessage);
+  }
+
+  updateShowtime(showtime: Showtime, id: number): Observable<Showtime> {
+    const url = `${this.apiBaseUrl}(showtimes/${id}`;
+    return this.http.put<Showtime>(url, showtime, this.httpOptions)
+      .pipe(
+        tap(_ => console.log(`updated showtime id=${showtime.id}`)),
+        catchError(error => this.handleError(error))
+      );
+  }
+  deleteShowtime(id: number): Observable<any> {
+    const url = `${this.apiBaseUrl}showtimes/${id}`;
+    return this.http.delete(url, this.httpOptions)
+      .pipe(
+        tap(_ => console.log(`deleted showtime id=${id}`)),
+        catchError(error => this.handleError(error))
+      );
+  }
   
 
+
+  
   
 }

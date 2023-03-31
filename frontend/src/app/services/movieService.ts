@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { forkJoin, map, mergeMap, Observable } from 'rxjs';
 import { Movie } from '../interfaces/movie';
+import { Showtime } from '../interfaces/showtime';
+import { Theater } from '../interfaces/theater';
 
 
 @Injectable({
@@ -77,11 +79,21 @@ export class MovieService {
             
           
       }
+
+      getMovies(): Observable<Movie[]> {
+        return this.http.get<Movie[]>('api/movies');
+      }
+      
+
       getMovieDuration(movieId: number) {
         return this.http.get<number>(`api/movies/${movieId}/duration`);
       }
       getMovieById(id: number): Observable<Movie> {
         return this.http.get<Movie>(`api/movies/${id}`);
+      }
+      getShowtimesByMovieId(movieId: number): Observable<Showtime[]> {
+        const params = new HttpParams().set('movie_id', movieId.toString());
+        return this.http.get<Showtime[]>('api/showtimes', { params });
       }
       
 }
