@@ -33,8 +33,8 @@ const client = new Client({
     host: 'localhost',
     // create_login
 
-    database: 'movie_db',
-    password: '****',
+    database: 'moviedb_final',
+    password: 'hallo',
 
     port: 5432,
 });
@@ -608,9 +608,22 @@ app.post('/api/ticket', async (req, res) => {
 
 app.post('/api/deleteTicket', (req, res) => {
   const id = req.body.id;
-  console.log(id);
+  
 
   client.query('DELETE FROM ticket WHERE id = $1', [id], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    res.send(`Deleted ${result.rowCount} record(s)`);
+  });
+});
+
+app.post('/api/deleteMovie', (req, res) => {
+  const id = req.body.id;
+  console.log(id);
+  
+
+  client.query('DELETE FROM movie WHERE id = $1', [id], (error, result) => {
     if (error) {
       throw error;
     }
