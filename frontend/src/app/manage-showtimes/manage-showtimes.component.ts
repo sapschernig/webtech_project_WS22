@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { MovieService } from '../services/movieService';
 import { TheaterService } from '../services/theaterService';
 import { showtimesService } from '../services/showtimeService';
@@ -20,7 +21,8 @@ export class ManageShowtimesComponent implements OnInit {
   showtimeForm!: FormGroup;
   movies!: Movie[];
   theaters!: Theater[];
-  showtimes!: Showtime[];
+  //showtimes!: Showtime[];
+  showtimes: any[]= [];
   showtimeAvailable: boolean | null = null;
   isEditMode = false;
   showtimeToEdit: Showtime | null | undefined;
@@ -30,6 +32,7 @@ export class ManageShowtimesComponent implements OnInit {
 
   constructor(
     private movieService: MovieService,
+    private http: HttpClient,
     private theaterService: TheaterService,
     private showtimeService: showtimesService
   ) { }
@@ -97,13 +100,19 @@ getTheaterName(theaterId: number): string {
 
   addShowtime() {
     const showtime = this.getShowtimeFromForm();
+    console.log('showtime:', showtime);
     this.showtimeService.addShowtime(showtime.movie_id, showtime.theater_id, showtime.date, showtime.start_time)
-    .subscribe(showtime => {
-      this.showtimes.push(showtime);
-      this.showtimeForm.reset();
-      this.showtimeAvailable = null;
-  });
+      .subscribe(response => {
+        console.log('response:', response);
+        this.showtimes.push(response.showtime);
+        this.showtimeForm.reset();
+        this.showtimeAvailable = null;
+    });
   }
+  
+  
+  
+  
   
   getShowtimeFromForm(): Showtime {
     const values = this.showtimeForm.value;
@@ -111,14 +120,12 @@ getTheaterName(theaterId: number): string {
       id: undefined,
       movie_id: values.movie,
       theater_id: values.theater,
-      date: moment(values.date).format('YYYY-MM-DD'),
+      date: values.date,
       start_time: values.start_time
     };
     return showtime;
   }
   
-  
-
   editShowtime(showtime: Showtime) {
     this.showtimeToEdit = showtime;
     const date = moment(showtime.date).toDate();
@@ -174,6 +181,20 @@ getTheaterName(theaterId: number): string {
         });
       }
     }
+}
+
+deleteShowtime2(id:number) {
+
+  this.http.post('/api/deleteShowtime', {id}).subscribe(
+    (response) => {
+      console.log(response);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+  window.location.reload();
+  
 }
 
 
