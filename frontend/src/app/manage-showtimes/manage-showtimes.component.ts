@@ -97,13 +97,17 @@ getTheaterName(theaterId: number): string {
 
   addShowtime() {
     const showtime = this.getShowtimeFromForm();
+    console.log('showtime:', showtime);
     this.showtimeService.addShowtime(showtime.movie_id, showtime.theater_id, showtime.date, showtime.start_time)
-    .subscribe(showtime => {
-      this.showtimes.push(showtime);
-      this.showtimeForm.reset();
-      this.showtimeAvailable = null;
-  });
+      .subscribe(response => {
+        console.log('response:', response);
+        this.showtimes.push(response.showtime);
+        this.showtimeForm.reset();
+        this.showtimeAvailable = null;
+    });
   }
+  
+  
   
   getShowtimeFromForm(): Showtime {
     const values = this.showtimeForm.value;
@@ -111,14 +115,12 @@ getTheaterName(theaterId: number): string {
       id: undefined,
       movie_id: values.movie,
       theater_id: values.theater,
-      date: moment(values.date).format('YYYY-MM-DD'),
+      date: values.date,
       start_time: values.start_time
     };
     return showtime;
   }
   
-  
-
   editShowtime(showtime: Showtime) {
     this.showtimeToEdit = showtime;
     const date = moment(showtime.date).toDate();
