@@ -34,8 +34,8 @@ const client = new Client({
     // create_login
 
 
-    database: 'moviedb',
-    password: '****',
+    database: 'moviedb_final',
+    password: 'hallo',
 
 
     port: 5432,
@@ -207,6 +207,22 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+app.get('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Verify user credentials
+  const user = await authenticateUser(email, password);
+
+  if (user) {
+    // Save user ID to session
+    req.session.userId = user.id;
+
+    res.json(user);
+  } else {
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
 // protected endpoint - requires authentication
 app.get('/api/mytickets', async (req, res) => {
   // Check if user is logged in
@@ -216,18 +232,11 @@ app.get('/api/mytickets', async (req, res) => {
   }
 
   try {
-    // Fetch user data from database
-    const userId = req.session.userId;
-    const user = await getUserById(userId);
-
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ error: 'User not found' });
-    }
+    const { rows } = await client.query('SELECT * FROM ticket WHERE customer_id = $1', [req.session.userId]);
+    res.send(rows);
   } catch (err) {
-    console.error('Error retrieving user:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error(err);
+    res.status(500).send(err);
   }
 });
 
@@ -240,7 +249,7 @@ app.post('/api/logout', (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
       return;
     } 
-    res.redirect('/login');
+    console.log("Logout successful");
     }
   );
 });

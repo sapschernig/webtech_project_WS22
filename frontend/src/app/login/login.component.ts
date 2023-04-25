@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { AuthGuard } from '../services/AuthGuard';
 import { AuthService } from '../services/authservice';
+import { Customer } from '../interfaces/customer';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,9 @@ export class LoginComponent implements OnInit{
   title = 'Login';
   errorMessage = '';
   loginForm!: FormGroup;
+  userData: Customer | undefined;
+  message: string='';
+  isLoggedIn = false;
 
   constructor(
     private formBuilder: FormBuilder, 
@@ -29,7 +33,29 @@ export class LoginComponent implements OnInit{
       });
     }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const storedSession = sessionStorage.getItem('sessionId');
+    if (storedSession) {
+      this.isLoggedIn = true;
+    }
+    this.http.get('/api/account').subscribe(
+      (data) => {
+        console.log(data);
+        this.userData = data as Customer;  
+        console.log(this.userData.first_name);
+        console.log(this.userData.id);
+      },
+      (error) => {
+        console.log(error);
+        this.message = 'Error fetching user data';
+      }
+    );
+
+    if(this.userData != null) {
+      this.isLoggedIn = true;
+    }
+
+  }
 
   checkUserExists(){
 
@@ -54,6 +80,7 @@ export class LoginComponent implements OnInit{
             this.errorMessage = 'Incorrect password';
         } else {
           // Call login endpoint
+          sessionStorage.setItem('isLoggedIn', JSON.stringify(this.isLoggedIn));
           const loginData = { email: email, password: password };
           this.http.post('/api/login', loginData).subscribe(
             (response: any) => {
@@ -75,6 +102,25 @@ export class LoginComponent implements OnInit{
   }
 });
   }
+  logout() {
+    // Send a POST request to the logout endpoint
+    this.http.post('/api/logout', {}).subscribe(
+      (response: any) => {
+        console.log('Logout successful');
+        // Clear session-related information
+        sessionStorage.removeItem('sessionId');
+        this.isLoggedIn = false;
+        // Redirect to login page
+        window.location.reload();
+      },
+      (error: any) => {
+        console.log('Error logging out: ', error.message);
+      }
+    );
+  }
+  
+    
+  
 
   get email(){
     return this.loginForm.get('email');

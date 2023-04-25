@@ -1,6 +1,11 @@
 <h1>{{ title }}</h1>
 
-<div class="login">
+<div *ngIf="isLoggedIn">
+    You are already logged in!
+    <button type="button" (click)="logout()">LOGOUT</button>
+</div>
+
+<div *ngIf="!isLoggedIn">
     
 <form [formGroup]="loginForm" (ngSubmit)="checkUserExists()">
 <input type="text" placeholder="Enter email address" formControlName="email">

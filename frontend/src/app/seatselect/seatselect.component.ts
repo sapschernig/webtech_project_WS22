@@ -26,6 +26,7 @@ export class SeatselectComponent implements OnInit {
   seatIdList: string[] = [];
   seatCount = 0;
   totalPrice = 0;
+  highestId = 0;
 
   message: string='';
   userData: Customer | undefined;
@@ -206,5 +207,25 @@ export class SeatselectComponent implements OnInit {
 
       }
     }
+
+    getHighestTicketId(): void {
+      this.http.get<any[]>('/api/ticket').subscribe(
+        (tickets) => {
+          this.highestId = 0;
+          if (tickets) {
+            tickets.forEach((ticket) => {
+              if (ticket.id > this.highestId) {
+                this.highestId = ticket.id;
+              }
+            });
+          }
+        },
+        (error) => {
+          console.error(error);
+
+        }
+      );
+    }
+    
 
     }

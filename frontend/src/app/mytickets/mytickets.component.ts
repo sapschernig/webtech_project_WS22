@@ -31,7 +31,7 @@ export class MyticketsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.http.get<Ticket[]>('/api/ticket').subscribe(
+    this.http.get<Ticket[]>('/api/mytickets').subscribe(
       (tickets) => {
         this.tickets = tickets;
       },

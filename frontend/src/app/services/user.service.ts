@@ -45,7 +45,7 @@ export class UserService {
     );
   }
   getUserData(){
-    return this.http.get<Customer>('/api/customers');
+    return this.http.get<Customer>('/api/account');
   }
   editUserData(editedUserData: {
     firstName: any;
