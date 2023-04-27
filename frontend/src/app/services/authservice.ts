@@ -12,6 +12,7 @@ export class AuthService {
 
 private readonly API_URL = 'https://example.com/auth';
 private user$ = new BehaviorSubject<Customer | null>(null);
+public loggedInUser: Customer | null = null;
 
   constructor(private http: HttpClient) { }
 
@@ -19,6 +20,7 @@ private user$ = new BehaviorSubject<Customer | null>(null);
     const body = { email, password };
     return this.http.post<Customer>(`${this.API_URL}/login`, body).pipe(
       tap(customer => {
+        this.loggedInUser = customer;
         this.user$.next(customer);
         localStorage.setItem('customer', JSON.stringify(customer));
       })
@@ -34,7 +36,7 @@ private user$ = new BehaviorSubject<Customer | null>(null);
   }
 
   isLoggedIn(): boolean {
-    return !!this.getCustomer();
+    return !!this.loggedInUser;
   }
 
   isAuthenticated(): boolean {
@@ -45,5 +47,8 @@ private user$ = new BehaviorSubject<Customer | null>(null);
   getUser$(): Observable<Customer | null> {
     return this.user$.asObservable();
   }
+
+  }
   
-}
+
+
