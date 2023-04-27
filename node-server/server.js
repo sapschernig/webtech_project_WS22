@@ -600,12 +600,12 @@ app.post('/api/showtimes', (req, res) => {
 
 app.post('/api/ticket', async (req, res) => {
   try {
-    const { id, price, show_id, seat_id, customer_id } = req.body;
+    const {  price, show_id, seat_id, customer_id } = req.body;
     console.log(req.body);
 
     // Insert the movie data into the "movie" table
-    const query = 'INSERT INTO ticket(id, price, show_id, seat_id, customer_id) VALUES($1, $2, $3, $4, $5)';
-    const values = [id, price, show_id, seat_id, customer_id];
+    const query = 'INSERT INTO ticket(price, show_id, seat_id, customer_id) VALUES($1, $2, $3, $4)';
+    const values = [price, show_id, seat_id, customer_id];
     console.log(values);
 
 

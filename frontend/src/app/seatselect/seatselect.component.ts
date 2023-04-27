@@ -187,7 +187,6 @@ export class SeatselectComponent implements OnInit {
       
 
         const data = {
-          id: this.tickets.length + 1 + i,
           price: this.totalPrice/this.seatIdList.length,
           show_id: this.selectedShow,
           seat_id: this.seatIdList[i],

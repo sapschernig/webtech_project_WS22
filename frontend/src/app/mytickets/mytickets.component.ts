@@ -4,6 +4,7 @@ import { Ticket } from '../interfaces/ticket';
 import { NgFor } from '@angular/common';
 import { Customer } from '../interfaces/customer';
 import { Movie } from '../interfaces/movie';
+import { Showtime } from '../interfaces/showtime';
 
 
 
@@ -18,10 +19,11 @@ export class MyticketsComponent implements OnInit {
   movies: Movie[] = [];
   seats: any[] = [];
   rows:number = 0;
-  showtimes: any[] = [];
+  showtimes: Showtime[] = [];
 
   userData: Customer | undefined;
   message: string='';
+
 
   
 
@@ -34,6 +36,14 @@ export class MyticketsComponent implements OnInit {
     this.http.get<Ticket[]>('/api/mytickets').subscribe(
       (tickets) => {
         this.tickets = tickets;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+    this.http.get<Showtime[]>('/api/showtimes').subscribe(
+      (showtimes) => {
+        this.showtimes = showtimes;
       },
       (error) => {
         console.error(error);

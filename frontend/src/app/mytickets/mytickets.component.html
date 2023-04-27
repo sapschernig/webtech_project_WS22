@@ -1,13 +1,14 @@
 <div class="tickets">
     <div class="ticket">
         <div *ngFor="let ticket of tickets">
+            
 
             <div *ngIf="ticket.customer_id === userData?.id" class="ticketinfo">
                 <p> Alle Daten zum Ticket</p>
                 <p>{{ ticket.id }}</p>
                 <p>{{ ticket.price }}</p>
                 <ng-container *ngFor="let movie of movies">
-                    <p *ngIf="ticket.movie_id === movie.id">
+                    <p *ngIf="ticket.show_id === movie.id">
                         {{ movie.title }}
                     </p>
                 </ng-container>
@@ -27,6 +28,7 @@
        
             </div>
         
-        </div>
+        
+    </div>
     </div>
 </div>

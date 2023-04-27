@@ -15,6 +15,7 @@ export class AccountComponent implements OnInit{
   errorMessage: string = '';
   registerForm!: FormGroup;
   userData: Customer | undefined;
+  isLoggedIn = false;
 
   constructor(
     private formBuilder: FormBuilder, 
@@ -32,7 +33,20 @@ export class AccountComponent implements OnInit{
       );
     }
 
-    editUserData(){
-      
+    logout() {
+      // Send a POST request to the logout endpoint
+      this.http.post('/api/logout', {}).subscribe(
+        (response: any) => {
+          console.log('Logout successful');
+          // Clear session-related information
+          sessionStorage.removeItem('sessionId');
+          this.isLoggedIn = false;
+          // Redirect to login page
+          window.location.reload();
+        },
+        (error: any) => {
+          console.log('Error logging out: ', error.message);
+        }
+      );
     }
 }
